@@ -22,7 +22,12 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.12</version>
 		</dependency>
-
+		<!-- async-http-client -->
+		<dependency>
+			<groupId>com.ning</groupId>
+			<artifactId>async-http-client</artifactId>
+			<version>1.7.16</version>
+		</dependency>
 
 	</dependencies>
 </project>
