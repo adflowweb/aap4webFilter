@@ -26,7 +26,7 @@ public class VerificationFilter implements Filter {
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER");
 		System.out.println("___________________________________________");
-		response.setCharacterEncoding("UTF-8");
+		
 		try {
 			ArrayList uriArr = null;
 			if (map != null) {

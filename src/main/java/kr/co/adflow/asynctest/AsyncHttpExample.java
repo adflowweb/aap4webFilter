@@ -15,6 +15,9 @@ public class AsyncHttpExample {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		
 		
+		
+		
+		
 		Future<Response> f = asyncHttpClient.prepareGet(
 				"http://127.0.0.1:3000/v1/verificationuri").execute(
 				new AsyncCompletionHandler<Response>() {
