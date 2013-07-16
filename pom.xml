@@ -7,7 +7,7 @@
 
 
 	<properties>
-		<deploy.target.dir>/var/lib/tomcat7/webapps</deploy.target.dir>
+		<deploy.target.dir>/var/lib/tomcat7/webapps/ROOT/WEB-INF/lib</deploy.target.dir>
 	</properties>
 
 	<build>
