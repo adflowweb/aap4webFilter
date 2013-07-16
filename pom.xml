@@ -6,6 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<deploy.target.dir>/var/lib/tomcat7/webapps/ROOT/WEB-INF/lib</deploy.target.dir>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
 		<plugins>
