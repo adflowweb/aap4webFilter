@@ -7,13 +7,20 @@
 
 
 	<properties>
-		<!-- sensible default -->
-		<my.build.directory>/var/lib/tomcat7/webapps</my.build.directory>
+		<deploy.target.dir>/var/lib/tomcat7/webapps</deploy.target.dir>
 	</properties>
 
 	<build>
-		<directory>${my.build.directory}</directory>
+
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				 <configuration>
+                <outputDirectory>${deploy.target.dir}</outputDirectory>
+			</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
