@@ -21,9 +21,9 @@ public class VerificationConnection {
 		String line = null;
 
 		URL serverAddress = null;
-
+	
 		try {
-			serverAddress = new URL("http://127.0.0.1:3000/v1/verificationuri");
+			serverAddress = new URL("http://192.168.1.94:3000/v1/verificationuri");
 
 			connection = null;
 
