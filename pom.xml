@@ -4,11 +4,18 @@
 	<groupId>kr.co.adflow</groupId>
 	<artifactId>aap4webFilter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
 
 
+	<profiles>
+		<profile>
+			<id>otherOutputDir</id>
+			<build>
+				<directory>/var/lib/tomcat7/webapps7</directory>
+			</build>
+		</profile>
+	</profiles>
 	<build>
-	
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -34,6 +41,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
+
+
 
 
 	</build>
