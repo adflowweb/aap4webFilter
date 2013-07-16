@@ -51,9 +51,11 @@
 					</execution>
 				</executions>
 				<configuration>
+					<outputDirectory>${deploy.target.dir}</outputDirectory>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+
 				</configuration>
 			</plugin>
 		</plugins>
