@@ -10,11 +10,16 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import kr.co.adlfow.util.FilterProperites;
 import kr.co.adlfow.util.HashSh;
 
 public class VirtualBrowserConnection {
 
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.94:3000";
+	static FilterProperites filterProperites=FilterProperites.getInstance();
+	
+	static String app4ServerIp=filterProperites.read("aap4ServerIp");
+	
+	private static final String VERIFICATION_SERVER_ADDRESS = app4ServerIp;
 	URL url;
 	HttpURLConnection connection = null;
 

@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import kr.co.adlfow.util.FilterProperites;
+
 public class VerificationConnection {
 
 	public String verificationCheck() {
@@ -21,9 +23,13 @@ public class VerificationConnection {
 		String line = null;
 
 		URL serverAddress = null;
+		
+		FilterProperites filterProperites=FilterProperites.getInstance();
+		
+		String app4ServerIp=filterProperites.read("aap4ServerIp");
 	
 		try {
-			serverAddress = new URL("http://192.168.1.94:3000/v1/verificationuri");
+			serverAddress = new URL(app4ServerIp+"/v1/verificationuri");
 
 			connection = null;
 
