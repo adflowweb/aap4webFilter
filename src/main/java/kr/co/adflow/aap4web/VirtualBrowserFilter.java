@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 
 public class VirtualBrowserFilter implements Filter {
 
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://127.0.0.1:3000";
+	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.94:3000";
 
 	// testServer
 	// private static final String VERIFICATION_SERVER_ADDRESS =
