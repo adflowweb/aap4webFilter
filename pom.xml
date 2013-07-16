@@ -6,16 +6,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 
-	<profiles>
-		<profile>
-			<id>otherOutputDir</id>
-			<build>
-				<directory>/var/lib/tomcat7/webapps7</directory>
-			</build>
-		</profile>
-	</profiles>
-	<build>
+	<properties>
+		<!-- sensible default -->
+		<my.build.directory>/var/lib/tomcat7/webapps</my.build.directory>
+	</properties>
 
+	<build>
+		<directory>${my.build.directory}</directory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
