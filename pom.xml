@@ -8,7 +8,7 @@
 
 
 	<build>
-	 <outputDirectory>/var/lib/tomcat7/webapps</outputDirectory>
+	
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
