@@ -71,6 +71,7 @@ public class VirtualBrowserConnection {
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
 			}else if (req.getRequestURI().equals("/notice_returnpage.do")) { //test return page
+				System.out.println("/ifnotice_returnpage.do");
 				temp = "/board/test_list.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
