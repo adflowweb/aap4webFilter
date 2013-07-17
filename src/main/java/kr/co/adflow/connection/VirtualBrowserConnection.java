@@ -147,8 +147,10 @@ public class VirtualBrowserConnection {
 
 		if(!dir.exists()){ 
 
-			dir.mkdir();
-		    System.out.println("mkdir success");
+			if(!dir.mkdirs()){
+				System.out.println("mkdir fail");
+			}
+		    
 
 		}else{
 
