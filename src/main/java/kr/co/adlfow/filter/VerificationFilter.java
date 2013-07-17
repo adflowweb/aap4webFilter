@@ -1,7 +1,6 @@
 package kr.co.adlfow.filter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.Filter;
@@ -10,11 +9,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import kr.co.adflow.connection.VerificationConnection;
-import kr.co.adlfow.util.UrlCheckUtil;
 
 public class VerificationFilter implements Filter {
 
@@ -41,6 +35,7 @@ public class VerificationFilter implements Filter {
 		 * 
 		 * }
 		 */
+		//verification URI check
 		for (int i = 0; i < 10; i++) {
 			
 			if(i==7){
@@ -52,6 +47,8 @@ public class VerificationFilter implements Filter {
 		chain.doFilter(request, response);
 	}
 
+	
+	//verificationURI get
 	public void init(FilterConfig arg0) throws ServletException {
 
 		System.out.println("___________________________________________");

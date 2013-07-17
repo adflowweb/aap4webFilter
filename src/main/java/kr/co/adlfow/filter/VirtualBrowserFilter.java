@@ -32,8 +32,11 @@ public class VirtualBrowserFilter implements Filter {
 
 			HttpServletRequest req = (HttpServletRequest) request;
 
+			//request LOG
 			this.reqLog(req);
 
+			
+			//FilterChain 
 			final CopyPrintWriter writer = new CopyPrintWriter(
 					response.getWriter());
 			chain.doFilter(request, new HttpServletResponseWrapper(
@@ -44,6 +47,7 @@ public class VirtualBrowserFilter implements Filter {
 				}
 			});
 
+			//verification URI Check
 			if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				System.out.println("temp:" + temp);
@@ -58,6 +62,8 @@ public class VirtualBrowserFilter implements Filter {
 				.println("#############VirtualBrowserFilter END###############");
 	}
 
+	
+	//reqlog method
 	public void reqLog(HttpServletRequest req) {
 		System.out.println("requestURI : " + req.getRequestURI());
 		System.out.println("requestMethod : " + req.getMethod());

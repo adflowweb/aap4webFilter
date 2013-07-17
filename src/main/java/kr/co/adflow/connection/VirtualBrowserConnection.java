@@ -88,7 +88,7 @@ public class VirtualBrowserConnection {
 			// verificationServerRequest
 			this.verificationServerRequest(connection, responseOrigin);
 
-			// Get Response
+			// Get verificationServerResponse
 			this.verificationServerResponse(connection);
 
 		} catch (Exception e) {
