@@ -132,6 +132,7 @@ public class VirtualBrowserConnection {
 	public void makeDir(String fileName){
 		File dir = new File(fileName); // 
 		if(!dir.exists()){ 
+			System.out.println("mkdir..start");
 			if(!dir.mkdirs()){
 				System.out.println("mkdir fail");
 			}
