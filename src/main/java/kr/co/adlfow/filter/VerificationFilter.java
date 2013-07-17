@@ -27,7 +27,7 @@ public class VerificationFilter implements Filter {
 		System.out.println("Verification DO FILTER TEST");
 		System.out.println("___________________________________________");
 
-		try {
+	/*	try {
 			ArrayList uriArr = null;
 			if (map != null) {
 				for (int i = 0; i < map.size(); i++) {
@@ -42,7 +42,7 @@ public class VerificationFilter implements Filter {
 			chain.doFilter(request, response);
 		} catch (Exception e) {
 
-		}
+		}*/
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {
@@ -50,7 +50,7 @@ public class VerificationFilter implements Filter {
 		System.out.println("___________________________________________");
 		System.out.println("VerificationFilter  INIT GET verification URI ");
 		System.out.println("___________________________________________");
-		try {
+	/*	try {
 			VerificationConnection check = new VerificationConnection();
 			String result = check.verificationCheck();
 
@@ -60,6 +60,6 @@ public class VerificationFilter implements Filter {
 		} catch (Exception e) {
 			e.printStackTrace();
 
-		}
+		}*/
 	}
 }
