@@ -15,11 +15,11 @@ import kr.co.adlfow.util.HashSh;
 
 public class VirtualBrowserConnection {
 
-	//static FilterProperites filterProperites=FilterProperites.getInstance();
+	static FilterProperites filterProperites=FilterProperites.getInstance();
 	
-	//static String app4ServerIp=filterProperites.read("aap4ServerIp");
+	static String app4ServerIp=filterProperites.read("aap4ServerIp");
 	
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.94:3000";
+	private static final String VERIFICATION_SERVER_ADDRESS = app4ServerIp;
 	URL url;
 	HttpURLConnection connection = null;
 

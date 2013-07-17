@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class FilterProperites {
-/*	private Properties properties;
+	private Properties properties;
 
 	private static FilterProperites filterProperites = new FilterProperites();
 
@@ -21,7 +21,7 @@ public class FilterProperites {
 		this.properties = new Properties();
 		try {
 			InputStream is = FilterProperites.class
-					.getResourceAsStream("aap4webfilter.properties");
+					.getResourceAsStream("/properties/aap4webfilter.properties");
 
 			properties.load(is);
 
@@ -36,6 +36,6 @@ public class FilterProperites {
 
 	public String read(String key) {
 		return properties.getProperty(key);
-	}*/
+	}
 
 }
