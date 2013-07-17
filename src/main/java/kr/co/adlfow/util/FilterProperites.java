@@ -21,7 +21,7 @@ public class FilterProperites {
 		this.properties = new Properties();
 		try {
 			InputStream is = FilterProperites.class
-					.getResourceAsStream("/properties/aap4webfilter.properties");
+					.getResourceAsStream("aap4webfilter.properties");
 
 			properties.load(is);
 
