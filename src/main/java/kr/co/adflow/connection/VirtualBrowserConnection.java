@@ -66,7 +66,7 @@ public class VirtualBrowserConnection {
 			if (req.getRequestURI().equals("/index.do")) {
 				System.out.println("in...req.index.do");
 				temp = "/board/index.jsp";
-				this.makeDir("/home/master/nodejs/aap4web/routes/site/board/index.jsp");
+				this.makeDir("/home/master/nodejs//aap4web/routes/site/board/index.jsp");
 				System.out.println("temp:" + temp);
 				connection.setRequestProperty("virtual_page_uri", temp);
 			} else if (req.getRequestURI().equals("/notice_list.do")) {
@@ -147,7 +147,7 @@ public class VirtualBrowserConnection {
 
 		if(!dir.exists()){ 
 
-			dir.mkdirs();
+			dir.mkdir();
 		    System.out.println("mkdir success");
 
 		}else{
