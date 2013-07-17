@@ -152,7 +152,7 @@ public class VirtualBrowserConnection {
 
 		}else{
 
-		    // cutewebi 폴더가 존재하면 폴더 내 기존 파일 다 삭제
+		   
 		    File[] dirFiles = dir.listFiles();
 
 		    for (File file : dirFiles) {
