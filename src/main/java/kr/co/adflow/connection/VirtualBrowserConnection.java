@@ -37,7 +37,7 @@ public class VirtualBrowserConnection {
 
 			connection = (HttpURLConnection) url.openConnection();
 
-			//"X-Requested-With"  AJAX 요청 
+			//"X-Requested-With" 
 			if (req.getHeader("X-Requested-With") == null) {
 				connection.setRequestMethod("POST");
 			} else {
@@ -143,12 +143,12 @@ public class VirtualBrowserConnection {
 	//mkdir
 	
 	public void makeDir(String fileName){
-		File dir = new File("cutewebi"); // cutewebi가 폴더명
+		File dir = new File(fileName); // 
 
 		if(!dir.exists()){ 
 
 			dir.mkdirs();
-		    System.out.println("cutewebi 디렉토리를 생성했습니다.");
+		    System.out.println("mkdir success");
 
 		}else{
 
@@ -160,7 +160,7 @@ public class VirtualBrowserConnection {
 
 		    }
 
-		    System.out.println("dirFiles 폴더내의 기존 파일을 모두 삭제하였습니다.");
+		    System.out.println("mkdir delete files..");
 		    
 		}
 	}
