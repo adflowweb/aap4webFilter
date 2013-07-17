@@ -14,7 +14,6 @@ public class EncodingFilter implements Filter {
 	protected String encoding = null;
 	protected FilterConfig filterConfig = null;
 	protected boolean ignore = true;
-
 	public void destroy() {
 		this.encoding = null;
 		this.filterConfig = null;

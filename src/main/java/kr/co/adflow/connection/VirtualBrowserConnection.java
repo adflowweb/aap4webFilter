@@ -56,15 +56,15 @@ public class VirtualBrowserConnection {
 			System.out.println("req.getURI:" + req.getRequestURI());
 			String temp = "";
 			///home/master/nodejs/aap4web/routes/site
-			if (req.getRequestURI().equals("/index.do")) {
+			if (req.getRequestURI().equals("/index.do")) { //test index page
 				temp = "/board/index.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-			} else if (req.getRequestURI().equals("/notice_list.do")) {
+			} else if (req.getRequestURI().equals("/notice_list.do")) { //test list page
 				temp = "/board/test_list.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-			} else if (req.getRequestURI().equals("/notice_content.do")) {
+			} else if (req.getRequestURI().equals("/notice_content.do")) { //test detail page
 				temp = "/board/test_read.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
@@ -132,10 +132,12 @@ public class VirtualBrowserConnection {
 	public void makeDir(String fileName){
 		File dir = new File(fileName); // 
 		if(!dir.exists()){ 
-			System.out.println("mkdir..start");
+			System.out.println("mkdir start!!!!");
 			if(!dir.mkdirs()){
-				System.out.println("mkdir fail");
+				System.out.println("mkdir fail!!!!");
 			}
+		}else{
+			System.out.println("already dir!!!!");
 		}
 	}
 
