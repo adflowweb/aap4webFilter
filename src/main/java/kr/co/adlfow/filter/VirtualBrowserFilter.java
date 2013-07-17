@@ -44,9 +44,13 @@ public class VirtualBrowserFilter implements Filter {
 				}
 			});
 
-			VirtualBrowserConnection connection = new VirtualBrowserConnection();
+			if (req.getAttribute("verificationUri") != null) {
+				int temp = (Integer) req.getAttribute("verificationUri");
+				System.out.println("temp:" + temp);
+				VirtualBrowserConnection connection = new VirtualBrowserConnection();
+				connection.virtualPageDataSend(req, writer.getCopy());
+			}
 
-			connection.virtualPageDataSend(req, writer.getCopy());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

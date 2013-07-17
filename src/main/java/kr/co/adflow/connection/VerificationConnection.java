@@ -3,6 +3,7 @@ package kr.co.adflow.connection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -14,13 +15,18 @@ public class VerificationConnection {
 	private HttpURLConnection connection = null;
 	private static FilterProperites filterProperites = FilterProperites.getInstance();
 	private static final String APP4SERVERIP = filterProperites.read("aap4ServerIp");
+	private OutputStreamWriter wr = null;
 	private BufferedReader rd = null;
 	private StringBuilder sb = null;
 	private String line = null;
 	private URL serverAddress = null;
 
 	public String verificationCheck() {
+
 		long start = System.currentTimeMillis();
+		
+		
+
 		try {
 			serverAddress = new URL(APP4SERVERIP + "/v1/verificationuri");
 
@@ -52,6 +58,7 @@ public class VerificationConnection {
 
 			connection.disconnect();
 			rd = null;
+			wr = null;
 			connection = null;
 		}
 		System.out.println("VerificationConnection elapsedTime : "

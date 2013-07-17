@@ -56,27 +56,19 @@ public class VirtualBrowserConnection {
 			System.out.println("req.getURI:" + req.getRequestURI());
 			String temp = "";
 			///home/master/nodejs/aap4web/routes/site
-			if (req.getRequestURI().equals("/index.do")) { //test index page
+			if (req.getRequestURI().equals("/index.do")) {
 				temp = "/board/index.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-			} else if (req.getRequestURI().equals("/notice_list.do")) { //test list page
+			} else if (req.getRequestURI().equals("/notice_list.do")) {
 				temp = "/board/test_list.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-				
-				//notice_returnpage.do
-			} else if (req.getRequestURI().equals("/notice_content.do")) { //test detail page
+			} else if (req.getRequestURI().equals("/notice_content.do")) {
 				temp = "/board/test_read.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-			}else if (req.getRequestURI().equals("/notice_returnpage.do")) { //test return page
-				System.out.println("/ifnotice_returnpage.do");
-				temp = "/board/test_list.jsp";
-				this.makeDir(MKDIRNAME+temp);
-				connection.setRequestProperty(VITUALPAGEURI, temp);
-			} 
-			else {
+			} else {
 
 				connection.setRequestProperty(VITUALPAGEURI,
 						req.getRequestURI());
@@ -140,12 +132,9 @@ public class VirtualBrowserConnection {
 	public void makeDir(String fileName){
 		File dir = new File(fileName); // 
 		if(!dir.exists()){ 
-			System.out.println("mkdir start!!!!");
 			if(!dir.mkdirs()){
-				System.out.println("mkdir fail!!!!");
+				System.out.println("mkdir fail");
 			}
-		}else{
-			System.out.println("already dir!!!!");
 		}
 	}
 
