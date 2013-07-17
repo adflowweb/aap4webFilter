@@ -24,7 +24,7 @@ public class VerificationFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		System.out.println("___________________________________________");
-		System.out.println("Verification DO FILTER");
+		System.out.println("Verification DO FILTER TEST");
 		System.out.println("___________________________________________");
 		
 		try {
@@ -48,7 +48,7 @@ public class VerificationFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 
 		System.out.println("___________________________________________");
-		System.out.println("VerificationFilter  INIT TEST CODE 0716  ");
+		System.out.println("VerificationFilter  INIT TEST CODE 0717  ");
 		System.out.println("___________________________________________");
 		try {
 			VerificationConnection check = new VerificationConnection();
