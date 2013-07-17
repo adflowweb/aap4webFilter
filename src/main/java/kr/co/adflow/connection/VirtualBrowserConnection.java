@@ -2,6 +2,7 @@ package kr.co.adflow.connection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,11 +37,19 @@ public class VirtualBrowserConnection {
 
 			connection = (HttpURLConnection) url.openConnection();
 
+			//"X-Requested-With"  AJAX 요청 
 			if (req.getHeader("X-Requested-With") == null) {
 				connection.setRequestMethod("POST");
 			} else {
 				connection.setRequestMethod("PUT");
 			}
+			
+			
+			
+			
+			
+			
+			
 
 			System.out
 					.println("-------------VirtualBrowserConnection ReqHeader---------------------");
@@ -53,27 +62,28 @@ public class VirtualBrowserConnection {
 					.println("-------------VirtualBrowserConnection ReqHeaderEND--------------------");
 			System.out.println("req.getURI:" + req.getRequestURI());
 			String temp = "";
-
+			///home/master/nodejs/aap4web/routes/site
 			if (req.getRequestURI().equals("/index.do")) {
 				System.out.println("in...req.index.do");
 				temp = "/board/index.jsp";
+				this.makeDir("///home/master/nodejs/aap4web/routes/site/board/index.jsp");
 				System.out.println("temp:" + temp);
-				connection.setRequestProperty("request_uri_origin", temp);
+				connection.setRequestProperty("virtual_page_uri", temp);
 			} else if (req.getRequestURI().equals("/notice_list.do")) {
 				System.out.println("in.../notice_list.do");
 				temp = "/board/test_list.jsp";
 				System.out.println("temp:" + temp);
-				connection.setRequestProperty("request_uri_origin", temp);
+				connection.setRequestProperty("virtual_page_uri", temp);
 
 			} else if (req.getRequestURI().equals("/notice_content.do")) {
 				System.out.println("in.../notice_content.do");
 				temp = "/board/test_read.jsp";
 				System.out.println("temp:" + temp);
-				connection.setRequestProperty("request_uri_origin", temp);
+				connection.setRequestProperty("virtual_page_uri", temp);
 
 			} else {
 
-				connection.setRequestProperty("request_uri_origin",
+				connection.setRequestProperty("virtual_page_uri",
 						req.getRequestURI());
 			}
 
@@ -128,6 +138,31 @@ public class VirtualBrowserConnection {
 		System.out.println("Node.Js Server response DATA : "
 				+ responseData.toString());
 
+	}
+	
+	//mkdir
+	
+	public void makeDir(String fileName){
+		File dir = new File("cutewebi"); // cutewebi가 폴더명
+
+		if(!dir.exists()){ 
+
+			dir.mkdirs();
+		    System.out.println("cutewebi 디렉토리를 생성했습니다.");
+
+		}else{
+
+		    // cutewebi 폴더가 존재하면 폴더 내 기존 파일 다 삭제
+		    File[] dirFiles = dir.listFiles();
+
+		    for (File file : dirFiles) {
+		     file.delete();
+
+		    }
+
+		    System.out.println("dirFiles 폴더내의 기존 파일을 모두 삭제하였습니다.");
+		    
+		}
 	}
 
 }

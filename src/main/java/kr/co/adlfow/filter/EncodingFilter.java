@@ -11,17 +11,9 @@ import javax.servlet.ServletResponse;
 
 public class EncodingFilter implements Filter {
 
-	// ----------------------------- Instance Variables
-	// -----------------------------
-
 	protected String encoding = null;
-
 	protected FilterConfig filterConfig = null;
-
 	protected boolean ignore = true;
-
-	// ----------------------------- Public Methods
-	// -----------------------------
 
 	public void destroy() {
 		this.encoding = null;
