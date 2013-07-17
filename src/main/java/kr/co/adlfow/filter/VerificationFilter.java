@@ -43,6 +43,7 @@ public class VerificationFilter implements Filter {
 		} catch (Exception e) {
 
 		}*/
+		chain.doFilter(request, response);
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {
