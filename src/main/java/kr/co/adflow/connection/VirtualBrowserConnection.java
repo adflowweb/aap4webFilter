@@ -64,11 +64,18 @@ public class VirtualBrowserConnection {
 				temp = "/board/test_list.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
+				
+				//notice_returnpage.do
 			} else if (req.getRequestURI().equals("/notice_content.do")) { //test detail page
 				temp = "/board/test_read.jsp";
 				this.makeDir(MKDIRNAME+temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-			} else {
+			}else if (req.getRequestURI().equals("/notice_returnpage.do")) { //test return page
+				temp = "/board/test_list.jsp";
+				this.makeDir(MKDIRNAME+temp);
+				connection.setRequestProperty(VITUALPAGEURI, temp);
+			} 
+			else {
 
 				connection.setRequestProperty(VITUALPAGEURI,
 						req.getRequestURI());
