@@ -2,10 +2,12 @@ package kr.co.adflow.connection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,13 +17,12 @@ import kr.co.adlfow.util.HashSh;
 
 public class VirtualBrowserConnection {
 
-	static FilterProperites filterProperites=FilterProperites.getInstance();
-	
-	static String app4ServerIp=filterProperites.read("aap4ServerIp");
-	
+	private static FilterProperites filterProperites = FilterProperites
+			.getInstance();
+	private static String app4ServerIp = filterProperites.read("aap4ServerIp");
 	private static final String VERIFICATION_SERVER_ADDRESS = app4ServerIp;
-	URL url;
-	HttpURLConnection connection = null;
+	private URL url;
+	private HttpURLConnection connection = null;
 
 	public void virtualPageDataSend(HttpServletRequest req,
 			String responseorigin) {
@@ -33,8 +34,6 @@ public class VirtualBrowserConnection {
 			url = new URL(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
 					+ req.getSession().getId());
 
-			System.out.println("req.getSession().getId():"
-					+ req.getSession().getId());
 			connection = (HttpURLConnection) url.openConnection();
 
 			if (req.getHeader("X-Requested-With") == null) {
@@ -43,13 +42,15 @@ public class VirtualBrowserConnection {
 				connection.setRequestMethod("PUT");
 			}
 
-			System.out.println("-------------VirtualBrowserConnection ReqHeader---------------------");
+			System.out
+					.println("-------------VirtualBrowserConnection ReqHeader---------------------");
 			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
 				String header = (String) e.nextElement();
 				connection.setRequestProperty(header, req.getHeader(header));
 				System.out.println(header + ":" + req.getHeader(header));
 			}
-			System.out.println("-------------VirtualBrowserConnection ReqHeaderEND--------------------");
+			System.out
+					.println("-------------VirtualBrowserConnection ReqHeaderEND--------------------");
 			System.out.println("req.getURI:" + req.getRequestURI());
 			String temp = "";
 
@@ -75,36 +76,16 @@ public class VirtualBrowserConnection {
 				connection.setRequestProperty("request_uri_origin",
 						req.getRequestURI());
 			}
-			
 
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 
-			// Send request
-			DataOutputStream wr = new DataOutputStream(
-					connection.getOutputStream());
-
-			wr.writeBytes(responseorigin);
-
-			wr.flush();
-			wr.close();
+			// verificationServerRequest
+			this.verificationServerRequest(connection, responseorigin);
 
 			// Get Response
-			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			String line;
-			StringBuffer responseData = new StringBuffer();
-			while ((line = rd.readLine()) != null) {
-				responseData.append(line);
-				responseData.append('\r');
-			}
-			rd.close();
-			// return responseData.toString();
-			System.out.println("Node.Js Server response DATA : " + responseData.toString());
-
-	
-			
+			this.verificationServerResponse(connection);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -116,6 +97,37 @@ public class VirtualBrowserConnection {
 		}
 		System.out.println("VirtualBrowserConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
+	}
+
+	// request
+	public void verificationServerRequest(HttpURLConnection connection,
+			String reqData) throws IOException {
+		// Send request
+		DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+
+		wr.writeBytes(reqData);
+
+		wr.flush();
+		wr.close();
 
 	}
+
+	// response
+	public void verificationServerResponse(HttpURLConnection connection)
+			throws IOException {
+		InputStream is = connection.getInputStream();
+		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+		String line;
+		StringBuffer responseData = new StringBuffer();
+		while ((line = rd.readLine()) != null) {
+			responseData.append(line);
+			responseData.append('\r');
+		}
+		rd.close();
+		// return responseData.toString();
+		System.out.println("Node.Js Server response DATA : "
+				+ responseData.toString());
+
+	}
+
 }

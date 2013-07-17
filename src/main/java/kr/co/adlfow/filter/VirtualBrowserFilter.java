@@ -27,22 +27,13 @@ public class VirtualBrowserFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 
 		try {
-			System.out.println("#############VirtualBrowserFilter Start###############");
+			System.out
+					.println("#############VirtualBrowserFilter Start###############");
 
 			HttpServletRequest req = (HttpServletRequest) request;
 
-			System.out.println("requestURI : " + req.getRequestURI());
-			System.out.println("requestMethod : " + req.getMethod());
-			System.out.println("contentType : " + req.getContentType());
-			System.out.println("_____________VirtualBrowserFilter param_____________________");
-			for (Enumeration<?> e = req.getParameterNames(); e
-					.hasMoreElements();) {
-				String param = (String) e.nextElement();
+			this.reqLog(req);
 
-				System.out.println(param + ":" + req.getParameter(param));
-
-			}
-			System.out.println("______________VirtualBrowserFilter param END____________________");
 			final CopyPrintWriter writer = new CopyPrintWriter(
 					response.getWriter());
 			chain.doFilter(request, new HttpServletResponseWrapper(
@@ -59,7 +50,26 @@ public class VirtualBrowserFilter implements Filter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("#############VirtualBrowserFilter END###############");
+		System.out
+				.println("#############VirtualBrowserFilter END###############");
+	}
+
+	public void reqLog(HttpServletRequest req) {
+		System.out.println("requestURI : " + req.getRequestURI());
+		System.out.println("requestMethod : " + req.getMethod());
+		System.out.println("contentType : " + req.getContentType());
+
+		System.out
+				.println("_____________VirtualBrowserFilter param_____________________");
+		for (Enumeration<?> e = req.getParameterNames(); e.hasMoreElements();) {
+			String param = (String) e.nextElement();
+
+			System.out.println(param + ":" + req.getParameter(param));
+
+		}
+		System.out
+				.println("______________VirtualBrowserFilter param END____________________");
+
 	}
 
 	public void init(FilterConfig config) throws ServletException {

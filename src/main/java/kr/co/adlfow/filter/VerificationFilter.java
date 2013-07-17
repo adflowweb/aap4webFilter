@@ -16,7 +16,7 @@ import kr.co.adlfow.util.UrlCheckUtil;
 
 public class VerificationFilter implements Filter {
 
-	HashMap map;
+	private HashMap map;
 
 	public void destroy() {
 	}
@@ -26,7 +26,7 @@ public class VerificationFilter implements Filter {
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER TEST");
 		System.out.println("___________________________________________");
-		
+
 		try {
 			ArrayList uriArr = null;
 			if (map != null) {
@@ -48,7 +48,7 @@ public class VerificationFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 
 		System.out.println("___________________________________________");
-		System.out.println("VerificationFilter  INIT TEST CODE 0717 IP 192.168.1.94 Properties  ");
+		System.out.println("VerificationFilter  INIT GET verification URI ");
 		System.out.println("___________________________________________");
 		try {
 			VerificationConnection check = new VerificationConnection();

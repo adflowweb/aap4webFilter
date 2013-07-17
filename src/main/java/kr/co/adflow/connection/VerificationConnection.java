@@ -12,24 +12,23 @@ import java.net.URL;
 import kr.co.adlfow.util.FilterProperites;
 
 public class VerificationConnection {
+	private HttpURLConnection connection = null;
+	private OutputStreamWriter wr = null;
+	private BufferedReader rd = null;
+	private StringBuilder sb = null;
+	private String line = null;
+	private URL serverAddress = null;
 
 	public String verificationCheck() {
 
 		long start = System.currentTimeMillis();
-		HttpURLConnection connection = null;
-		OutputStreamWriter wr = null;
-		BufferedReader rd = null;
-		StringBuilder sb = null;
-		String line = null;
 
-		URL serverAddress = null;
-		
-		FilterProperites filterProperites=FilterProperites.getInstance();
-		
-		String app4ServerIp=filterProperites.read("aap4ServerIp");
-	
+		FilterProperites filterProperites = FilterProperites.getInstance();
+
+		String app4ServerIp = filterProperites.read("aap4ServerIp");
+
 		try {
-			serverAddress = new URL(app4ServerIp+"/v1/verificationuri");
+			serverAddress = new URL(app4ServerIp + "/v1/verificationuri");
 
 			connection = null;
 
