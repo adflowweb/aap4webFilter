@@ -26,7 +26,7 @@ public class VerificationConnection {
 		
 		//FilterProperites filterProperites=FilterProperites.getInstance();
 		
-		String app4ServerIp="http://192.168.1.98:3000";
+		String app4ServerIp="http://192.168.1.94:3000";
 	
 		try {
 			serverAddress = new URL(app4ServerIp+"/v1/verificationuri");

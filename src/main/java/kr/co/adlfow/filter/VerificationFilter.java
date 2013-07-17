@@ -48,7 +48,7 @@ public class VerificationFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 
 		System.out.println("___________________________________________");
-		System.out.println("VerificationFilter  INIT TEST CODE 0717 IP  ");
+		System.out.println("VerificationFilter  INIT TEST CODE 0717 IP 192.168.1.94  ");
 		System.out.println("___________________________________________");
 		try {
 			VerificationConnection check = new VerificationConnection();

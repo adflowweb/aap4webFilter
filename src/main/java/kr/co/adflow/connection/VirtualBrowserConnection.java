@@ -19,7 +19,7 @@ public class VirtualBrowserConnection {
 	
 	//static String app4ServerIp=filterProperites.read("aap4ServerIp");
 	
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.98:3000";
+	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.94:3000";
 	URL url;
 	HttpURLConnection connection = null;
 
