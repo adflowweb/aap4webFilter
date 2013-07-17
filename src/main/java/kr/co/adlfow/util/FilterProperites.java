@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class FilterProperites {
-	private Properties properties;
+/*	private Properties properties;
 
 	private static FilterProperites filterProperites = new FilterProperites();
 
@@ -36,6 +36,6 @@ public class FilterProperites {
 
 	public String read(String key) {
 		return properties.getProperty(key);
-	}
+	}*/
 
 }
