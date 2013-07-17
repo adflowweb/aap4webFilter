@@ -13,6 +13,8 @@ import kr.co.adlfow.util.FilterProperites;
 
 public class VerificationConnection {
 	private HttpURLConnection connection = null;
+	private static FilterProperites filterProperites = FilterProperites.getInstance();
+	private static final String APP4SERVERIP = filterProperites.read("aap4ServerIp");
 	private OutputStreamWriter wr = null;
 	private BufferedReader rd = null;
 	private StringBuilder sb = null;
@@ -22,13 +24,11 @@ public class VerificationConnection {
 	public String verificationCheck() {
 
 		long start = System.currentTimeMillis();
-
-		FilterProperites filterProperites = FilterProperites.getInstance();
-
-		String app4ServerIp = filterProperites.read("aap4ServerIp");
+		
+		
 
 		try {
-			serverAddress = new URL(app4ServerIp + "/v1/verificationuri");
+			serverAddress = new URL(APP4SERVERIP + "/v1/verificationuri");
 
 			connection = null;
 

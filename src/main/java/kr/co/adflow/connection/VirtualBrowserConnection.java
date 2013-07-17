@@ -8,31 +8,31 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
 import kr.co.adlfow.util.FilterProperites;
-import kr.co.adlfow.util.HashSh;
 
 public class VirtualBrowserConnection {
 
 	private static FilterProperites filterProperites = FilterProperites
 			.getInstance();
-	private static String app4ServerIp = filterProperites.read("aap4ServerIp");
-	private static final String VERIFICATION_SERVER_ADDRESS = app4ServerIp;
+	private static final String APP4SERVERIP = filterProperites.read("aap4ServerIp");
+	private static final String VITUALPAGEURI=filterProperites.read("vitualPageUri");
+	private static final String MKDIRNAME=filterProperites.read("mkdirname");
+	
 	private URL url;
 	private HttpURLConnection connection = null;
 
 	public void virtualPageDataSend(HttpServletRequest req,
-			String responseorigin) {
+			String responseOrigin) {
 
 		long start = System.currentTimeMillis();
 		try {
 			// Create connection
 
-			url = new URL(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
+			url = new URL(APP4SERVERIP + "/v1/virtualpages/"
 					+ req.getSession().getId());
 
 			connection = (HttpURLConnection) url.openConnection();
@@ -44,13 +44,6 @@ public class VirtualBrowserConnection {
 				connection.setRequestMethod("PUT");
 			}
 			
-			
-			
-			
-			
-			
-			
-
 			System.out
 					.println("-------------VirtualBrowserConnection ReqHeader---------------------");
 			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
@@ -64,26 +57,20 @@ public class VirtualBrowserConnection {
 			String temp = "";
 			///home/master/nodejs/aap4web/routes/site
 			if (req.getRequestURI().equals("/index.do")) {
-				System.out.println("in...req.index.do");
 				temp = "/board/index.jsp";
-				this.makeDir("/home/master/nodejs//aap4web/routes/site/board/index.jsp");
-				System.out.println("temp:" + temp);
-				connection.setRequestProperty("virtual_page_uri", temp);
+				this.makeDir(MKDIRNAME+temp);
+				connection.setRequestProperty(VITUALPAGEURI, temp);
 			} else if (req.getRequestURI().equals("/notice_list.do")) {
-				System.out.println("in.../notice_list.do");
 				temp = "/board/test_list.jsp";
-				System.out.println("temp:" + temp);
-				connection.setRequestProperty("virtual_page_uri", temp);
-
+				this.makeDir(MKDIRNAME+temp);
+				connection.setRequestProperty(VITUALPAGEURI, temp);
 			} else if (req.getRequestURI().equals("/notice_content.do")) {
-				System.out.println("in.../notice_content.do");
 				temp = "/board/test_read.jsp";
-				System.out.println("temp:" + temp);
-				connection.setRequestProperty("virtual_page_uri", temp);
-
+				this.makeDir(MKDIRNAME+temp);
+				connection.setRequestProperty(VITUALPAGEURI, temp);
 			} else {
 
-				connection.setRequestProperty("virtual_page_uri",
+				connection.setRequestProperty(VITUALPAGEURI,
 						req.getRequestURI());
 			}
 
@@ -92,7 +79,7 @@ public class VirtualBrowserConnection {
 			connection.setDoOutput(true);
 
 			// verificationServerRequest
-			this.verificationServerRequest(connection, responseorigin);
+			this.verificationServerRequest(connection, responseOrigin);
 
 			// Get Response
 			this.verificationServerResponse(connection);
