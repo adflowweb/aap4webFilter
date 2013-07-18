@@ -67,14 +67,14 @@ public class VerificationRequestConnection {
 			// verificationServerRequest
 			this.verificationServerRequest(connection, req.getHeader("hash").toString());
 			System.out.println("verificationServerRequest Hash:"+req.getHeader("hash").toString());
-			
+		
 			// Get verificationServerResponse
 			reponseCode=this.verificationServerResponse(connection);
 			throw new Exception();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("TRY CATCH reponseCode:"+reponseCode);
-			if(reponseCode==0){
+			if(reponseCode==200){
 				reponseCode=505;
 			}
 
