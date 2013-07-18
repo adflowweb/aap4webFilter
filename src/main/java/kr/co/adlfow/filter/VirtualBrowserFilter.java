@@ -69,6 +69,8 @@ public class VirtualBrowserFilter implements Filter {
 						System.out.println("verification 404");
 					}else if(verificationResponseCode==505){
 						System.out.println("verification 505");
+					}else if(verificationResponseCode==1000){
+						System.out.println("Exception reponseCode 1000");
 					}
 
 					// first request

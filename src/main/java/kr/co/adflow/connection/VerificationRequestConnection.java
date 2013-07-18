@@ -91,6 +91,10 @@ public class VerificationRequestConnection {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("TRY CATCH reponseCode:"+reponseCode);
+			if(reponseCode==0){
+				reponseCode=1000;
+			}
 
 		} finally {
 			if (connection != null) {
