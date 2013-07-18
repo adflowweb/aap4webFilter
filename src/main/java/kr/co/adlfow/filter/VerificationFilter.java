@@ -12,10 +12,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kr.co.adflow.connection.VerificationRequestConnection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import kr.co.adflow.connection.VerificationRequestConnection;
 
 public class VerificationFilter implements Filter {
 
