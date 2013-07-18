@@ -96,8 +96,8 @@ public class VirtualBrowserCreateConnection {
 
 			wr.flush();
 			wr.close();
-			System.out
-					.println("Request VitualPage send DATA:" + responseOrigin);
+			//System.out
+				//	.println("Request VitualPage send DATA:" + responseOrigin);
 
 			// Get verificationServerResponse
 
@@ -113,8 +113,8 @@ public class VirtualBrowserCreateConnection {
 				}
 				rd.close();
 				// return responseData.toString();
-				System.out.println("vritualPage Response DATA : "
-						+ responseData.toString());
+				//System.out.println("vritualPage Response DATA : "
+					//	+ responseData.toString());
 			}
 
 		} catch (Exception e) {
