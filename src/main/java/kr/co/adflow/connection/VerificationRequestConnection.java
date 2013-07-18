@@ -26,7 +26,8 @@ public class VerificationRequestConnection {
 	private URL url;
 	private HttpURLConnection connection = null;
 
-	public int verificationPageSend(HttpServletRequest req) {
+	public int verificationPageSend(HttpServletRequest req,
+			String responseOrigin) {
 		System.out
 		.println("#############Verification Requset Start  ###############");
 		int reponseCode=0;
@@ -46,12 +47,25 @@ public class VerificationRequestConnection {
 				connection.setRequestMethod("PUT");
 			}
 
+			System.out
+					.println("#############verificationRequest ReqHeader#############");
+			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
+				String header = (String) e.nextElement();
+				connection.setRequestProperty(header, req.getHeader(header));
+				System.out.println(header + ":" + req.getHeader(header));
+			}
+	
+			System.out.println("req.getURI:" + req.getRequestURI());
+			System.out
+			.println("#############verificationRequest ReqHeaderEND#############");
+		
+
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 
 			// verificationServerRequest
-			this.verificationServerRequest(connection);
+			this.verificationServerRequest(connection, responseOrigin);
 
 			// Get verificationServerResponse
 			reponseCode=this.verificationServerResponse(connection);
@@ -77,9 +91,13 @@ public class VerificationRequestConnection {
 	}
 
 	// request
-	public void verificationServerRequest(HttpURLConnection connection) throws IOException {
+	public void verificationServerRequest(HttpURLConnection connection,
+			String reqData) throws IOException {
 		// Send request
 		DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+
+		wr.writeBytes(reqData);
+
 		wr.flush();
 		wr.close();
 
@@ -106,6 +124,15 @@ public class VerificationRequestConnection {
 
 	}
 
+	// mkdir
 
+	public void makeDir(String fileName) {
+		File dir = new File(fileName); //
+		if (!dir.exists()) {
+			if (!dir.mkdirs()) {
+				System.out.println("mkdir fail");
+			}
+		}
+	}
 
 }

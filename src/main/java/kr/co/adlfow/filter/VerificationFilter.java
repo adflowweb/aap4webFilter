@@ -1,6 +1,7 @@
 package kr.co.adlfow.filter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 import javax.servlet.Filter;
@@ -10,8 +11,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+
+import org.apache.webdav.lib.ResponseEntity;
 
 import kr.co.adflow.connection.VerificationRequestConnection;
+import kr.co.adlfow.util.CopyPrintWriter;
 
 public class VerificationFilter implements Filter {
 
@@ -41,6 +47,17 @@ public class VerificationFilter implements Filter {
 		 */
 
 		// verification URI check
+		
+		// FilterChain
+		final CopyPrintWriter writer = new CopyPrintWriter(
+				response.getWriter());
+		chain.doFilter(request, new HttpServletResponseWrapper(
+				(HttpServletResponse) response) {
+			@Override
+			public PrintWriter getWriter() {
+				return writer;
+			}
+		});
 
 		for (int i = 0; i < 10; i++) {
 
@@ -52,7 +69,7 @@ public class VerificationFilter implements Filter {
 		if (req.getHeader("hash") != null) {
 			System.out.println("verification request hash is not Null..");
 			VerificationRequestConnection connection = new VerificationRequestConnection();
-			verificationResponseCode = connection.verificationPageSend(req);
+			verificationResponseCode = connection.verificationPageSend(req, writer.getCopy());
 			System.out.println("verificationResponseCode:"
 					+ verificationResponseCode);
 
@@ -68,7 +85,7 @@ public class VerificationFilter implements Filter {
 
 		}
 
-		chain.doFilter(request, response);
+	
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER END");
 		System.out.println("___________________________________________");
