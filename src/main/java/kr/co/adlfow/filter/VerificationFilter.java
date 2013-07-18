@@ -12,10 +12,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import kr.co.adflow.connection.VerificationRequestConnection;
 
 public class VerificationFilter implements Filter {
 
+	Logger logger = LoggerFactory.getLogger(VerificationFilter.class);
 	private HashMap map;
 
 	public void destroy() {
@@ -23,9 +27,10 @@ public class VerificationFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		System.out.println("___________________________________________");
-		System.out.println("Verification DO FILTER Start ");
-		System.out.println("___________________________________________");
+		logger.debug("___________________________________________");
+		logger.debug("Verification DO FILTER Start ");
+		logger.debug("___________________________________________");
+		
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		int verificationResponseCode = 0;
@@ -72,7 +77,7 @@ public class VerificationFilter implements Filter {
 			}
 
 		} else {
-			
+
 			chain.doFilter(req, res);
 		}
 
