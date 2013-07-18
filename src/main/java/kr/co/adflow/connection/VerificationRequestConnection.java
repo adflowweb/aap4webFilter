@@ -70,11 +70,11 @@ public class VerificationRequestConnection {
 		
 			// Get verificationServerResponse
 			reponseCode=this.verificationServerResponse(connection);
-			throw new Exception();
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("TRY CATCH reponseCode:"+reponseCode);
-			if(reponseCode==200){
+			if(reponseCode==0){
 				reponseCode=505;
 			}
 
