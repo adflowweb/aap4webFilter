@@ -53,7 +53,7 @@ public class VerificationFilter implements Filter {
 		
 		
 		if(req.getHeader("hash")!=null){
-			System.out.println("hass IS NOT NULL");
+			System.out.println("HASH IS NOT NULL");
 			request.setAttribute("hash", "setAttributeHash");
 			System.out.println("has HashRequest setAttribute");
 		}
@@ -63,7 +63,7 @@ public class VerificationFilter implements Filter {
 		
 		chain.doFilter(request, response);
 		System.out.println("___________________________________________");
-		System.out.println("Verification DO FILTER ");
+		System.out.println("Verification DO FILTER END");
 		System.out.println("___________________________________________");
 		
 	}
