@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 public class VerificationFilter implements Filter {
 
-	Logger logger = LoggerFactory.getLogger(VerificationFilter.class);
+	private Logger logger = LoggerFactory.getLogger(VerificationFilter.class);
 	private HashMap map;
 
 	public void destroy() {
@@ -27,10 +27,9 @@ public class VerificationFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		logger.debug("___________________________________________");
-		logger.debug("Verification DO FILTER Start ");
-		logger.debug("___________________________________________");
-		
+		logger.info("**************************************************************");
+		logger.info("Verification DO FILTER Start ");
+
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		int verificationResponseCode = 0;
@@ -57,44 +56,40 @@ public class VerificationFilter implements Filter {
 		}
 
 		if (req.getHeader("hash") != null) {
-			System.out.println("verification request hash is not Null..");
+			logger.info("Hash is Not Null Request Verification Server Start");
 			VerificationRequestConnection connection = new VerificationRequestConnection();
 			verificationResponseCode = connection
 					.verificationPageSend(req, res);
-			System.out.println("verificationResponseCode:"
-					+ verificationResponseCode);
+			logger.debug("Verification Server ResponseCode:" + verificationResponseCode);
 
 			if (verificationResponseCode == 200) {
-				System.out.println("verification Success");
+				logger.debug("verification Success");
 
 			} else if (verificationResponseCode == 404) {
-				System.out.println("virtualPageNotFound 404");
+				logger.debug("virtualPageNotFound 404");
 				res.sendError(404);
 
 			} else if (verificationResponseCode == 500) {
-				System.out.println("Server Error 500");
+				logger.debug("Server Error 500");
 				res.sendError(500);
 			}
 
 		} else {
-
+			logger.info("Else is ...First Call Create VirtualBrowser FiTER");
 			chain.doFilter(req, res);
 		}
 
-		System.out.println("___________________________________________");
-		System.out.println("Verification DO FILTER END");
-		System.out.println("___________________________________________");
+		logger.info("Verification DO FILTER END");
+		logger.info("**************************************************************");
 
 	}
 
 	// verificationURI get
 	public void init(FilterConfig arg0) throws ServletException {
 
-		System.out
-				.println("_________________________________________________________");
-		System.out.println("VerificationFilter  INIT GET verification URI ");
-		System.out
-				.println("_________________________________________________________");
+		logger.info("**************************************************************");
+		logger.info("VerificationFilter  INIT GET Verification URI ");
+		logger.info("**************************************************************");
 		// verification server getURI
 		// map
 		/*

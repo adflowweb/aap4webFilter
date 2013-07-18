@@ -14,11 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import kr.co.adflow.connection.VerificationRequestConnection;
 import kr.co.adflow.connection.VirtualBrowserCreateConnection;
 import kr.co.adlfow.util.CopyPrintWriter;
 
 public class VirtualBrowserFilter implements Filter {
+
+	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 
 	public void destroy() {
 
@@ -26,16 +31,28 @@ public class VirtualBrowserFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		int verificationResponseCode = 0;
-
+		logger.info("**************************************************************");
+		logger.info("VirtualBrowserFilter Start");
+	
 		try {
-			System.out
-					.println("#############VirtualBrowserFilter Start ###############");
 
 			HttpServletRequest req = (HttpServletRequest) request;
 
-			// request LOG
-			this.reqLog(req);
+			logger.debug("requestURI : " + req.getRequestURI());
+			logger.debug("requestMethod : " + req.getMethod());
+			logger.debug("contentType : " + req.getContentType());
+
+			logger.info("**************************************************************");
+			logger.info("VirtualBrowserFilter Request Log param Start");
+			for (Enumeration<?> e = req.getParameterNames(); e
+					.hasMoreElements();) {
+				String param = (String) e.nextElement();
+
+				logger.debug(param + ":" + req.getParameter(param));
+
+			}
+			logger.info("VirtualBrowserFilter LOG param END");
+			logger.info("**************************************************************");
 
 			// FilterChain
 			final CopyPrintWriter writer = new CopyPrintWriter(
@@ -52,35 +69,17 @@ public class VirtualBrowserFilter implements Filter {
 
 			if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
-				System.out.println("verificationUri:" + temp);
+				logger.debug("verificationUri:" + temp);
 				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-				connection.virtualPageDataSend(req,writer.getCopy());
+				connection.virtualPageDataSend(req, writer.getCopy());
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out
-				.println("#############VirtualBrowserFilter END ###############");
-	}
-
-	// reqlog method
-	public void reqLog(HttpServletRequest req) {
-		System.out.println("requestURI : " + req.getRequestURI());
-		System.out.println("requestMethod : " + req.getMethod());
-		System.out.println("contentType : " + req.getContentType());
-
-		System.out
-				.println("#############VirtualBrowserFilter LOG param#############");
-		for (Enumeration<?> e = req.getParameterNames(); e.hasMoreElements();) {
-			String param = (String) e.nextElement();
-
-			System.out.println(param + ":" + req.getParameter(param));
-
-		}
-		System.out
-				.println("#############VirtualBrowserFilter LOG param END#############");
-
+	
+		logger.info("VirtualBrowserFilter END");
+		logger.info("**************************************************************");
 	}
 
 	public void init(FilterConfig config) throws ServletException {

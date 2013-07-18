@@ -13,6 +13,9 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import kr.co.adlfow.util.FilterProperites;
 
 public class VirtualBrowserCreateConnection {
@@ -28,10 +31,13 @@ public class VirtualBrowserCreateConnection {
 	private URL url;
 	private HttpURLConnection connection = null;
 
+	private Logger logger = LoggerFactory
+			.getLogger(VirtualBrowserCreateConnection.class);
+
 	public void virtualPageDataSend(HttpServletRequest req,
 			String responseOrigin) {
-		System.out
-				.println("#############VirtualBrowserCREATE Start ###############");
+		logger.info("**************************************************************");
+		logger.info("VirtualBrowserCREATE Start");
 		long start = System.currentTimeMillis();
 		try {
 			// Create connection
@@ -48,19 +54,17 @@ public class VirtualBrowserCreateConnection {
 				connection.setRequestMethod("PUT");
 			}
 
-			System.out
-					.println("#############VirtualBrowserCreate ReqHeader#############");
+			logger.info("VirtualBrowserCreate ReqHeader");
 			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
 				String header = (String) e.nextElement();
 				connection.setRequestProperty(header, req.getHeader(header));
 				System.out.println(header + ":" + req.getHeader(header));
 			}
 
-			System.out.println("req.getURI:" + req.getRequestURI());
-			System.out
-					.println("#############VirtualBrowserCreate ReqHeaderEND#############");
+			logger.debug("req.getURI:" + req.getRequestURI());
+			logger.info("VirtualBrowserCreate ReqHeaderEND");
 			String temp = "";
-			// /home/master/nodejs/aap4web/routes/site
+
 			if (req.getRequestURI().equals("/index.do")) {
 				temp = "/board/index.jsp";
 				this.makeDir(MKDIRNAME + temp);
@@ -96,11 +100,8 @@ public class VirtualBrowserCreateConnection {
 
 			wr.flush();
 			wr.close();
-			//System.out
-				//	.println("Request VitualPage send DATA:" + responseOrigin);
 
-			// Get verificationServerResponse
-
+			// response
 			if (connection.getResponseCode() == 200) {
 				InputStream is = connection.getInputStream();
 				BufferedReader rd = new BufferedReader(
@@ -112,9 +113,6 @@ public class VirtualBrowserCreateConnection {
 					responseData.append('\r');
 				}
 				rd.close();
-				// return responseData.toString();
-				//System.out.println("vritualPage Response DATA : "
-					//	+ responseData.toString());
 			}
 
 		} catch (Exception e) {
@@ -125,19 +123,19 @@ public class VirtualBrowserCreateConnection {
 				connection.disconnect();
 			}
 		}
-		System.out.println("VirtualBrowserConnection elapsedTime : "
+		logger.info("VirtualBrowserConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
-		System.out
-				.println("#############VirtualBrowserCREATE END ###############");
+		logger.info("VirtualBrowserCREATE END");
 	}
 
+	
+	
 	// mkdir
-
 	public void makeDir(String fileName) {
 		File dir = new File(fileName); //
 		if (!dir.exists()) {
 			if (!dir.mkdirs()) {
-				System.out.println("mkdir fail");
+				logger.info("mkdir fail");
 			}
 		}
 	}
