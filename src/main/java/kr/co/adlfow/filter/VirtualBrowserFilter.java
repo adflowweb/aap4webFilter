@@ -53,34 +53,8 @@ public class VirtualBrowserFilter implements Filter {
 			if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				System.out.println("verificationUri:" + temp);
-
-				// verification request
-				if (req.getAttribute("hash") != null) {
-					System.out
-							.println("verification request hash is not Null..");
-					VerificationRequestConnection connection = new VerificationRequestConnection();
-					verificationResponseCode = connection.verificationPageSend(
-							req, writer.getCopy());
-					System.out.println("verificationResponseCode:"+verificationResponseCode);
-					
-					if(verificationResponseCode==200){
-						System.out.println("verification Success");
-					}else if(verificationResponseCode==404){
-						System.out.println("verification 404");
-					}else if(verificationResponseCode==505){
-						System.out.println("verification 505");
-					}else if(verificationResponseCode==1000){
-						System.out.println("Exception reponseCode 1000");
-					}
-
-					// first request
-				} else {
-
-					VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-					connection.virtualPageDataSend(req, writer.getCopy());
-
-				}
-
+				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
+				connection.virtualPageDataSend(req, writer.getCopy());
 			}
 
 		} catch (Exception e) {
