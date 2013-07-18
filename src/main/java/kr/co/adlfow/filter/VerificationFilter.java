@@ -1,11 +1,7 @@
 package kr.co.adlfow.filter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.util.HashMap;
 
 import javax.servlet.Filter;
@@ -34,8 +30,8 @@ public class VerificationFilter implements Filter {
 		System.out.println("Verification DO FILTER Start ");
 		System.out.println("___________________________________________");
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;
-		int verificationResponseCode = 0;
+		HttpServletResponse res=(HttpServletResponse) response;
+		int verificationResponseCode=0;
 		/*
 		 * try { ArrayList uriArr = null; if (map != null) { for (int i = 0; i <
 		 * map.size(); i++) { uriArr = (ArrayList) map.get("uri");
@@ -50,32 +46,43 @@ public class VerificationFilter implements Filter {
 		 */
 
 		// verification URI check
+		
+		
 
 		for (int i = 0; i < 10; i++) {
 
 			if (i == 7) {
-				request.setAttribute("verificationUri", 3);
+				req.setAttribute("verificationUri", 3);
 			}
 		}
 
 		if (req.getHeader("hash") != null) {
 			System.out.println("verification request hash is not Null..");
 			VerificationRequestConnection connection = new VerificationRequestConnection();
-			verificationResponseCode = connection.verificationPageSend(req);
+			verificationResponseCode = connection.verificationPageSend(req,res);
 			System.out.println("verificationResponseCode:"
 					+ verificationResponseCode);
-		}
 
-		if (verificationResponseCode == 200) {
-			chain.doFilter(request, response);
-			System.out.println("verification Success");
-		}else if(verificationResponseCode==404){
+			if (verificationResponseCode == 200) {
+				System.out.println("verification Success");
 			
-			
+			} else if (verificationResponseCode == 404) {
+				System.out.println("verification 404");
+				res.sendError(404);
+				
+			} else if (verificationResponseCode == 505) {
+				System.out.println("verification 505");
+				res.sendError(505);
+			} else if (verificationResponseCode == 1000) {
+				System.out.println("Exception reponseCode 1000");
+				res.sendError(1000);
+			}
+
 		}
 		
 		
-		
+		chain.doFilter(req, res);
+	
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER END");
 		System.out.println("___________________________________________");
@@ -103,9 +110,4 @@ public class VerificationFilter implements Filter {
 		 * }
 		 */
 	}
-	
-	
-
-	
-	
 }

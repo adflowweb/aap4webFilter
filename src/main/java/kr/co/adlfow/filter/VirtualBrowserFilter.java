@@ -54,7 +54,7 @@ public class VirtualBrowserFilter implements Filter {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				System.out.println("verificationUri:" + temp);
 				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-				connection.virtualPageDataSend(req, writer.getCopy());
+				connection.virtualPageDataSend(req,writer.getCopy());
 			}
 
 		} catch (Exception e) {

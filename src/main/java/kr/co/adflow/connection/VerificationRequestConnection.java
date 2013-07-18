@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import kr.co.adlfow.util.FilterProperites;
 
@@ -26,7 +27,7 @@ public class VerificationRequestConnection {
 	private URL url;
 	private HttpURLConnection connection = null;
 
-	public int verificationPageSend(HttpServletRequest req) {
+	public int verificationPageSend(HttpServletRequest req,HttpServletResponse res) {
 		System.out
 		.println("#############Verification Requset Start  ###############");
 		int reponseCode=0;
@@ -119,6 +120,7 @@ public class VerificationRequestConnection {
 		System.out.println("verification Server response DATA : "
 				+ responseData.toString());
 	    connection.getResponseCode();
+	    
 	    
 	    return connection.getResponseCode();
 
