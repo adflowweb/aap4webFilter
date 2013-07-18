@@ -81,7 +81,7 @@ public class VerificationFilter implements Filter {
 		}
 		
 		
-		chain.doFilter(req, res);
+		//chain.doFilter(req, res);
 	
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER END");
