@@ -59,7 +59,7 @@ public class VerificationRequestConnection {
 			System.out
 			.println("#############verificationRequest ReqHeaderEND#############");
 		
-
+		
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
@@ -67,10 +67,10 @@ public class VerificationRequestConnection {
 			// verificationServerRequest
 			this.verificationServerRequest(connection, req.getHeader("hash").toString());
 			System.out.println("verificationServerRequest Hash:"+req.getHeader("hash").toString());
-
+			
 			// Get verificationServerResponse
 			reponseCode=this.verificationServerResponse(connection);
-
+			throw new Exception();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("TRY CATCH reponseCode:"+reponseCode);
