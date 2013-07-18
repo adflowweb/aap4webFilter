@@ -95,7 +95,7 @@ public class VerificationRequestConnection {
 				connection.disconnect();
 			}
 		}
-		System.out.println("VirtualBrowserConnection elapsedTime : "
+		System.out.println("VerifiCationConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
 	}
 

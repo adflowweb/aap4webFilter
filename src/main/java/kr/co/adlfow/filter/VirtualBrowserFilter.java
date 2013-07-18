@@ -51,7 +51,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
-				System.out.println("temp:" + temp);
+				System.out.println("verificationUri:" + temp);
 
 				// verification request
 				if (req.getAttribute("hash") != null) {

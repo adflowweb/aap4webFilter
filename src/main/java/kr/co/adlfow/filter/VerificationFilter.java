@@ -55,7 +55,7 @@ public class VerificationFilter implements Filter {
 		if(req.getHeader("hash")!=null){
 			System.out.println("hass IS NOT NULL");
 			request.setAttribute("hash", "setAttributeHash");
-			System.out.println("set Request setAttribute");
+			System.out.println("has HashRequest setAttribute");
 		}
 		
 		
