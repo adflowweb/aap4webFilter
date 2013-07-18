@@ -33,11 +33,10 @@ public class VirtualBrowserFilter implements Filter {
 
 			HttpServletRequest req = (HttpServletRequest) request;
 
-			//request LOG
+			// request LOG
 			this.reqLog(req);
 
-			
-			//FilterChain 
+			// FilterChain
 			final CopyPrintWriter writer = new CopyPrintWriter(
 					response.getWriter());
 			chain.doFilter(request, new HttpServletResponseWrapper(
@@ -48,24 +47,32 @@ public class VirtualBrowserFilter implements Filter {
 				}
 			});
 
-			//verification URI Check
+			// verification URI Check
+
 			if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				System.out.println("temp:" + temp);
-				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-				connection.virtualPageDataSend(req, writer.getCopy());
+
+				if (req.getAttribute("hash") != null) {
+					System.out
+							.println("verification request hash is not Null..");
+					VerificationRequestConnection connection = new VerificationRequestConnection();
+					connection.verificationPageSend(req, writer.getCopy());
+
+				} else {
+
+					VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
+					connection.virtualPageDataSend(req, writer.getCopy());
+
+				}
+
 			}
-			
-			//verification request
-			if(req.getAttribute("hash")!=null){
+
+			// verification request
+			if (req.getAttribute("hash") != null) {
 				//
-				System.out.println("verification request hash is not Null..");
-				
-				VerificationRequestConnection connection= new VerificationRequestConnection();
-				connection.verificationPageSend(req, writer.getCopy());
-				
+
 			}
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -74,8 +81,7 @@ public class VirtualBrowserFilter implements Filter {
 				.println("#############VirtualBrowserFilter END###############");
 	}
 
-	
-	//reqlog method
+	// reqlog method
 	public void reqLog(HttpServletRequest req) {
 		System.out.println("requestURI : " + req.getRequestURI());
 		System.out.println("requestMethod : " + req.getMethod());
