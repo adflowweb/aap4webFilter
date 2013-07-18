@@ -124,15 +124,4 @@ public class VerificationRequestConnection {
 
 	}
 
-	// mkdir
-
-	public void makeDir(String fileName) {
-		File dir = new File(fileName); //
-		if (!dir.exists()) {
-			if (!dir.mkdirs()) {
-				System.out.println("mkdir fail");
-			}
-		}
-	}
-
 }
