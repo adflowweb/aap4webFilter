@@ -11,7 +11,7 @@ import java.net.URL;
 
 import kr.co.adlfow.util.FilterProperites;
 
-public class VerificationConnection {
+public class VerificationGetURIConnection {
 	private HttpURLConnection connection = null;
 	private static FilterProperites filterProperites = FilterProperites.getInstance();
 	private static final String APP4SERVERIP = filterProperites.read("aap4ServerIp");

@@ -9,6 +9,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 public class VerificationFilter implements Filter {
 
@@ -36,12 +37,25 @@ public class VerificationFilter implements Filter {
 		 * }
 		 */
 		//verification URI check
+		
+		
 		for (int i = 0; i < 10; i++) {
 			
 			if(i==7){
 				request.setAttribute("verificationUri", 3);
 			}
 		}
+		
+		HttpServletRequest req=(HttpServletRequest)request;
+		
+		
+		if(req.getHeader("hash")!=null){
+			System.out.println("hass IS NOT NULL");
+			request.setAttribute("hash", "test");
+			System.out.println("set Request setAttribute");
+		}
+		
+		
 		
 		
 		chain.doFilter(request, response);
@@ -54,6 +68,8 @@ public class VerificationFilter implements Filter {
 		System.out.println("___________________________________________");
 		System.out.println("VerificationFilter  INIT GET verification URI ");
 		System.out.println("___________________________________________");
+		//verification server getURI
+		//map 
 		/*
 		 * try { VerificationConnection check = new VerificationConnection();
 		 * String result = check.verificationCheck();

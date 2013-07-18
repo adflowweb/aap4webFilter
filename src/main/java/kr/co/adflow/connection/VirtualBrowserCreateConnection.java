@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import kr.co.adlfow.util.FilterProperites;
 
-public class VirtualBrowserConnection {
+public class VirtualBrowserCreateConnection {
 
 	private static FilterProperites filterProperites = FilterProperites
 			.getInstance();
@@ -102,6 +102,14 @@ public class VirtualBrowserConnection {
 		System.out.println("VirtualBrowserConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
 	}
+	
+	
+ 	
+	
+	
+	
+	
+	
 
 	// request
 	public void verificationServerRequest(HttpURLConnection connection,

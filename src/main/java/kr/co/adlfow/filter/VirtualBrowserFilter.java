@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import kr.co.adflow.connection.VirtualBrowserConnection;
+import kr.co.adflow.connection.VerificationRequestConnection;
+import kr.co.adflow.connection.VirtualBrowserCreateConnection;
 import kr.co.adlfow.util.CopyPrintWriter;
 
 public class VirtualBrowserFilter implements Filter {
@@ -51,9 +52,20 @@ public class VirtualBrowserFilter implements Filter {
 			if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				System.out.println("temp:" + temp);
-				VirtualBrowserConnection connection = new VirtualBrowserConnection();
+				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
 				connection.virtualPageDataSend(req, writer.getCopy());
 			}
+			
+			//verification request
+			if(req.getAttribute("hash")!=null){
+				//
+				System.out.println("verification request hash is not Null..");
+				
+				VerificationRequestConnection connection= new VerificationRequestConnection();
+				connection.verificationPageSend(req, writer.getCopy());
+				
+			}
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
