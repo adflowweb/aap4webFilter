@@ -68,7 +68,7 @@ public class VerificationFilter implements Filter {
 
 			} else if (verificationResponseCode == 500) {
 				System.out.println("Server Error 500");
-				res.sendError(505);
+				res.sendError(500);
 			}
 
 		} else {
