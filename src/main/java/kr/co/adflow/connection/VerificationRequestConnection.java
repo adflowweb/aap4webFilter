@@ -19,8 +19,7 @@ public class VerificationRequestConnection {
 			.getInstance();
 	private static final String APP4SERVERIP = filterProperites
 			.read("aap4ServerIp");
-	private static final String VITUALPAGEURI = filterProperites
-			.read("vitualPageUri");
+
 	private static final String MKDIRNAME = filterProperites.read("mkdirname");
 
 	private URL url;
@@ -69,7 +68,6 @@ public class VerificationRequestConnection {
 		
 			// Get verificationServerResponse
 			reponseCode=this.verificationServerResponse(connection);
-		
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("TRY CATCH reponseCode:"+reponseCode);
