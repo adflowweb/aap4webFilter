@@ -2,7 +2,6 @@ package kr.co.adflow.connection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -75,7 +74,7 @@ public class VerificationRequestConnection {
 			e.printStackTrace();
 			System.out.println("TRY CATCH reponseCode:"+reponseCode);
 			if(reponseCode==0){
-				reponseCode=505;
+				reponseCode=500;
 			}
 
 		} finally {

@@ -1,7 +1,6 @@
 package kr.co.adlfow.filter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 
 import javax.servlet.Filter;
@@ -12,10 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 import kr.co.adflow.connection.VerificationRequestConnection;
-import kr.co.adlfow.util.CopyPrintWriter;
 
 public class VerificationFilter implements Filter {
 
@@ -66,11 +63,11 @@ public class VerificationFilter implements Filter {
 				System.out.println("verification Success");
 
 			} else if (verificationResponseCode == 404) {
-				System.out.println("verification 404");
+				System.out.println("virtualPageNotFound 404");
 				res.sendError(404);
 
-			} else if (verificationResponseCode == 505) {
-				System.out.println("Exception reponseCode 505");
+			} else if (verificationResponseCode == 500) {
+				System.out.println("Server Error 500");
 				res.sendError(505);
 			}
 
