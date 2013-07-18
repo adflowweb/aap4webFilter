@@ -36,6 +36,9 @@ public class VerificationFilter implements Filter {
 		 * 
 		 * }
 		 */
+		
+		
+		
 		//verification URI check
 		
 		
@@ -51,7 +54,7 @@ public class VerificationFilter implements Filter {
 		
 		if(req.getHeader("hash")!=null){
 			System.out.println("hass IS NOT NULL");
-			request.setAttribute("hash", "test");
+			request.setAttribute("hash", "setAttributeHash");
 			System.out.println("set Request setAttribute");
 		}
 		
@@ -65,9 +68,9 @@ public class VerificationFilter implements Filter {
 	//verificationURI get
 	public void init(FilterConfig arg0) throws ServletException {
 
-		System.out.println("___________________________________________");
+		System.out.println("_________________________________________________________");
 		System.out.println("VerificationFilter  INIT GET verification URI ");
-		System.out.println("___________________________________________");
+		System.out.println("_________________________________________________________");
 		//verification server getURI
 		//map 
 		/*

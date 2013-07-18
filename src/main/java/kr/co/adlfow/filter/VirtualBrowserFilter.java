@@ -53,24 +53,20 @@ public class VirtualBrowserFilter implements Filter {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				System.out.println("temp:" + temp);
 
+				// verification request
 				if (req.getAttribute("hash") != null) {
 					System.out
 							.println("verification request hash is not Null..");
 					VerificationRequestConnection connection = new VerificationRequestConnection();
 					connection.verificationPageSend(req, writer.getCopy());
 
+			 // first request
 				} else {
 
 					VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
 					connection.virtualPageDataSend(req, writer.getCopy());
 
 				}
-
-			}
-
-			// verification request
-			if (req.getAttribute("hash") != null) {
-				//
 
 			}
 
@@ -88,7 +84,7 @@ public class VirtualBrowserFilter implements Filter {
 		System.out.println("contentType : " + req.getContentType());
 
 		System.out
-				.println("_____________VirtualBrowserFilter param_____________________");
+				.println("_____________VirtualBrowserFilter LOG param_________________________");
 		for (Enumeration<?> e = req.getParameterNames(); e.hasMoreElements();) {
 			String param = (String) e.nextElement();
 
@@ -96,7 +92,7 @@ public class VirtualBrowserFilter implements Filter {
 
 		}
 		System.out
-				.println("______________VirtualBrowserFilter param END____________________");
+				.println("______________VirtualBrowserFilter LOG param END____________________");
 
 	}
 

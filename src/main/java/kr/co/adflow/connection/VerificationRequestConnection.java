@@ -46,15 +46,16 @@ public class VerificationRequestConnection {
 			}
 
 			System.out
-					.println("-------------verification ReqHeader---------------------");
+					.println("-------------verificationRequest ReqHeader---------------------");
 			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
 				String header = (String) e.nextElement();
 				connection.setRequestProperty(header, req.getHeader(header));
 				System.out.println(header + ":" + req.getHeader(header));
 			}
-			System.out
-					.println("-------------verification ReqHeaderEND--------------------");
+	
 			System.out.println("req.getURI:" + req.getRequestURI());
+			System.out
+			.println("-------------verificationRequest ReqHeaderEND--------------------");
 			/*
 			 * String temp = ""; // /home/master/nodejs/aap4web/routes/site if
 			 * (req.getRequestURI().equals("/index.do")) { temp =

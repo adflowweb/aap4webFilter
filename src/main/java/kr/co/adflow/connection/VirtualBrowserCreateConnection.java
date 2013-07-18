@@ -47,15 +47,16 @@ public class VirtualBrowserCreateConnection {
 			}
 
 			System.out
-					.println("-------------VirtualBrowserConnection ReqHeader---------------------");
+					.println("-------------VirtualBrowser ReqHeader---------------------");
 			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
 				String header = (String) e.nextElement();
 				connection.setRequestProperty(header, req.getHeader(header));
 				System.out.println(header + ":" + req.getHeader(header));
 			}
-			System.out
-					.println("-------------VirtualBrowserConnection ReqHeaderEND--------------------");
+		
 			System.out.println("req.getURI:" + req.getRequestURI());
+			System.out
+			.println("-------------VirtualBrowser ReqHeaderEND--------------------");
 			String temp = "";
 			// /home/master/nodejs/aap4web/routes/site
 			if (req.getRequestURI().equals("/index.do")) {
@@ -137,7 +138,7 @@ public class VirtualBrowserCreateConnection {
 		}
 		rd.close();
 		// return responseData.toString();
-		System.out.println("Node.Js Server response DATA : "
+		System.out.println("vritualPage response DATA : "
 				+ responseData.toString());
 
 	}
