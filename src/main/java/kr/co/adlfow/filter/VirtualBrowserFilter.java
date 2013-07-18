@@ -30,7 +30,7 @@ public class VirtualBrowserFilter implements Filter {
 
 		try {
 			System.out
-					.println("#############VirtualBrowserFilter Start###############");
+					.println("#############VirtualBrowserFilter Start ###############");
 
 			HttpServletRequest req = (HttpServletRequest) request;
 
@@ -85,7 +85,7 @@ public class VirtualBrowserFilter implements Filter {
 			e.printStackTrace();
 		}
 		System.out
-				.println("#############VirtualBrowserFilter END###############");
+				.println("#############VirtualBrowserFilter END ###############");
 	}
 
 	// reqlog method
@@ -95,7 +95,7 @@ public class VirtualBrowserFilter implements Filter {
 		System.out.println("contentType : " + req.getContentType());
 
 		System.out
-				.println("_____________VirtualBrowserFilter LOG param_________________________");
+				.println("#############VirtualBrowserFilter LOG param#############");
 		for (Enumeration<?> e = req.getParameterNames(); e.hasMoreElements();) {
 			String param = (String) e.nextElement();
 
@@ -103,7 +103,7 @@ public class VirtualBrowserFilter implements Filter {
 
 		}
 		System.out
-				.println("______________VirtualBrowserFilter LOG param END____________________");
+				.println("#############VirtualBrowserFilter LOG param END#############");
 
 	}
 

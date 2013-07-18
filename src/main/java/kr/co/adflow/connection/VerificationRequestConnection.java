@@ -28,6 +28,8 @@ public class VerificationRequestConnection {
 
 	public int verificationPageSend(HttpServletRequest req,
 			String responseOrigin) {
+		System.out
+		.println("#############Verification Requset Start  ###############");
 		int reponseCode=0;
 		long start = System.currentTimeMillis();
 		try {
@@ -46,7 +48,7 @@ public class VerificationRequestConnection {
 			}
 
 			System.out
-					.println("-------------verificationRequest ReqHeader---------------------");
+					.println("#############verificationRequest ReqHeader#############");
 			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
 				String header = (String) e.nextElement();
 				connection.setRequestProperty(header, req.getHeader(header));
@@ -55,7 +57,7 @@ public class VerificationRequestConnection {
 	
 			System.out.println("req.getURI:" + req.getRequestURI());
 			System.out
-			.println("-------------verificationRequest ReqHeaderEND--------------------");
+			.println("#############verificationRequest ReqHeaderEND#############");
 			/*
 			 * String temp = ""; // /home/master/nodejs/aap4web/routes/site if
 			 * (req.getRequestURI().equals("/index.do")) { temp =
@@ -98,6 +100,8 @@ public class VerificationRequestConnection {
 		
 		System.out.println("VerifiCationConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
+		System.out
+		.println("#############Verification Requset END  ###############");
 		return reponseCode;
 	}
 

@@ -21,7 +21,7 @@ public class VerificationFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		System.out.println("___________________________________________");
-		System.out.println("Verification DO FILTER TEST");
+		System.out.println("Verification DO FILTER Start ");
 		System.out.println("___________________________________________");
 		HttpServletRequest req=(HttpServletRequest)request;
 		/*
@@ -62,6 +62,10 @@ public class VerificationFilter implements Filter {
 		
 		
 		chain.doFilter(request, response);
+		System.out.println("___________________________________________");
+		System.out.println("Verification DO FILTER ");
+		System.out.println("___________________________________________");
+		
 	}
 
 	

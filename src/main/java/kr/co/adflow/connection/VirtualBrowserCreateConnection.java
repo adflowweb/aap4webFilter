@@ -29,7 +29,8 @@ public class VirtualBrowserCreateConnection {
 
 	public void virtualPageDataSend(HttpServletRequest req,
 			String responseOrigin) {
-
+		System.out
+		.println("#############VirtualBrowserCREATE Start ###############");
 		long start = System.currentTimeMillis();
 		try {
 			// Create connection
@@ -47,7 +48,7 @@ public class VirtualBrowserCreateConnection {
 			}
 
 			System.out
-					.println("-------------VirtualBrowserConnection ReqHeader---------------------");
+					.println("#############VirtualBrowserCreate ReqHeader#############");
 			for (Enumeration<?> e = req.getHeaderNames(); e.hasMoreElements();) {
 				String header = (String) e.nextElement();
 				connection.setRequestProperty(header, req.getHeader(header));
@@ -56,7 +57,7 @@ public class VirtualBrowserCreateConnection {
 		
 			System.out.println("req.getURI:" + req.getRequestURI());
 			System.out
-			.println("-------------VirtualBrowserConnection ReqHeaderEND--------------------");
+			.println("#############VirtualBrowserCreate ReqHeaderEND#############");
 			String temp = "";
 			// /home/master/nodejs/aap4web/routes/site
 			if (req.getRequestURI().equals("/index.do")) {
@@ -102,6 +103,8 @@ public class VirtualBrowserCreateConnection {
 		}
 		System.out.println("VirtualBrowserConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
+		System.out
+		.println("#############VirtualBrowserCREATE END ###############");
 	}
 	
 	
