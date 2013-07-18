@@ -26,8 +26,7 @@ public class VerificationRequestConnection {
 	private URL url;
 	private HttpURLConnection connection = null;
 
-	public int verificationPageSend(HttpServletRequest req,
-			String responseOrigin) {
+	public int verificationPageSend(HttpServletRequest req) {
 		System.out
 		.println("#############Verification Requset Start  ###############");
 		int reponseCode=0;
@@ -65,7 +64,8 @@ public class VerificationRequestConnection {
 			connection.setDoOutput(true);
 
 			// verificationServerRequest
-			this.verificationServerRequest(connection, responseOrigin);
+			this.verificationServerRequest(connection, req.getHeader("hash").toString());
+			System.out.println("verificationServerRequest Hash:"+req.getHeader("hash").toString());
 
 			// Get verificationServerResponse
 			reponseCode=this.verificationServerResponse(connection);
@@ -92,11 +92,11 @@ public class VerificationRequestConnection {
 
 	// request
 	public void verificationServerRequest(HttpURLConnection connection,
-			String reqData) throws IOException {
+			String reqHash) throws IOException {
 		// Send request
 		DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
 
-		wr.writeBytes(reqData);
+		wr.writeBytes(reqHash);
 
 		wr.flush();
 		wr.close();

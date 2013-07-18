@@ -46,16 +46,7 @@ public class VerificationFilter implements Filter {
 
 		// verification URI check
 		
-		// FilterChain
-		final CopyPrintWriter writer = new CopyPrintWriter(
-				response.getWriter());
-		chain.doFilter(request, new HttpServletResponseWrapper(
-				(HttpServletResponse) response) {
-			@Override
-			public PrintWriter getWriter() {
-				return writer;
-			}
-		});
+		
 
 		for (int i = 0; i < 10; i++) {
 
@@ -67,7 +58,7 @@ public class VerificationFilter implements Filter {
 		if (req.getHeader("hash") != null) {
 			System.out.println("verification request hash is not Null..");
 			VerificationRequestConnection connection = new VerificationRequestConnection();
-			verificationResponseCode = connection.verificationPageSend(req, writer.getCopy());
+			verificationResponseCode = connection.verificationPageSend(req);
 			System.out.println("verificationResponseCode:"
 					+ verificationResponseCode);
 
@@ -83,6 +74,7 @@ public class VerificationFilter implements Filter {
 
 		}
 
+		chain.doFilter(request, response);
 	
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER END");
