@@ -25,10 +25,11 @@ public class VerificationRequestConnection {
 	private URL url;
 	private HttpURLConnection connection = null;
 
-	public int verificationPageSend(HttpServletRequest req,HttpServletResponse res) {
+	public int verificationPageSend(HttpServletRequest req,
+			HttpServletResponse res) {
 		System.out
-		.println("#############Verification Requset Start  ###############");
-		int reponseCode=0;
+				.println("#############Verification Requset Start  ###############");
+		int reponseCode = 0;
 		long start = System.currentTimeMillis();
 		try {
 			// Create connection
@@ -52,27 +53,33 @@ public class VerificationRequestConnection {
 				connection.setRequestProperty(header, req.getHeader(header));
 				System.out.println(header + ":" + req.getHeader(header));
 			}
-	
+
 			System.out.println("req.getURI:" + req.getRequestURI());
 			System.out
-			.println("#############verificationRequest ReqHeaderEND#############");
-		
-		
+					.println("#############verificationRequest ReqHeaderEND#############");
+
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 
 			// verificationServerRequest
-			this.verificationServerRequest(connection, req.getHeader("hash").toString());
-			System.out.println("verificationServerRequest Hash:"+req.getHeader("hash").toString());
-		
+			DataOutputStream wr = new DataOutputStream(
+					connection.getOutputStream());
+			wr.writeBytes(req.getHeader("hash").toString());
+			wr.flush();
+			wr.close();
+
+			System.out.println("verificationServerRequest Hash:"
+					+ req.getHeader("hash").toString());
+
 			// Get verificationServerResponse
-			reponseCode=this.verificationServerResponse(connection);
+			reponseCode=connection.getResponseCode();
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("TRY CATCH reponseCode:"+reponseCode);
-			if(reponseCode==0){
-				reponseCode=500;
+			System.out.println("TRY CATCH reponseCode:" + reponseCode);
+			if (reponseCode == 0) {
+				reponseCode = 500;
 			}
 
 		} finally {
@@ -80,47 +87,12 @@ public class VerificationRequestConnection {
 				connection.disconnect();
 			}
 		}
-		
+
 		System.out.println("VerifiCationConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
 		System.out
-		.println("#############Verification Requset END  ###############");
+				.println("#############Verification Requset END  ###############");
 		return reponseCode;
-	}
-
-	// request
-	public void verificationServerRequest(HttpURLConnection connection,
-			String reqHash) throws IOException {
-		// Send request
-		DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-
-		wr.writeBytes(reqHash);
-
-		wr.flush();
-		wr.close();
-
-	}
-
-	// response
-	public int verificationServerResponse(HttpURLConnection connection)
-			throws IOException {
-		InputStream is = connection.getInputStream();
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		String line;
-		StringBuffer responseData = new StringBuffer();
-		while ((line = rd.readLine()) != null) {
-			responseData.append(line);
-			responseData.append('\r');
-		}
-		rd.close();
-		// return responseData.toString();
-		System.out.println("verification Server response DATA : "
-				+ responseData.toString());
-	    connection.getResponseCode();
-	    
-	    
-	    return connection.getResponseCode();
-
 	}
 
 }
