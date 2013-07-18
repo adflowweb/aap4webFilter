@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.apache.webdav.lib.ResponseEntity;
-
 import kr.co.adflow.connection.VerificationRequestConnection;
 import kr.co.adlfow.util.CopyPrintWriter;
 
