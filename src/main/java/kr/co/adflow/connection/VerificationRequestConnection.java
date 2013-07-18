@@ -73,14 +73,10 @@ public class VerificationRequestConnection {
 					+ req.getHeader("hash").toString());
 
 			// Get verificationServerResponse
-			reponseCode=connection.getResponseCode();
+			reponseCode = connection.getResponseCode();
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("TRY CATCH reponseCode:" + reponseCode);
-			if (reponseCode == 0) {
-				reponseCode = 500;
-			}
 
 		} finally {
 			if (connection != null) {

@@ -31,7 +31,7 @@ public class VirtualBrowserCreateConnection {
 	public void virtualPageDataSend(HttpServletRequest req,
 			String responseOrigin) {
 		System.out
-		.println("#############VirtualBrowserCREATE Start ###############");
+				.println("#############VirtualBrowserCREATE Start ###############");
 		long start = System.currentTimeMillis();
 		try {
 			// Create connection
@@ -55,10 +55,10 @@ public class VirtualBrowserCreateConnection {
 				connection.setRequestProperty(header, req.getHeader(header));
 				System.out.println(header + ":" + req.getHeader(header));
 			}
-		
+
 			System.out.println("req.getURI:" + req.getRequestURI());
 			System.out
-			.println("#############VirtualBrowserCreate ReqHeaderEND#############");
+					.println("#############VirtualBrowserCreate ReqHeaderEND#############");
 			String temp = "";
 			// /home/master/nodejs/aap4web/routes/site
 			if (req.getRequestURI().equals("/index.do")) {
@@ -88,11 +88,34 @@ public class VirtualBrowserCreateConnection {
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 
-			// verificationServerRequest
-			this.verificationServerRequest(connection, responseOrigin);
+			// request virtualPage
+			DataOutputStream wr = new DataOutputStream(
+					connection.getOutputStream());
+
+			wr.writeBytes(responseOrigin);
+
+			wr.flush();
+			wr.close();
+			System.out
+					.println("Request VitualPage send DATA:" + responseOrigin);
 
 			// Get verificationServerResponse
-			this.verificationServerResponse(connection);
+
+			if (connection.getResponseCode() == 200) {
+				InputStream is = connection.getInputStream();
+				BufferedReader rd = new BufferedReader(
+						new InputStreamReader(is));
+				String line;
+				StringBuffer responseData = new StringBuffer();
+				while ((line = rd.readLine()) != null) {
+					responseData.append(line);
+					responseData.append('\r');
+				}
+				rd.close();
+				// return responseData.toString();
+				System.out.println("vritualPage Response DATA : "
+						+ responseData.toString());
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -105,46 +128,7 @@ public class VirtualBrowserCreateConnection {
 		System.out.println("VirtualBrowserConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
 		System.out
-		.println("#############VirtualBrowserCREATE END ###############");
-	}
-	
-	
- 	
-	
-	
-	
-	
-	
-
-	// request
-	public void verificationServerRequest(HttpURLConnection connection,
-			String reqData) throws IOException {
-		// Send request
-		DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-
-		wr.writeBytes(reqData);
-
-		wr.flush();
-		wr.close();
-
-	}
-
-	// response
-	public void verificationServerResponse(HttpURLConnection connection)
-			throws IOException {
-		InputStream is = connection.getInputStream();
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		String line;
-		StringBuffer responseData = new StringBuffer();
-		while ((line = rd.readLine()) != null) {
-			responseData.append(line);
-			responseData.append('\r');
-		}
-		rd.close();
-		// return responseData.toString();
-		System.out.println("vritualPage response DATA : "
-				+ responseData.toString());
-
+				.println("#############VirtualBrowserCREATE END ###############");
 	}
 
 	// mkdir
