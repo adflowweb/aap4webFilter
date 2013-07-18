@@ -26,6 +26,7 @@ public class VirtualBrowserFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		int verificationResponseCode = 0;
 
 		try {
 			System.out
@@ -58,9 +59,19 @@ public class VirtualBrowserFilter implements Filter {
 					System.out
 							.println("verification request hash is not Null..");
 					VerificationRequestConnection connection = new VerificationRequestConnection();
-					connection.verificationPageSend(req, writer.getCopy());
+					verificationResponseCode = connection.verificationPageSend(
+							req, writer.getCopy());
+					System.out.println("verificationResponseCode:"+verificationResponseCode);
+					
+					if(verificationResponseCode==200){
+						System.out.println("verification Success");
+					}else if(verificationResponseCode==404){
+						System.out.println("verification 404");
+					}else if(verificationResponseCode==505){
+						System.out.println("verification 505");
+					}
 
-			 // first request
+					// first request
 				} else {
 
 					VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();

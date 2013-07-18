@@ -23,7 +23,7 @@ public class VerificationFilter implements Filter {
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER TEST");
 		System.out.println("___________________________________________");
-
+		HttpServletRequest req=(HttpServletRequest)request;
 		/*
 		 * try { ArrayList uriArr = null; if (map != null) { for (int i = 0; i <
 		 * map.size(); i++) { uriArr = (ArrayList) map.get("uri");
@@ -49,7 +49,7 @@ public class VerificationFilter implements Filter {
 			}
 		}
 		
-		HttpServletRequest req=(HttpServletRequest)request;
+		
 		
 		
 		if(req.getHeader("hash")!=null){

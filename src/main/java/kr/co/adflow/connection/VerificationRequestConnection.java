@@ -26,9 +26,9 @@ public class VerificationRequestConnection {
 	private URL url;
 	private HttpURLConnection connection = null;
 
-	public void verificationPageSend(HttpServletRequest req,
+	public int verificationPageSend(HttpServletRequest req,
 			String responseOrigin) {
-
+		int reponseCode=0;
 		long start = System.currentTimeMillis();
 		try {
 			// Create connection
@@ -85,7 +85,7 @@ public class VerificationRequestConnection {
 			this.verificationServerRequest(connection, responseOrigin);
 
 			// Get verificationServerResponse
-			this.verificationServerResponse(connection);
+			reponseCode=this.verificationServerResponse(connection);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,8 +95,10 @@ public class VerificationRequestConnection {
 				connection.disconnect();
 			}
 		}
+		
 		System.out.println("VerifiCationConnection elapsedTime : "
 				+ (System.currentTimeMillis() - start) + " ms ");
+		return reponseCode;
 	}
 
 	// request
@@ -113,7 +115,7 @@ public class VerificationRequestConnection {
 	}
 
 	// response
-	public void verificationServerResponse(HttpURLConnection connection)
+	public int verificationServerResponse(HttpURLConnection connection)
 			throws IOException {
 		InputStream is = connection.getInputStream();
 		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
@@ -127,6 +129,9 @@ public class VerificationRequestConnection {
 		// return responseData.toString();
 		System.out.println("verification Server response DATA : "
 				+ responseData.toString());
+	    connection.getResponseCode();
+	    
+	    return connection.getResponseCode();
 
 	}
 
