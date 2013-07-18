@@ -75,7 +75,7 @@ public class VerificationRequestConnection {
 			e.printStackTrace();
 			System.out.println("TRY CATCH reponseCode:"+reponseCode);
 			if(reponseCode==0){
-				reponseCode=1000;
+				reponseCode=505;
 			}
 
 		} finally {

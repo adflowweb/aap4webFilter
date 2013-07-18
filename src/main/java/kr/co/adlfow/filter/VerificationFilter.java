@@ -30,8 +30,8 @@ public class VerificationFilter implements Filter {
 		System.out.println("Verification DO FILTER Start ");
 		System.out.println("___________________________________________");
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res=(HttpServletResponse) response;
-		int verificationResponseCode=0;
+		HttpServletResponse res = (HttpServletResponse) response;
+		int verificationResponseCode = 0;
 		/*
 		 * try { ArrayList uriArr = null; if (map != null) { for (int i = 0; i <
 		 * map.size(); i++) { uriArr = (ArrayList) map.get("uri");
@@ -46,8 +46,6 @@ public class VerificationFilter implements Filter {
 		 */
 
 		// verification URI check
-		
-		
 
 		for (int i = 0; i < 10; i++) {
 
@@ -59,30 +57,28 @@ public class VerificationFilter implements Filter {
 		if (req.getHeader("hash") != null) {
 			System.out.println("verification request hash is not Null..");
 			VerificationRequestConnection connection = new VerificationRequestConnection();
-			verificationResponseCode = connection.verificationPageSend(req,res);
+			verificationResponseCode = connection
+					.verificationPageSend(req, res);
 			System.out.println("verificationResponseCode:"
 					+ verificationResponseCode);
 
 			if (verificationResponseCode == 200) {
 				System.out.println("verification Success");
-			
+
 			} else if (verificationResponseCode == 404) {
 				System.out.println("verification 404");
 				res.sendError(404);
-				
+
 			} else if (verificationResponseCode == 505) {
-				System.out.println("verification 505");
+				System.out.println("Exception reponseCode 505");
 				res.sendError(505);
-			} else if (verificationResponseCode == 1000) {
-				System.out.println("Exception reponseCode 1000");
-				res.sendError(1000);
 			}
 
+		} else {
+			
+			chain.doFilter(req, res);
 		}
-		
-		
-		//chain.doFilter(req, res);
-	
+
 		System.out.println("___________________________________________");
 		System.out.println("Verification DO FILTER END");
 		System.out.println("___________________________________________");
