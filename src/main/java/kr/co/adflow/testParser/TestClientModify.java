@@ -19,27 +19,14 @@ public class TestClientModify {
 
 		// doc.getElementById("form").replaceWith(in)
 
-		if (doc.select("form").attr("action").equals("/notice_search.do")) {
-			logger.debug("Notice_Search DO Select");
+		Elements elts = doc.select("form");
 
-			String result = doc.select("form").attr("action");
-			logger.debug("result:" + result);
-
-			result = doc
-					.select("form")
-					.attr("action")
-					.replaceAll("/notice_search.do", "JavaScript:modifyClick()");
-			logger.debug("replaceResult:" + result);
-
-			Elements elts = doc.select("form");
-
-			for (Element element : elts) {
-				if (element.attr("action").equals("/notice_search.do")) {
-					element.attr("action", "JavaScript:modifyClick()");
-				}
+		for (Element element : elts) {
+			if (element.attr("action").equals("/notice_search.do")) {
+				element.attr("action", "JavaScript:modifyClick()");
 			}
-			logger.debug(doc.toString());
 		}
+		logger.debug(doc.attr("action").toString());
 
 	}
 
