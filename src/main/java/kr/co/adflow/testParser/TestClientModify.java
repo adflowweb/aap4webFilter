@@ -16,6 +16,7 @@ public class TestClientModify {
 		logger.debug(html);
 
 		Document doc = Jsoup.parse(html);
+		
 
 		if (doc.select("form").attr("action").equals("/notice_search.do")) {
 			logger.debug("Notice_Search DO Select");
@@ -29,8 +30,10 @@ public class TestClientModify {
 			
 		
 			Element el=doc.select("form").first();
-			logger.debug("el.html():"+el.html());
-			el.wrap("asdfsadfsadfsadf");
+			
+			el.removeAttr("action");
+			
+			
 			logger.debug("el.html():"+el.html());
 
 		}
