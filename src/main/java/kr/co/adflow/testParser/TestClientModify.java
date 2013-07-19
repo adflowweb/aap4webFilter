@@ -23,7 +23,7 @@ public class TestClientModify {
 				element.attr("action", "JavaScript:modifyClick()");
 			}
 		}
-		logger.debug(doc.attr("action").toString());
+		logger.debug(doc.select("form").attr("action").toString());
 
 	}
 
