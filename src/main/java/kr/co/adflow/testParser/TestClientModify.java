@@ -22,11 +22,13 @@ public class TestClientModify {
 			logger.debug("result:" + result);
 
 			result = doc.select("form").attr("action")
-					.replaceAll("/notice_search.do", "");
+					.replaceAll("/notice_search.do", "JavaScript:modifyClick()");
 			logger.debug("replaceResult:" + result);
 
 		}
-
+		
+	    String testResult=doc.select("form").attr("action");
+	    logger.debug("testResult:"+testResult);
 	}
 
 }
