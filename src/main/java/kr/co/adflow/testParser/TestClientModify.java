@@ -2,6 +2,7 @@ package kr.co.adflow.testParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +16,9 @@ public class TestClientModify {
 		
 		Document doc= Jsoup.parse(html);
 		
-		String result=doc.attr("action");
+		String result=doc.select("form").attr("action");
 		
+				
 		logger.debug("action Result:"+result);
 		
 	}
