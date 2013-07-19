@@ -84,6 +84,11 @@ public class VirtualBrowserFilter implements Filter {
 			for(Element e:title){
 				logger.debug("e.tagName:"+e.tagName());
 				logger.debug("html:"+e.html());
+				logger.debug("e.data:"+e.data());
+				logger.debug("e.id:"+e.id());
+				logger.debug("e.text:"+e.text());
+				logger.debug("e.baseUri():"+e.baseUri());
+				logger.debug("e.attr():"+e.attr("search.do"));
 			}
 			logger.debug("Document step3...............");
 			
