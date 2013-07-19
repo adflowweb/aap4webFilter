@@ -82,6 +82,19 @@ public class VirtualBrowserCreateConnection {
 				this.makeDir(MKDIRNAME + temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
 
+			} else if (req.getRequestURI().equals("/notice_search.do")) {
+				logger.debug("In notice_search.do");
+				temp = "/board/test_search_list.jsp";
+				this.makeDir(MKDIRNAME + temp);
+				connection.setRequestProperty(VITUALPAGEURI, temp);
+				
+			} else if (req.getRequestURI().equals("/notice_content_search.do")) {
+				logger.debug("In notice_content_search.do");
+				temp = "/board/test_search_read.jsp";
+				this.makeDir(MKDIRNAME + temp);
+				connection.setRequestProperty(VITUALPAGEURI, temp);
+				
+					
 			} else {
 
 				connection.setRequestProperty(VITUALPAGEURI,
@@ -128,8 +141,6 @@ public class VirtualBrowserCreateConnection {
 		logger.info("VirtualBrowserCREATE END");
 	}
 
-	
-	
 	// mkdir
 	public void makeDir(String fileName) {
 		File dir = new File(fileName); //
