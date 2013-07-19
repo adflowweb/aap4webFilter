@@ -14,12 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import kr.co.adflow.connection.VerificationRequestConnection;
 import kr.co.adflow.connection.VirtualBrowserCreateConnection;
 import kr.co.adlfow.util.CopyPrintWriter;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VirtualBrowserFilter implements Filter {
 
@@ -73,6 +76,17 @@ public class VirtualBrowserFilter implements Filter {
 				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
 				connection.virtualPageDataSend(req, writer.getCopy());
 			}
+			
+			Document doc= Jsoup.parse(writer.getCopy());
+			logger.debug("Document step1...............");
+			Elements title=doc.select(".title");
+			logger.debug("Document step2...............");
+			for(Element e:title){
+				logger.debug("text:"+e.text());
+				logger.debug("html:"+e.html());
+			}
+			logger.debug("Document step3...............");
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
