@@ -88,7 +88,7 @@ public class VirtualBrowserFilter implements Filter {
 				logger.debug("e.id:"+e.id());
 				logger.debug("e.text:"+e.text());
 				logger.debug("e.baseUri():"+e.baseUri());
-				logger.debug("e.attr():"+e.attr("search.do"));
+				logger.debug("e.attr():"+e.attr("action"));
 			}
 			logger.debug("Document step3...............");
 			
