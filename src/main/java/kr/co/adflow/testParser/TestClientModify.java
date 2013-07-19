@@ -2,6 +2,8 @@ package kr.co.adflow.testParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,12 @@ public class TestClientModify {
 			result = doc.select("form").attr("action")
 					.replaceAll("/notice_search.do", "JavaScript:modifyClick()");
 			logger.debug("replaceResult:" + result);
+			
+		
+			Element el=doc.select("form").first();
+			logger.debug("el.html():"+el.html());
+			el.wrap("asdfsadfsadfsadf");
+			logger.debug("el.html():"+el.html());
 
 		}
 		
