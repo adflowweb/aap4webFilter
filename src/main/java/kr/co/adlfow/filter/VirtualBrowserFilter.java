@@ -79,10 +79,10 @@ public class VirtualBrowserFilter implements Filter {
 			
 			Document doc= Jsoup.parse(writer.getCopy());
 			logger.debug("Document step1...............");
-			Elements title=doc.select(".title");
+			Elements title=doc.getElementsByTag("form");
 			logger.debug("Document step2...............");
 			for(Element e:title){
-				logger.debug("text:"+e.text());
+				logger.debug("e.tagName:"+e.tagName());
 				logger.debug("html:"+e.html());
 			}
 			logger.debug("Document step3...............");
