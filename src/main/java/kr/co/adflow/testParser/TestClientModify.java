@@ -12,9 +12,6 @@ public class TestClientModify {
 	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
 
 	public void jsoupModify(String html) {
-
-		logger.debug(html);
-
 		Document doc = Jsoup.parse(html);
 
 		// doc.getElementById("form").replaceWith(in)
