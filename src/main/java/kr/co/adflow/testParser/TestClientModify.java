@@ -44,7 +44,7 @@ public class TestClientModify {
 		}
 		logger.debug(doc.select("form").attr("action").toString());
 		
-		Elements script=doc.select("script");
+		Elements script=doc.getElementsByTag("script");
 		
 		script.append("function modifyClick() {" +
 				"var str=\"<html>\" + document.documentElement.innerHTML + \"</html>\"" +
