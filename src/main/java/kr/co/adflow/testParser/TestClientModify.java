@@ -16,7 +16,8 @@ public class TestClientModify {
 		logger.debug(html);
 
 		Document doc = Jsoup.parse(html);
-		
+
+		// doc.getElementById("form").replaceWith(in)
 
 		if (doc.select("form").attr("action").equals("/notice_search.do")) {
 			logger.debug("Notice_Search DO Select");
@@ -24,40 +25,22 @@ public class TestClientModify {
 			String result = doc.select("form").attr("action");
 			logger.debug("result:" + result);
 
-			result = doc.select("form").attr("action")
+			result = doc
+					.select("form")
+					.attr("action")
 					.replaceAll("/notice_search.do", "JavaScript:modifyClick()");
 			logger.debug("replaceResult:" + result);
-			
-		
-			Element el=doc.select("form").first();
-			
-			el.removeAttr("action");
-			
-			
-			logger.debug("el.html():"+el.html());
-			
-			
-			
-			
-			
 
+			Elements elts = doc.select("form");
+
+			for (Element element : elts) {
+				if (element.attr("action").equals("/notice_search.do")) {
+					element.attr("action", "JavaScript:modifyClick()");
+				}
+			}
+			logger.debug(doc.toString());
 		}
-		
-		
-		
-		Element action=doc.select("action").first();
-		
-		action.remove();
-		
-		
-		logger.debug("action.html():"+action.html());
-		action.prepend("JavaScript:modifyClick()");
-		
-		logger.debug("action.html():"+action.html());
-		
-		
-	    String testResult=doc.select("form").attr("action");
-	    logger.debug("testResult:"+testResult);
+
 	}
 
 }
