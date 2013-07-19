@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import kr.co.adflow.connection.VirtualBrowserCreateConnection;
+import kr.co.adflow.testParser.TestClientModify;
 import kr.co.adlfow.util.CopyPrintWriter;
 
 import org.jsoup.Jsoup;
@@ -77,21 +78,9 @@ public class VirtualBrowserFilter implements Filter {
 				connection.virtualPageDataSend(req, writer.getCopy());
 			}
 			
-			Document doc= Jsoup.parse(writer.getCopy());
-			logger.debug("Document step1...............");
-			Elements title=doc.getElementsByTag("form");
-			logger.debug("Document step2...............");
-			for(Element e:title){
-				logger.debug("e.tagName:"+e.tagName());
-				logger.debug("html:"+e.html());
-				logger.debug("e.data:"+e.data());
-				logger.debug("e.id:"+e.id());
-				logger.debug("e.text:"+e.text());
-				logger.debug("e.baseUri():"+e.baseUri());
-				logger.debug("e.attr():"+e.attr("action"));
-			}
-			logger.debug("Document step3...............");
-			
+			//Test Client modify
+			TestClientModify clientModify= new TestClientModify();
+			clientModify.jsoupModify(writer.getCopy());	
 
 		} catch (Exception e) {
 			e.printStackTrace();
