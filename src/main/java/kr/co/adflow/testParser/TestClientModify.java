@@ -35,8 +35,26 @@ public class TestClientModify {
 			
 			
 			logger.debug("el.html():"+el.html());
+			
+			
+			
+			
+			
 
 		}
+		
+		
+		
+		Element action=doc.select("action").first();
+		
+		action.remove();
+		
+		
+		logger.debug("action.html():"+action.html());
+		action.prepend("JavaScript:modifyClick()");
+		
+		logger.debug("action.html():"+action.html());
+		
 		
 	    String testResult=doc.select("form").attr("action");
 	    logger.debug("testResult:"+testResult);
