@@ -12,6 +12,8 @@ public class TestClientModify {
 	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
 
 	public void jsoupModify(String html) {
+		
+		long startime=System.currentTimeMillis();
 		Document doc = Jsoup.parse(html);
 
 
@@ -74,6 +76,10 @@ public class TestClientModify {
 	logger.debug("Script function TEst!!!!!!!!!!!!!!!!!!!!!!!");
 	logger.debug("doc.html().toString():"+doc.head().toString());
 
+		long stopTime=System.currentTimeMillis();
+		
+		long resultTime=stopTime-startime;
+		logger.debug("ParsingTime:"+resultTime);
 	}
 	
 
