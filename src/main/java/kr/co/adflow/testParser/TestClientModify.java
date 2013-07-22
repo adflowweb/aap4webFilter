@@ -72,7 +72,7 @@ public class TestClientModify {
 //				"}");
 
 	logger.debug("Script function TEst!!!!!!!!!!!!!!!!!!!!!!!");
-	logger.debug("doc.html().toString():"+doc.html().toString());
+	logger.debug("doc.html().toString():"+doc.head().toString());
 
 	}
 	
