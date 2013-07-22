@@ -48,7 +48,11 @@ public class TestClientModify {
 //						+ "</script>");
 
 		
-		doc.head().append("<script>"+"function modifyClick(){"+"var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"+
+		doc.head().append("<script>"+"function lengthInUtf8Bytes(str) {"+
+            "var m = encodeURIComponent(str).match(/%[89ABab]/g);"+
+            "return str.length + (m ? m.length : 0);"+
+            "}"+	
+		    "function modifyClick(){"+"var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"+
             "var length = lengthInUtf8Bytes(str);"+
             "var hex = '';"+
             "for(var i=0;i<length;i++) {"+
