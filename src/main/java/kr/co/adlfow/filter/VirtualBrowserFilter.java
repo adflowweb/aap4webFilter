@@ -1,6 +1,7 @@
 package kr.co.adlfow.filter;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import kr.co.adflow.connection.VirtualBrowserCreateConnection;
 import kr.co.adflow.testParser.TestClientModify;
 import kr.co.adlfow.util.CopyPrintWriter;
+import kr.co.adlfow.util.GenericResponseWrapper;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -58,33 +60,47 @@ public class VirtualBrowserFilter implements Filter {
 			logger.info("VirtualBrowserFilter LOG param END");
 			logger.info("**************************************************************");
 
-			// FilterChain
+			
+			
+			 OutputStream out = response.getOutputStream();
+			  out.write("<HR>PRE<HR>".getBytes());
+			  GenericResponseWrapper wrapper = 
+			         new GenericResponseWrapper((HttpServletResponse) response); 
+			  chain.doFilter(request,wrapper);
+			  out.write(wrapper.getData());
+			  out.write("<HR>POST<HR>".getBytes());
+			  out.close(); 
+			
+			
+		/*	// FilterChain
 			final CopyPrintWriter writer = new CopyPrintWriter(
 					response.getWriter());
 			chain.doFilter(request, new HttpServletResponseWrapper(
 					(HttpServletResponse) response) {
+				
+				
 				@Override
 				public PrintWriter getWriter() {
 					return writer;
 				}
-			});
+			});*/
 			
 			
 			
-			//Test Jsoup modify
+	/*		//Test Jsoup modify
 			TestClientModify clientModify= new TestClientModify();
-			String test=clientModify.jsoupModify(writer.getCopy());	
+			String test=clientModify.jsoupModify(writer.getCopy());	*/
 			
 			
 
 			// verification URI Check
 
-			if (req.getAttribute("verificationUri") != null) {
+	/*		if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				logger.debug("verificationUri:" + temp);
 				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
 				connection.virtualPageDataSend(req,test);
-			}
+			}*/
 			
 		
 		} catch (Exception e) {
