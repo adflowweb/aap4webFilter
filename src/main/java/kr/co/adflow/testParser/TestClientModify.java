@@ -48,9 +48,16 @@ public class TestClientModify {
 //						+ "</script>");
 
 		
-		doc.head().append("<script>" +
-				"console.log(\"testconsoleLog Chan\");" +
-				"</script>");
+		doc.head().append("<script>var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"+
+            "var length = lengthInUtf8Bytes(str);"+
+            "var hex = '';"+
+            "for(var i=0;i<length;i++) {"+
+             "hex += str.charCodeAt(i).toString(16);"+
+                //console.log('hex : ', hex);
+            "}"+
+            "console.log('hex string : ', hex);"+
+            "console.log('hash : ', $.sha1(hex));</script>");
+            
 		
 	
 

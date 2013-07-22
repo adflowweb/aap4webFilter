@@ -69,42 +69,20 @@ public class VirtualBrowserFilter implements Filter {
 		
 			  String temp=new String(wrapper.getData());
 			  TestClientModify modify=new TestClientModify();
-			  String result=modify.jsoupModify(temp);
+			  String resultModify=modify.jsoupModify(temp);
 			  
-			  out.write(result.getBytes());
+			  out.write(resultModify.getBytes());
 			  out.close(); 
 			
+				// verification URI Check
 
-			
-		/*	// FilterChain
-			final CopyPrintWriter writer = new CopyPrintWriter(
-					response.getWriter());
-			chain.doFilter(request, new HttpServletResponseWrapper(
-					(HttpServletResponse) response) {
-				
-				
-				@Override
-				public PrintWriter getWriter() {
-					return writer;
+				if (req.getAttribute("verificationUri") != null) {
+					int i = (Integer) req.getAttribute("verificationUri");
+					logger.debug("verificationUri:" + i);
+					VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
+					connection.virtualPageDataSend(req,resultModify);
 				}
-			});*/
-			
-			
-			
-		
-			
-			
-
-			// verification URI Check
-
-	/*		if (req.getAttribute("verificationUri") != null) {
-				int temp = (Integer) req.getAttribute("verificationUri");
-				logger.debug("verificationUri:" + temp);
-				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-				connection.virtualPageDataSend(req,test);
-			}*/
-			
-		
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
