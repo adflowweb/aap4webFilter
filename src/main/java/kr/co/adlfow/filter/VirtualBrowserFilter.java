@@ -70,10 +70,12 @@ public class VirtualBrowserFilter implements Filter {
 			});
 			
 			
-			//Test Client modify
+			
+			//Test Jsoup modify
 			TestClientModify clientModify= new TestClientModify();
 			String test=clientModify.jsoupModify(writer.getCopy());	
-
+			
+			
 
 			// verification URI Check
 
@@ -81,7 +83,7 @@ public class VirtualBrowserFilter implements Filter {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				logger.debug("verificationUri:" + temp);
 				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-				connection.virtualPageDataSend(req, test);
+				connection.virtualPageDataSend(req,test);
 			}
 			
 		
