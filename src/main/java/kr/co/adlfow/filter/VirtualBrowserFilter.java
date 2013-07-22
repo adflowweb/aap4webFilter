@@ -62,8 +62,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			
 			
-			 OutputStream out = response.getOutputStream();
-			 
+			 OutputStream out = response.getOutputStream();	 
 			  GenericResponseWrapper wrapper = 
 			         new GenericResponseWrapper((HttpServletResponse) response); 
 			  chain.doFilter(request,wrapper);
