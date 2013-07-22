@@ -63,12 +63,12 @@ public class VirtualBrowserFilter implements Filter {
 			
 			
 			 OutputStream out = response.getOutputStream();
-			  out.write("<HR>PRE<HR>".getBytes());
+			 
 			  GenericResponseWrapper wrapper = 
 			         new GenericResponseWrapper((HttpServletResponse) response); 
 			  chain.doFilter(request,wrapper);
 			  out.write(wrapper.getData());
-			  out.write("<HR>POST<HR>".getBytes());
+			  out.write("<HR>POSTChanHoTEST<HR>".getBytes());
 			  out.close(); 
 			
 			
