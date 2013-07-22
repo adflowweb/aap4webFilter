@@ -44,18 +44,32 @@ public class TestClientModify {
 		}
 		logger.debug(doc.select("form").attr("action").toString());
 		
-				doc.head().appendElement("script").append("function modifyClick() {" +
-				"var str=\"<html>\" + document.documentElement.innerHTML + \"</html>\"" +
-				"var hash = 0;" +
-				"if (str.length == 0) return hash;" +
-				"for (i = 0; i < str.length; i++) " +
-				"{" +
-				"char = str.charCodeAt(i);" +
-				"hash = ((hash<<5)-hash)+char;" +
-				"hash = hash & hash; " +
-				"// Convert to 32bit integer}" +
-				"return hash;" +
-				"}");
+			doc.head().append("<script>function modifyClick() {" +
+					"var str=\"<html>\" + document.documentElement.innerHTML + \"</html>\"" +
+					"var hash = 0;" +
+					"if (str.length == 0) return hash;" +
+					"for (i = 0; i < str.length; i++) " +
+					"{" +
+					"char = str.charCodeAt(i);" +
+					"hash = ((hash<<5)-hash)+char;" +
+					"hash = hash & hash; " +
+					"// Convert to 32bit integer}" +
+					"return hash;" +
+					"}" +
+					"</script>");
+		
+//				doc.head().appendElement("script").append("function modifyClick() {" +
+//				"var str=\"<html>\" + document.documentElement.innerHTML + \"</html>\"" +
+//				"var hash = 0;" +
+//				"if (str.length == 0) return hash;" +
+//				"for (i = 0; i < str.length; i++) " +
+//				"{" +
+//				"char = str.charCodeAt(i);" +
+//				"hash = ((hash<<5)-hash)+char;" +
+//				"hash = hash & hash; " +
+//				"// Convert to 32bit integer}" +
+//				"return hash;" +
+//				"}");
 
 	logger.debug("Script function TEst!!!!!!!!!!!!!!!!!!!!!!!");
 	logger.debug("doc.toString():"+doc.toString());
