@@ -39,7 +39,7 @@ public class VirtualBrowserFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		logger.info("**************************************************************");
 		logger.info("VirtualBrowserFilter Start");
-
+	
 		try {
 
 			HttpServletRequest req = (HttpServletRequest) request;
@@ -60,30 +60,55 @@ public class VirtualBrowserFilter implements Filter {
 			logger.info("VirtualBrowserFilter LOG param END");
 			logger.info("**************************************************************");
 
-			OutputStream out = response.getOutputStream();
-			GenericResponseWrapper wrapper = new GenericResponseWrapper(
-					(HttpServletResponse) response);
-			chain.doFilter(request, wrapper);
-			// Test Jsoup modify
-			TestClientModify clientModify = new TestClientModify();
-			String test = clientModify
-					.jsoupModify(wrapper.getData().toString());
-			out.write(test.getBytes());
-			out.close();
+			
+			
+			 OutputStream out = response.getOutputStream();	 
+			  GenericResponseWrapper wrapper = 
+			         new GenericResponseWrapper((HttpServletResponse) response); 
+			  chain.doFilter(request,wrapper);
+		
+			  String temp=new String(wrapper.getData());
+			  TestClientModify modify=new TestClientModify();
+			  String result=modify.jsoupModify(temp);
+			  
+			  out.write(result.getBytes());
+			  out.close(); 
+			
+
+			
+		/*	// FilterChain
+			final CopyPrintWriter writer = new CopyPrintWriter(
+					response.getWriter());
+			chain.doFilter(request, new HttpServletResponseWrapper(
+					(HttpServletResponse) response) {
+				
+				
+				@Override
+				public PrintWriter getWriter() {
+					return writer;
+				}
+			});*/
+			
+			
+			
+		
+			
+			
 
 			// verification URI Check
 
-			if (req.getAttribute("verificationUri") != null) {
+	/*		if (req.getAttribute("verificationUri") != null) {
 				int temp = (Integer) req.getAttribute("verificationUri");
 				logger.debug("verificationUri:" + temp);
 				VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-				connection.virtualPageDataSend(req, test.getBytes().toString());
-			}
-
+				connection.virtualPageDataSend(req,test);
+			}*/
+			
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	
 		logger.info("VirtualBrowserFilter END");
 		logger.info("**************************************************************");
 	}
