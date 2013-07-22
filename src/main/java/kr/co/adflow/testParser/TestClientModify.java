@@ -47,6 +47,7 @@ public class TestClientModify {
 //						"" + "return hash;" + "}"
 //						+ "</script>");
 
+		doc.head().append("<script type=\"text/javascript\"src=\"https://hashmask.googlecode.com/svn-history/r2/trunk/jquery.sha1.js\"></script>");
 		
 		doc.head().append("<script>"+"function lengthInUtf8Bytes(str) {"+
             "var m = encodeURIComponent(str).match(/%[89ABab]/g);"+
