@@ -65,10 +65,11 @@ public class TestClientModify {
 						+ "document.getElementById(\"hash\").value= 12334567677;"
 						+ "document.searchForm.action=\"/notice_search.do\";"
 						+ "var hashval = $('input[name=hash]').val();"
-						+ "console.log(hashval);"
+						+ "console.log('hidden hash value :',hashval);"
+						+ "console.log('hex string : ', hex);"
 						+ "var testHex=jQuery.sha1(hex);"
 						+ "console.log(testHex);"
-						+ "document.searchForm.submit();}" + "</script>");
+						+ "document.searchForm.submit();" + "}" + "</script>");
 
 		logger.debug("Script function TEst!!!!!!!!!!!!!!!!!!!!!!!");
 		logger.debug("doc.html().toString():" + doc.head().toString());
