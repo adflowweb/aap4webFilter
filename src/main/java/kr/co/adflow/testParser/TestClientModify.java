@@ -50,13 +50,13 @@ public class TestClientModify {
 
 		doc.head()
 				.append("<script>"
-						+ "function lengthInUtf8Bytes(str) {"
+					/*	+ "function lengthInUtf8Bytes(str) {"
 						+ "var m = encodeURIComponent(str).match(/%[89ABab]/g);"
 						+ "return str.length + (m ? m.length : 0);"
 						+ "}"
-						+
+						+*/
 
-						"function modifyClick(){"
+						+"function modifyClick(){"
 					/*	+ "var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"
 						+ "var length = lengthInUtf8Bytes(str);"
 						+ "var hex = '';"
