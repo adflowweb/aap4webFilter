@@ -43,11 +43,11 @@ public class TestClientModify {
 		// + "</script>");
 	
 		
-		doc.head()
+		/*doc.head()
 				.append("<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>");
 		doc.head()
 				.append("<script type=\"text/javascript\"src=\"https://hashmask.googlecode.com/svn-history/r2/trunk/jquery.sha1.js\"></script>");
-
+*/
 		doc.head()
 				.append("<script>"
 						+ "function lengthInUtf8Bytes(str) {"
