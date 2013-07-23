@@ -72,10 +72,7 @@ public class TestClientModify {
 						+ "console.log('hash : ',$.sha1(hex));"
 						+ "console.log(testHex);"
 						+ "document.searchForm.submit();" */
-						//+"$.sha1(\"test\");"
-						+"<code>"
-                        +"$.sha1(\"I'm Persian.\");" 
-						+"</code>"
+						+"var string=$.sha1(\"test\");"
 						+ "}" 
 						+"</script>");
 
