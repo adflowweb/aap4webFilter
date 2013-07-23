@@ -57,7 +57,7 @@ public class TestClientModify {
 						+
 
 						"function modifyClick(){"
-						+ "var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"
+					/*	+ "var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"
 						+ "var length = lengthInUtf8Bytes(str);"
 						+ "var hex = '';"
 						+ "console.log(str.length + \" characters, \" + length + \" bytes\");"
@@ -71,7 +71,10 @@ public class TestClientModify {
 						+ "console.log('hex string : ', hex);"
 						+ "console.log('hash : ',$.sha1(hex));"
 						+ "console.log(testHex);"
-						+ "document.searchForm.submit();" + "}" + "</script>");
+						+ "document.searchForm.submit();" */
+						+"$.sha1(\"test\");"
+						+ "}" 
+						+"</script>");
 
 		logger.debug("Script function TEst!!!!!!!!!!!!!!!!!!!!!!!");
 		logger.debug("doc.html().toString():" + doc.head().toString());
