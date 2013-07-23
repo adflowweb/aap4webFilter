@@ -41,6 +41,8 @@ public class TestClientModify {
 		// + "// Convert to 32bit integer} console.log(hash);" +
 		// "" + "return hash;" + "}"
 		// + "</script>");
+		doc.head().remove();
+		
 		doc.head()
 				.append("<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>");
 		doc.head()
