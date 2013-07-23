@@ -47,25 +47,33 @@ public class TestClientModify {
 		doc.head().append("<script>"+"function lengthInUtf8Bytes(str) {"+
             "var m = encodeURIComponent(str).match(/%[89ABab]/g);"+
             "return str.length + (m ? m.length : 0);"+
-            "}"+	
-		    "function modifyClick(){"+"var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"+
-            "var length = lengthInUtf8Bytes(str);"+
-            "var hex = '';"+
-            "for(var i=0;i<length;i++) {"+
-             "hex += str.charCodeAt(i).toString(16);"+
-                //console.log('hex : ', hex);
             "}"+
-            "console.log('hex string : ', hex);"+
-            //"console.log('hash : ', $.sha1(hex));"+
-            "document.getElementById(\"hash\").value= 12334567677;"+
-            "document.searchForm.action=\"/notice_search.do\";" +
-            "var hashval = $('input[name=hash]').val();"+
-            "console.log(hashval);"+
-            "var testHex=jQuery.sha1(hex);"+
-            "console.log(testHex);"+
-            "document.searchForm.submit();}"+"</script>");
             
-		
+   			"function modifyClick(){"+
+                "var str = $(\"html\").html().replace(/[\\n\\r]/g, \"\").replace(/\\s+/g,\"\");"+
+                "var length = lengthInUtf8Bytes(str);"+
+                "var hex = '';"+
+                "console.log(str.length + \"characters,\" + length + \"bytes\");"+
+                "for(var i=0;i<length;i++) {"+
+                "    hex += str.charCodeAt(i).toString(16);"+
+                "}"+
+                "document.getElementById(\"hash\").value= 12334567677;"+
+                "document.searchForm.action=\"/notice_search.do\";" +
+                "var hashval = $(\"input[name=hash]\").val();"+
+                "console.log(hashval);"+
+                "var testHex=jQuery.sha1(hex);"+
+                "console.log(testHex);"+
+       	     	"document.searchForm.submit();" +
+       	     	"}"+
+       	     	"</script>");
+       	
+		 
+         	    
+		    
+		    
+		    
+		 
+            
 	
 
 		logger.debug("Script function TEst!!!!!!!!!!!!!!!!!!!!!!!");
