@@ -16,22 +16,14 @@ public class TestClientModify {
 		long startime = System.currentTimeMillis();
 		Document doc = Jsoup.parse(html);
 
-		/*
-		 * <script> function modifyClick() { var str="<html>" +
-		 * document.documentElement.innerHTML + "</html>" var hash = 0; if
-		 * (str.length == 0) return hash; for (i = 0; i < str.length; i++) {
-		 * char = str.charCodeAt(i); hash = ((hash<<5)-hash)+char; hash = hash &
-		 * hash; // Convert to 32bit integer } return hash;
-		 * 
-		 * } </script>
-		 */
-
 		Elements elts = doc.select("form");
 
+		
 		for (Element element : elts) {
 			if (element.attr("action").equals("/notice_search.do")) {
 				element.attr("action", "JavaScript:modifyClick()");
 			}
+			element.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
 		}
 		logger.debug(doc.select("form").attr("action").toString());
 
