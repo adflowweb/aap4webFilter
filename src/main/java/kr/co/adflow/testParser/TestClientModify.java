@@ -54,7 +54,8 @@ public class TestClientModify {
                 //console.log('hex : ', hex);
             "}"+
             "console.log('hex string : ', hex);"+
-            "console.log('hash : ', $.sha1(hex));"+"}"+"</script>");
+            "console.log('hash : ', $.sha1(hex));"+
+            		"$('#searchForm').attr('action', 'http://www.naver.com');}"+"</script>");
             
 		
 	
