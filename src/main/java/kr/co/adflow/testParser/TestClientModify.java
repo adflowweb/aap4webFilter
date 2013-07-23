@@ -16,13 +16,15 @@ public class TestClientModify {
 		long startime = System.currentTimeMillis();
 		Document doc = Jsoup.parse(html);
 
-		Elements elts = doc.select("form");
+		Elements formEl = doc.select("form");
 
 		
-		elts.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
-		for (Element element : elts) {
-			if (element.attr("action").equals("/notice_search.do")) {
-				element.attr("action", "JavaScript:modifyClick()");
+		formEl.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
+		Elements aEl=doc.select("a");
+		for (Element element : aEl) {
+			if (element.attr("onclick").equals("searchScript();")) {
+				logger.debug("onclick ..SearchScript!!!!!!!!!!!!!!!!!");
+				element.attr("onclick", "JavaScript:modifyClick()");
 			}
 			//element.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
 		}
