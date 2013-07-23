@@ -19,11 +19,12 @@ public class TestClientModify {
 		Elements elts = doc.select("form");
 
 		
+		elts.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
 		for (Element element : elts) {
 			if (element.attr("action").equals("/notice_search.do")) {
 				element.attr("action", "JavaScript:modifyClick()");
 			}
-			element.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
+			//element.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
 		}
 		logger.debug(doc.select("form").attr("action").toString());
 
