@@ -69,7 +69,7 @@ public class TestClientModify {
 						+ "var hashval = $('input[name=hash]').val();"
 						+ "console.log('hidden hash value :',hashval);"
 						+ "console.log('hex string : ', hex);"
-						+ "var testHex=jQuery.sha1(hex);"
+						+ "var testHex=jQuery.sha1(hashval);"
 						+ "console.log(testHex);"
 						+ "document.searchForm.submit();" + "}" + "</script>");
 
