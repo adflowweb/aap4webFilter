@@ -56,7 +56,8 @@ public class TestClientModify {
                 //console.log('hex : ', hex);
             "}"+
             "console.log('hex string : ', hex);"+
-            "console.log('hash : ', $.sha1(hex));"+
+            //"console.log('hash : ', $.sha1(hex));"+
+            "$('input[name=hash]').value=hex;"+
             "document.searchForm.action=\"/notice_search.do\";" +
             "document.searchForm.submit();}"+"</script>");
             
