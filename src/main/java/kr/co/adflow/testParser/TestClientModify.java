@@ -61,7 +61,8 @@ public class TestClientModify {
             "document.searchForm.action=\"/notice_search.do\";" +
             "var hashval = $('input[name=hash]').val();"+
             "console.log(hashval);"+
-            "console.log('hash : ', jQuery.sha1(hex));"+
+            "var testHex=jQuery.sha1(hex);"+
+            "console.log(testHex);"+
             "document.searchForm.submit();}"+"</script>");
             
 		
