@@ -57,6 +57,8 @@ public class TestClientModify {
 						+*/
 
 						+"function modifyClick(){"
+						+"console.log(\"test\");"
+						+"console.log('test:',$);"
 					/*	+ "var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"
 						+ "var length = lengthInUtf8Bytes(str);"
 						+ "var hex = '';"
