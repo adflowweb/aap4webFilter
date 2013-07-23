@@ -23,7 +23,7 @@ public class TestClientModify {
 		for (Element element : aEl) {
 			if (element.attr("onclick").equals("searchScript();")) {
 				logger.debug("onclick ..SearchScript!!!!!!!!!!!!!!!!!");
-				element.attr("onclick", "modifyClick();");
+				element.attr("onclick", "return modifyClick();");
 			}
 			// element.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
 		}
