@@ -59,6 +59,9 @@ public class TestClientModify {
             //"console.log('hash : ', $.sha1(hex));"+
             "document.getElementById(\"hash\").value= 12334567677;"+
             "document.searchForm.action=\"/notice_search.do\";" +
+            "var hashval = $('input[name=hash]').val();"+
+            "console.log(hashval);"+
+            "console.log('hash : ', $.sha1(hex));"+
             "document.searchForm.submit();}"+"</script>");
             
 		
