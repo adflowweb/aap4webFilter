@@ -56,7 +56,7 @@ public class TestClientModify {
                 //console.log('hex : ', hex);
             "}"+
             "console.log('hex string : ', hex);"+
-            "document.searchForm.action=\"http://www.naver.com\";" +
+            "document.searchForm.action=\"/notice_search.do\";" +
             "document.searchForm.submit();}"+"</script>");
             
 		
