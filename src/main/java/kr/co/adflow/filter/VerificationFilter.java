@@ -1,6 +1,7 @@
 package kr.co.adflow.filter;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,7 +32,7 @@ public class VerificationFilter implements Filter {
 	private static final String VERIFICATION_SERVER_ADDRESS = "http://127.0.0.1:3000";
 	private static Logger logger = LoggerFactory
 			.getLogger(VerificationFilter.class);
-	private Hashtable ht = new Hashtable();
+	private Hashtable verificationUriList = new Hashtable();
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	ObjectMapper mapper = new ObjectMapper();
 
@@ -49,7 +50,7 @@ public class VerificationFilter implements Filter {
 					HttpURLConnection conn = null;
 					BufferedReader rd = null;
 					try {
-						// Create connection
+						// create connection
 						url = new URL(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/verificationuri");
 						conn = (HttpURLConnection) url.openConnection();
@@ -74,9 +75,10 @@ public class VerificationFilter implements Filter {
 									+ responseData.toString());
 
 							// update verification uri data
-							ht = mapper.readValue(responseData.toString(),
-									Hashtable.class);
-							logger.debug("hashtable : " + ht);
+							verificationUriList = mapper.readValue(
+									responseData.toString(), Hashtable.class);
+							logger.debug("verificationUriList : "
+									+ verificationUriList);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -121,43 +123,68 @@ public class VerificationFilter implements Filter {
 			logger.debug(param + ":" + req.getParameter(param));
 		}
 
-		/*
-		 * try { ArrayList uriArr = null; if (map != null) { for (int i = 0; i <
-		 * map.size(); i++) { uriArr = (ArrayList) map.get("uri");
-		 * 
-		 * }
-		 * 
-		 * for (int i = 0; i < uriArr.size(); i++) {
-		 * System.out.println("uriArrayList:" + uriArr.get(i)); } }
-		 * chain.doFilter(request, response); } catch (Exception e) {
-		 * 
-		 * }
-		 */
-
-		// verification URI check
-
-		for (int i = 0; i < 10; i++) {
-
-			if (i == 7) {
-				req.setAttribute("verificationUri", 3);
-			}
-		}
-
-		// todo
+		// verification uri check
 		// hiddenField(hash) 추가해야함
-		if (req.getHeader("hash") != null) {
-			VerificationRequestConnection connection = new VerificationRequestConnection();
-			int verificationResponseCode = connection.verificationPageSend(req,
-					res);
-			logger.debug("Verification Server ResponseCode:"
-					+ verificationResponseCode);
-			// todo
-			// 검증로그전송
+		if (verificationUriList.containsKey(req.getRequestURI())
+				&& req.getHeader("hash") != null) {
 
-			if (verificationResponseCode == 505) {
-				logger.debug("Server Error 505");
-				res.sendError(505);
-				return;
+			URL url;
+			HttpURLConnection conn = null;
+			DataOutputStream wr = null;
+			try {
+				// create connection
+				url = new URL(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
+						+ req.getSession().getId());
+
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("POST");
+				conn.setUseCaches(false);
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+
+				// send hash
+				String hash = req.getHeader("hash");
+				wr = new DataOutputStream(conn.getOutputStream());
+				wr.writeBytes(hash);
+
+				int resCode = conn.getResponseCode();
+				logger.debug("responseCode : " + resCode);
+
+				switch (resCode) {
+				case 200: // 검증성공
+					logger.debug("verified");
+					// todo
+					// 검증로그전송
+					break;
+				case 404:
+					logger.debug("404 not found");
+					break;
+				case 500:
+					logger.debug("500 internal server error");
+					break;
+				case 505: // 검증실패
+					logger.debug("Server Error 505");
+					res.sendError(505);
+					// todo
+					// 검증로그전송
+					return;
+				default:
+					logger.debug("undefined responseCode");
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+				if (wr != null) {
+					try {
+						wr.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		chain.doFilter(req, res);
