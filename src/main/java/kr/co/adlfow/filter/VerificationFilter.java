@@ -22,7 +22,26 @@ public class VerificationFilter implements Filter {
 	private Logger logger = LoggerFactory.getLogger(VerificationFilter.class);
 	private HashMap map;
 
-	public void destroy() {
+	/**
+	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
+	 */
+	public void init(FilterConfig arg0) throws ServletException {
+
+		logger.debug("**************************************************************");
+		logger.debug("VerificationFilter  INIT GET Verification URI ");
+		logger.debug("**************************************************************");
+		// verification server getURI
+		// map
+		/*
+		 * try { VerificationConnection check = new VerificationConnection();
+		 * String result = check.verificationCheck();
+		 * 
+		 * UrlCheckUtil util = new UrlCheckUtil(); map = new HashMap(); map =
+		 * (HashMap) util.urlCheckTable(result); } catch (Exception e) {
+		 * e.printStackTrace();
+		 * 
+		 * }
+		 */
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -55,53 +74,32 @@ public class VerificationFilter implements Filter {
 			}
 		}
 
-		if (req.getHeader("hash") != null) {
+		if (req.getHeader("hash") != null) { // hiddenField(hash) 추가
 			logger.info("Hash is Not Null Request Verification Server Start");
 			VerificationRequestConnection connection = new VerificationRequestConnection();
 			verificationResponseCode = connection
 					.verificationPageSend(req, res);
-			logger.debug("Verification Server ResponseCode:" + verificationResponseCode);
+			logger.debug("Verification Server ResponseCode:"
+					+ verificationResponseCode);
 
-			if (verificationResponseCode == 200) {
-				logger.debug("verification Success");
-
-			} else if (verificationResponseCode == 404) {
-				logger.debug("virtualPageNotFound 404");
-				res.sendError(404);
-
-			} else if (verificationResponseCode == 500) {
-				logger.debug("Server Error 500");
-				res.sendError(500);
-			}
-
-		} else {
-			logger.info("Else is ...First Call Create VirtualBrowser FiTER");
-			chain.doFilter(req, res);
+			// todo
+			// 검증로그전송
 			
+			
+			if (verificationResponseCode == 505) {
+				logger.debug("Server Error 500");
+				res.sendError(505);
+				return;
+			}
 		}
+
+		chain.doFilter(req, res);
 
 		logger.info("Verification DO FILTER END");
 		logger.info("**************************************************************");
 
 	}
 
-	// verificationURI get
-	public void init(FilterConfig arg0) throws ServletException {
-
-		logger.info("**************************************************************");
-		logger.info("VerificationFilter  INIT GET Verification URI ");
-		logger.info("**************************************************************");
-		// verification server getURI
-		// map
-		/*
-		 * try { VerificationConnection check = new VerificationConnection();
-		 * String result = check.verificationCheck();
-		 * 
-		 * UrlCheckUtil util = new UrlCheckUtil(); map = new HashMap(); map =
-		 * (HashMap) util.urlCheckTable(result); } catch (Exception e) {
-		 * e.printStackTrace();
-		 * 
-		 * }
-		 */
+	public void destroy() {
 	}
 }
