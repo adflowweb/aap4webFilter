@@ -88,7 +88,6 @@ public class VerificationFilter implements Filter {
 
 							ht = mapper.readValue(responseData.toString(),
 									Hashtable.class);
-
 							logger.debug("hashtable : " + ht);
 						}
 					} catch (Exception e) {
