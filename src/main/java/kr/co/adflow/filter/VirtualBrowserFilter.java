@@ -1,9 +1,13 @@
 package kr.co.adflow.filter;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Enumeration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,86 +17,141 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
-import kr.co.adflow.connection.VirtualBrowserCreateConnection;
-import kr.co.adflow.testParser.TestClientModify;
-import kr.co.adflow.util.CopyPrintWriter;
 import kr.co.adflow.util.GenericResponseWrapper;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class VirtualBrowserFilter implements Filter {
 
+	private static final String VERIFICATION_SERVER_ADDRESS = "http://127.0.0.1:3000";
+	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 
-	public void destroy() {
+	public void init(FilterConfig config) throws ServletException {
+	}
 
+	public void destroy() {
+		executorService.shutdown();
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		logger.info("**************************************************************");
-		logger.info("VirtualBrowserFilter Start");
-	
+
+		OutputStream out = null;
 		try {
-
-			HttpServletRequest req = (HttpServletRequest) request;
-
+			final HttpServletRequest req = (HttpServletRequest) request;
+			HttpServletResponse res = (HttpServletResponse) response;
 			logger.debug("requestURI : " + req.getRequestURI());
 			logger.debug("requestMethod : " + req.getMethod());
 			logger.debug("contentType : " + req.getContentType());
 
-			logger.info("**************************************************************");
-			logger.info("VirtualBrowserFilter Request Log param Start");
-			for (Enumeration<?> e = req.getParameterNames(); e
-					.hasMoreElements();) {
+			for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 				String param = (String) e.nextElement();
-
 				logger.debug(param + ":" + req.getParameter(param));
-
 			}
-			logger.info("VirtualBrowserFilter LOG param END");
-			logger.info("**************************************************************");
 
-			
-			
-			 OutputStream out = response.getOutputStream();	 
-			  GenericResponseWrapper wrapper = 
-			         new GenericResponseWrapper((HttpServletResponse) response); 
-			  chain.doFilter(request,wrapper);
-		
-			  String temp=new String(wrapper.getData());
-			  TestClientModify modify=new TestClientModify();
-			  String resultModify=modify.jsoupModify(temp);
-			  
-			  out.write(resultModify.getBytes());
-			  out.close(); 
-			
-				// verification URI Check
+			out = res.getOutputStream();
+			GenericResponseWrapper wrapper = new GenericResponseWrapper(
+					(HttpServletResponse) response);
+			chain.doFilter(request, wrapper);
 
-				if (req.getAttribute("verificationUri") != null) {
-					int i = (Integer) req.getAttribute("verificationUri");
-					logger.debug("verificationUri:" + i);
-					VirtualBrowserCreateConnection connection = new VirtualBrowserCreateConnection();
-					connection.virtualPageDataSend(req,resultModify);
-				}
-				
+			final byte[] result = wrapper.getData();
+			// TestClientModify modify = new TestClientModify();
+			// final String resultModify = modify.jsoupModify(temp);
+
+			// "X-Requested-With"
+			String method = null;
+			if (req.getHeader("X-Requested-With") == null) {
+				method = "POST";
+			} else
+				method = "PUT";
+
+			executorService.execute(new RequestVirtualPage(req.getSession()
+					.getId(), req.getRequestURI(), method, result));
+
+			out.write(result);
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (out != null) {
+				out.close();
+			}
 		}
-	
-		logger.info("VirtualBrowserFilter END");
-		logger.info("**************************************************************");
 	}
 
-	public void init(FilterConfig config) throws ServletException {
+	class RequestVirtualPage extends Thread {
+
+		private String sessionID;
+		private String requestURI;
+		private String method;
+		private byte[] data;
+
+		public RequestVirtualPage(String sessionID, String requestURI,
+				String method, byte[] data) {
+			this.sessionID = sessionID;
+			this.requestURI = requestURI;
+			this.method = method;
+			this.data = data;
+		}
+
+		@Override
+		public void run() {
+			long start = System.currentTimeMillis();
+			URL url;
+			HttpURLConnection conn = null;
+			DataOutputStream wr = null;
+			try {
+				// create connection
+				url = new URL(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
+						+ sessionID);
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod(method);
+				conn.setRequestProperty("virtual_page_uri", requestURI);
+				logger.debug("virtual_page_uri : " + requestURI);
+
+				conn.setUseCaches(false);
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+
+				wr = new DataOutputStream(conn.getOutputStream());
+				wr.write(data);
+				wr.flush();
+
+				int resCode = conn.getResponseCode();
+				logger.debug("responseCode : " + resCode);
+				switch (resCode) {
+				case 200:
+					logger.debug("virtualpage created");
+					break;
+				case 404:
+					logger.debug("404 not found");
+					break;
+				case 500:
+					logger.debug("500 internal server error");
+					break;
+				default:
+					logger.debug("undefined responseCode");
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+				if (wr != null) {
+					try {
+						wr.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			logger.debug("elapsedTime : "
+					+ (System.currentTimeMillis() - start) + " ms ");
+		}
 
 	}
-
 }

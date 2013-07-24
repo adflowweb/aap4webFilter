@@ -1,7 +1,6 @@
 package kr.co.adflow.filter;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,8 +20,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kr.co.adflow.connection.VerificationRequestConnection;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +31,7 @@ public class VerificationFilter implements Filter {
 			.getLogger(VerificationFilter.class);
 	private Hashtable verificationUriList = new Hashtable();
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
-	ObjectMapper mapper = new ObjectMapper();
+	private ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
