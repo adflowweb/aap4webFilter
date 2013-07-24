@@ -73,19 +73,7 @@ public class VerificationFilter implements Filter {
 							logger.debug("response : "
 									+ responseData.toString());
 
-							// todo
-							// update data
-
-							// JsonObject root = new JsonObject(json_string);
-							// JsonArray questions = root.getJsonArray("d");
-							// for(int i = 0; i < questions.length(); i++) {
-							// JsonObject question = questions.getJsonObject(i);
-							// int id = question.optInt("QuestionnaireId", -1);
-							// String name =
-							// question.optString("QuestionnaireName");
-							// table.put(id, name);
-							// }
-
+							// update verification uri data
 							ht = mapper.readValue(responseData.toString(),
 									Hashtable.class);
 							logger.debug("hashtable : " + ht);
