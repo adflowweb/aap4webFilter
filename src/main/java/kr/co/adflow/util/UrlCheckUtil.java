@@ -1,4 +1,4 @@
-package kr.co.adlfow.util;
+package kr.co.adflow.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

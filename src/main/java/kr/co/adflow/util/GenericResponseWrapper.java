@@ -1,4 +1,4 @@
-package kr.co.adlfow.util;
+package kr.co.adflow.util;
 
 import javax.servlet.*;
 import javax.servlet.http.*;

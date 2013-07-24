@@ -1,4 +1,4 @@
-package kr.co.adlfow.util;
+package kr.co.adflow.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

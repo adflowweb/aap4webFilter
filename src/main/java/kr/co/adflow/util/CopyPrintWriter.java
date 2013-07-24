@@ -1,4 +1,4 @@
-package kr.co.adlfow.util;
+package kr.co.adflow.util;
 
 import java.io.PrintWriter;
 import java.io.Writer;
