@@ -9,12 +9,14 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import kr.co.adlfow.util.FilterProperites;
+import kr.co.adflow.util.FilterProperites;
 
 public class VerificationGetURIConnection {
 	private HttpURLConnection connection = null;
-	private static FilterProperites filterProperites = FilterProperites.getInstance();
-	private static final String APP4SERVERIP = filterProperites.read("aap4ServerIp");
+	private static FilterProperites filterProperites = FilterProperites
+			.getInstance();
+	private static final String APP4SERVERIP = filterProperites
+			.read("aap4ServerIp");
 	private OutputStreamWriter wr = null;
 	private BufferedReader rd = null;
 	private StringBuilder sb = null;
@@ -24,8 +26,6 @@ public class VerificationGetURIConnection {
 	public String verificationCheck() {
 
 		long start = System.currentTimeMillis();
-		
-		
 
 		try {
 			serverAddress = new URL(APP4SERVERIP + "/v1/verificationuri");

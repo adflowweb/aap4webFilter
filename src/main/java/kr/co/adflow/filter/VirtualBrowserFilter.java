@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import kr.co.adflow.connection.VirtualBrowserCreateConnection;
 import kr.co.adflow.testParser.TestClientModify;
-import kr.co.adlfow.util.CopyPrintWriter;
-import kr.co.adlfow.util.GenericResponseWrapper;
+import kr.co.adflow.util.CopyPrintWriter;
+import kr.co.adflow.util.GenericResponseWrapper;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

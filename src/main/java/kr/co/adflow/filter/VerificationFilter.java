@@ -29,7 +29,8 @@ import org.slf4j.LoggerFactory;
 public class VerificationFilter implements Filter {
 
 	private static final String VERIFICATION_SERVER_ADDRESS = "http://127.0.0.1:3000";
-	private static Logger logger = LoggerFactory.getLogger(VerificationFilter.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(VerificationFilter.class);
 	private Hashtable ht = new Hashtable();
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	ObjectMapper mapper = new ObjectMapper();
@@ -88,7 +89,7 @@ public class VerificationFilter implements Filter {
 							ht = mapper.readValue(responseData.toString(),
 									Hashtable.class);
 
-							//ht.put("key", "value");
+							logger.debug("hashtable : " + ht);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

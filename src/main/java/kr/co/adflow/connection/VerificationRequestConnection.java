@@ -8,10 +8,10 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kr.co.adflow.util.FilterProperites;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import kr.co.adlfow.util.FilterProperites;
 
 public class VerificationRequestConnection {
 	private Logger logger = LoggerFactory
@@ -60,18 +60,18 @@ public class VerificationRequestConnection {
 			connection.setDoOutput(true);
 
 			// verificationServerRequest
-			String hash=req.getHeader("hash").toString();
+			String hash = req.getHeader("hash").toString();
 			DataOutputStream wr = new DataOutputStream(
 					connection.getOutputStream());
 			wr.writeBytes(hash);
 			wr.flush();
 			wr.close();
 
-			logger.debug("Request to Send Verification Server Hash:"+hash);
+			logger.debug("Request to Send Verification Server Hash:" + hash);
 
 			// Get verificationServerResponse
 			reponseCode = connection.getResponseCode();
-			logger.debug("Verification Server ResponseCode:"+reponseCode);
+			logger.debug("Verification Server ResponseCode:" + reponseCode);
 		} catch (Exception e) {
 			e.printStackTrace();
 

@@ -3,7 +3,6 @@ package kr.co.adflow.connection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -11,12 +10,11 @@ import java.net.URL;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import kr.co.adflow.util.FilterProperites;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import kr.co.adlfow.util.FilterProperites;
 
 public class VirtualBrowserCreateConnection {
 
@@ -87,14 +85,13 @@ public class VirtualBrowserCreateConnection {
 				temp = "/board/test_search_list.jsp";
 				this.makeDir(MKDIRNAME + temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-				
+
 			} else if (req.getRequestURI().equals("/notice_content_search.do")) {
 				logger.debug("In notice_content_search.do");
 				temp = "/board/test_search_read.jsp";
 				this.makeDir(MKDIRNAME + temp);
 				connection.setRequestProperty(VITUALPAGEURI, temp);
-				
-					
+
 			} else {
 
 				connection.setRequestProperty(VITUALPAGEURI,
