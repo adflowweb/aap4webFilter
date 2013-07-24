@@ -130,23 +130,19 @@ public class VerificationFilter implements Filter {
 
 			URL url;
 			HttpURLConnection conn = null;
-			DataOutputStream wr = null;
 			try {
 				// create connection
 				url = new URL(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
 						+ req.getSession().getId());
 
 				conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("POST");
+				conn.setRequestMethod("GET");
 				conn.setUseCaches(false);
 				conn.setDoInput(true);
-				conn.setDoOutput(true);
+				conn.setDoOutput(false);
 
-				// send hash
-				String hash = req.getHeader("hash");
-				wr = new DataOutputStream(conn.getOutputStream());
-				wr.writeBytes(hash);
-
+				// set header hash
+				conn.setRequestProperty("hash", req.getHeader("hash"));
 				int resCode = conn.getResponseCode();
 				logger.debug("responseCode : " + resCode);
 
@@ -177,13 +173,6 @@ public class VerificationFilter implements Filter {
 			} finally {
 				if (conn != null) {
 					conn.disconnect();
-				}
-				if (wr != null) {
-					try {
-						wr.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
 				}
 			}
 		}
