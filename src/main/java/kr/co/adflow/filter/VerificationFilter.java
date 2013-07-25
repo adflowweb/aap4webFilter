@@ -36,7 +36,7 @@ public class VerificationFilter implements Filter {
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
 	 */
-	public void init(FilterConfig arg0) throws ServletException {
+	public void init(FilterConfig config) throws ServletException {
 		logger.debug("init verificationFilter");
 
 		executorService.execute(new Runnable() {
@@ -56,6 +56,7 @@ public class VerificationFilter implements Filter {
 						conn.setDoInput(true);
 						conn.setDoOutput(false);
 
+						logger.debug("request verification uri list");
 						int resCode = conn.getResponseCode();
 						logger.debug("responseCode : " + resCode);
 						if (resCode == 200) {
@@ -124,7 +125,6 @@ public class VerificationFilter implements Filter {
 		// hiddenField(hash) 추가해야함
 		if (verificationUriList.containsKey(req.getRequestURI())
 				&& req.getHeader("hash") != null) {
-
 			URL url;
 			HttpURLConnection conn = null;
 			try {

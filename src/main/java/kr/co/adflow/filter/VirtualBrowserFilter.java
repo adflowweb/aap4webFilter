@@ -70,7 +70,6 @@ public class VirtualBrowserFilter implements Filter {
 
 			executorService.execute(new RequestVirtualPage(req.getSession()
 					.getId(), req.getRequestURI(), method, result));
-
 			out.write(result);
 		} catch (Exception e) {
 			e.printStackTrace();
