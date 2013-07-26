@@ -123,6 +123,7 @@ public class VirtualBrowserFilter implements Filter {
 				wr.flush();
 
 				logger.debug("request " + method + " virtualpage");
+				logger.debug("conn : " + conn);
 				int resCode = conn.getResponseCode();
 				logger.debug("responseCode : " + resCode);
 				switch (resCode) {

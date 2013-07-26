@@ -142,6 +142,7 @@ public class VerificationFilter implements Filter {
 				// set header hash
 				conn.setRequestProperty("hash", req.getHeader("hash"));
 				logger.debug("request verification");
+				logger.debug("conn : " + conn);
 				int resCode = conn.getResponseCode();
 				logger.debug("responseCode : " + resCode);
 
@@ -160,7 +161,7 @@ public class VerificationFilter implements Filter {
 				case 505: // 검증실패
 					logger.debug("Server Error 505");
 					res.sendError(505);
-					
+
 					// todo
 					// 검증로그전송
 					return;
