@@ -61,15 +61,21 @@ public class VirtualBrowserFilter implements Filter {
 			// TestClientModify modify = new TestClientModify();
 			// final String resultModify = modify.jsoupModify(temp);
 
-			// "X-Requested-With"
-			String method = null;
-			if (req.getHeader("X-Requested-With") == null) {
-				method = "POST";
-			} else
-				method = "PUT";
+			// 검증페이지일 경우
+			if (VerificationFilter.getVerificationUriList().containsKey(
+					req.getRequestURI())) {
+				logger.debug("this is page for verify");
+				// "X-Requested-With"
+				String method = null;
+				if (req.getHeader("X-Requested-With") == null) {
+					method = "POST";
+				} else
+					method = "PUT";
 
-			executorService.execute(new RequestVirtualPage(req.getSession()
-					.getId(), req.getRequestURI(), method, result));
+				executorService.execute(new RequestVirtualPage(req.getSession()
+						.getId(), req.getRequestURI(), method, result));
+			}
+
 			out.write(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,11 +124,17 @@ public class VirtualBrowserFilter implements Filter {
 				wr.write(data);
 				wr.flush();
 
+				logger.debug("request " + method + " virtualpage");
 				int resCode = conn.getResponseCode();
 				logger.debug("responseCode : " + resCode);
 				switch (resCode) {
 				case 200:
-					logger.debug("virtualpage created");
+					if (method.equals("POST")) {
+						logger.debug("virtualpage created");
+					} else {
+						logger.debug("virtualpage modified");
+					}
+
 					break;
 				case 404:
 					logger.debug("404 not found");

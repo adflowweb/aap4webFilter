@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,7 +29,8 @@ public class VerificationFilter implements Filter {
 	private static final String VERIFICATION_SERVER_ADDRESS = "http://127.0.0.1:3000";
 	private static Logger logger = LoggerFactory
 			.getLogger(VerificationFilter.class);
-	private Hashtable verificationUriList = new Hashtable();
+	private static HashMap verificationUriList = new HashMap();
+
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -74,7 +75,7 @@ public class VerificationFilter implements Filter {
 
 							// update verification uri data
 							verificationUriList = mapper.readValue(
-									responseData.toString(), Hashtable.class);
+									responseData.toString(), HashMap.class);
 							logger.debug("verificationUriList : "
 									+ verificationUriList);
 						}
@@ -140,6 +141,7 @@ public class VerificationFilter implements Filter {
 
 				// set header hash
 				conn.setRequestProperty("hash", req.getHeader("hash"));
+				logger.debug("request verification");
 				int resCode = conn.getResponseCode();
 				logger.debug("responseCode : " + resCode);
 
@@ -174,6 +176,14 @@ public class VerificationFilter implements Filter {
 			}
 		}
 		chain.doFilter(req, res);
+	}
+
+	public static HashMap getVerificationUriList() {
+		return verificationUriList;
+	}
+
+	public static void setVerificationUriList(HashMap verificationUriList) {
+		verificationUriList = verificationUriList;
 	}
 
 	public void destroy() {
