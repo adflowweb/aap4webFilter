@@ -42,7 +42,6 @@ public class VirtualBrowserCreateConnection {
 
 			url = new URL(APP4SERVERIP + "/v1/virtualpages/"
 					+ req.getSession().getId());
-
 			connection = (HttpURLConnection) url.openConnection();
 
 			// "X-Requested-With"
