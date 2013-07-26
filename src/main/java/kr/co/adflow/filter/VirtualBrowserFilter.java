@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class VirtualBrowserFilter implements Filter {
 
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://127.0.0.1:3000";
+	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.19:3000";
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 
@@ -70,6 +70,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			executorService.execute(new RequestVirtualPage(req.getSession()
 					.getId(), req.getRequestURI(), method, result));
+
 			out.write(result);
 		} catch (Exception e) {
 			e.printStackTrace();

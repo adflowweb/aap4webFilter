@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class VerificationFilter implements Filter {
 
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://127.0.0.1:3000";
+	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.19:3000";
 	private static Logger logger = LoggerFactory
 			.getLogger(VerificationFilter.class);
 	private Hashtable verificationUriList = new Hashtable();
@@ -36,7 +36,7 @@ public class VerificationFilter implements Filter {
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
 	 */
-	public void init(FilterConfig config) throws ServletException {
+	public void init(FilterConfig arg0) throws ServletException {
 		logger.debug("init verificationFilter");
 
 		executorService.execute(new Runnable() {
@@ -56,7 +56,6 @@ public class VerificationFilter implements Filter {
 						conn.setDoInput(true);
 						conn.setDoOutput(false);
 
-						logger.debug("request verification uri list");
 						int resCode = conn.getResponseCode();
 						logger.debug("responseCode : " + resCode);
 						if (resCode == 200) {
@@ -125,6 +124,7 @@ public class VerificationFilter implements Filter {
 		// hiddenField(hash) 추가해야함
 		if (verificationUriList.containsKey(req.getRequestURI())
 				&& req.getHeader("hash") != null) {
+
 			URL url;
 			HttpURLConnection conn = null;
 			try {
@@ -158,6 +158,7 @@ public class VerificationFilter implements Filter {
 				case 505: // 검증실패
 					logger.debug("Server Error 505");
 					res.sendError(505);
+					
 					// todo
 					// 검증로그전송
 					return;
