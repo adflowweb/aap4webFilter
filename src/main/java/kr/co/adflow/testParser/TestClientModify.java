@@ -25,56 +25,37 @@ public class TestClientModify {
 				logger.debug("onclick ..SearchScript!!!!!!!!!!!!!!!!!");
 				element.attr("onclick", "return modifyClick();");
 			}
-			// element.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
 		}
 		logger.debug(doc.select("form").attr("action").toString());
 
-		// doc.head()
-		// .append("<script>function modifyClick() {"
-		// +
-		// "var str=\"<html>\" + document.documentElement.innerHTML + \"</html>\""
-		// + "var hash = 0;" + "if (str.length == 0) return hash;"
-		// + "for (i = 0; i < str.length; i++) " + "{"
-		// + "char = str.charCodeAt(i);"
-		// + "hash = ((hash<<5)-hash)+char;"
-		// + "hash = hash & hash; "
-		// + "// Convert to 32bit integer} console.log(hash);" +
-		// "" + "return hash;" + "}"
-		// + "</script>");
-	
-		
 		doc.head()
 				.append("<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>");
 		doc.head()
-				.append("<script type=\"text/javascript\" src=\"https://hashmask.googlecode.com/svn-history/r2/trunk/jquery.sha1.js\"></script>");
-
+				.append("<script src=\"http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js\"></script>");
 		doc.head()
 				.append("<script>"
-					/*	+ "function lengthInUtf8Bytes(str) {"
+						+ "function lengthInUtf8Bytes(str) {"
 						+ "var m = encodeURIComponent(str).match(/%[89ABab]/g);"
 						+ "return str.length + (m ? m.length : 0);"
-						+ "}"
-						+*/
-
+						+ "}"	
 						+"function modifyClick(){"
 						+"console.log(\"test\");"
 						+"console.log('test:',$);"
-					/*	+ "var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"
+						+ "var str = $('html').html().replace(/[\\n\\r]/g, '').replace(/\\s+/g, '');"
 						+ "var length = lengthInUtf8Bytes(str);"
 						+ "var hex = '';"
 						+ "console.log(str.length + \" characters, \" + length + \" bytes\");"
 						+ "for(var i=0;i<length;i++) {"
 						+ "    hex += str.charCodeAt(i).toString(16);"
 						+ "}"
-						+ "document.getElementById(\"hash\").value= 12334567677;"
-						+ "document.searchForm.action=\"/notice_search.do\";"
+						+"console.log('hex string : ', hex);"
+						+"var hash = CryptoJS.SHA1(hex);"
+						+"console.log('hash:',hash.toString(CryptoJS.enc.Hex));"
+						+"document.getElementById(\"hash\").value=hash.toString(CryptoJS.enc.Hex);"
 						+ "var hashval = $('input[name=hash]').val();"
-						+ "console.log('hidden hash value :',hashval);"
-						+ "console.log('hex string : ', hex);"
-						+ "console.log('hash : ',$.sha1(hex));"
-						+ "console.log(testHex);"
-						+ "document.searchForm.submit();" */
-						+"var string=$.sha1(\"test\");"
+						+ "console.log('hidden hash value :',hashval);"						
+						+ "document.searchForm.action=\"/notice_search.do\";"
+						+ "document.searchForm.submit();" 
 						+ "}" 
 						+"</script>");
 
