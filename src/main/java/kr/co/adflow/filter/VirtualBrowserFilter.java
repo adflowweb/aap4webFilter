@@ -18,7 +18,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kr.co.adflow.util.GenericResponseWrapper;
+import kr.co.adflow.testParser.TestClientModify;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,9 @@ public class VirtualBrowserFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		ServletResponse newResponse = response;
+		OutputStream out=null;
 
-		OutputStream out = null;
 		try {
 			final HttpServletRequest req = (HttpServletRequest) request;
 			HttpServletResponse res = (HttpServletResponse) response;
@@ -51,15 +52,16 @@ public class VirtualBrowserFilter implements Filter {
 				String param = (String) e.nextElement();
 				logger.debug(param + ":" + req.getParameter(param));
 			}
-
-			out = res.getOutputStream();
-			GenericResponseWrapper wrapper = new GenericResponseWrapper(
+			out=res.getOutputStream();
+			newResponse = new kr.co.adflow.util.CharResponseWrapper(
 					(HttpServletResponse) response);
-			chain.doFilter(request, wrapper);
+			chain.doFilter(request, newResponse);
 
-			final byte[] result = wrapper.getData();
-			// TestClientModify modify = new TestClientModify();
-			// final String resultModify = modify.jsoupModify(temp);
+			String result = newResponse.toString();
+			System.out.println("result:" + result);
+
+			 TestClientModify modify = new TestClientModify();
+			 final String resultModify = modify.jsoupModify(result);
 
 			// 검증페이지일 경우
 			if (VerificationFilter.getVerificationUriList().containsKey(
@@ -72,15 +74,13 @@ public class VirtualBrowserFilter implements Filter {
 				} else
 					method = "PUT";
 				executorService.execute(new RequestVirtualPage(req.getSession()
-						.getId(), req.getRequestURI(), method, result));
+						.getId(), req.getRequestURI(), method, resultModify.getBytes()));
 			}
-			out.write(result);
+
+			
+		out.write(resultModify.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (out != null) {
-				out.close();
-			}
 		}
 	}
 
