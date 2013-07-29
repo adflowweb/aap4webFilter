@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import kr.co.adflow.testParser.TestClientModify;
+import kr.co.adflow.util.CharResponseWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class VirtualBrowserFilter implements Filter {
 				logger.debug(param + ":" + req.getParameter(param));
 			}
 			out=res.getOutputStream();
-			newResponse = new kr.co.adflow.util.CharResponseWrapper(
+			newResponse = new CharResponseWrapper(
 					(HttpServletResponse) response);
 			chain.doFilter(request, newResponse);
 
