@@ -72,6 +72,7 @@ public class VerificationFilter implements Filter {
 							logger.debug("response : "
 									+ responseData.toString());
 
+						
 							// update verification uri data
 							verificationUriList = mapper.readValue(
 									responseData.toString(), HashMap.class);
@@ -98,7 +99,7 @@ public class VerificationFilter implements Filter {
 
 					// sleep 1분
 					try {
-						Thread.sleep(60000);
+						Thread.sleep(6000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

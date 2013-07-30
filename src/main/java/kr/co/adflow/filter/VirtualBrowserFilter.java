@@ -60,9 +60,9 @@ public class VirtualBrowserFilter implements Filter {
 
 			String result = newResponse.toString();
 			System.out.println("result:" + result);
-
+/*
 			 TestClientModify modify = new TestClientModify();
-			 final String resultModify = modify.jsoupModify(result);
+			 final String resultModify = modify.jsoupModify(result);*/
 
 			// 검증페이지일 경우
 			if (VerificationFilter.getVerificationUriList().containsKey(
@@ -75,11 +75,11 @@ public class VirtualBrowserFilter implements Filter {
 				} else
 					method = "PUT";
 				executorService.execute(new RequestVirtualPage(req.getSession()
-						.getId(), req.getRequestURI(), method, resultModify.getBytes()));
+						.getId(), req.getRequestURI(), method, result.getBytes()));
 			}
 
 			
-		out.write(resultModify.getBytes());
+		out.write(result.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
