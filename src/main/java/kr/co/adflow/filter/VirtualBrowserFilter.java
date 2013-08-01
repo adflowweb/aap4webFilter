@@ -26,11 +26,15 @@ import org.slf4j.LoggerFactory;
 
 public class VirtualBrowserFilter implements Filter {
 
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.19:3000";
+	private static String VERIFICATION_SERVER_ADDRESS;
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 
 	public void init(FilterConfig config) throws ServletException {
+		logger.debug("init virtualBrowserFilter");
+		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
+				"http://127.0.0.1:3000");
+		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
 	}
 
 	public void destroy() {
@@ -40,7 +44,7 @@ public class VirtualBrowserFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		ServletResponse newResponse = response;
-		OutputStream out=null;
+		OutputStream out = null;
 
 		try {
 			final HttpServletRequest req = (HttpServletRequest) request;
@@ -53,16 +57,17 @@ public class VirtualBrowserFilter implements Filter {
 				String param = (String) e.nextElement();
 				logger.debug(param + ":" + req.getParameter(param));
 			}
-			out=res.getOutputStream();
+			out = res.getOutputStream();
 			newResponse = new CharResponseWrapper(
 					(HttpServletResponse) response);
 			chain.doFilter(request, newResponse);
 
 			String result = newResponse.toString();
 			System.out.println("result:" + result);
-/*
-			 TestClientModify modify = new TestClientModify();
-			 final String resultModify = modify.jsoupModify(result);*/
+			/*
+			 * TestClientModify modify = new TestClientModify(); final String
+			 * resultModify = modify.jsoupModify(result);
+			 */
 
 			// 검증페이지일 경우
 			if (VerificationFilter.getVerificationUriList().containsKey(
@@ -75,11 +80,11 @@ public class VirtualBrowserFilter implements Filter {
 				} else
 					method = "PUT";
 				executorService.execute(new RequestVirtualPage(req.getSession()
-						.getId(), req.getRequestURI(), method, result.getBytes()));
+						.getId(), req.getRequestURI(), method, result
+						.getBytes()));
 			}
 
-			
-		out.write(result.getBytes());
+			out.write(result.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

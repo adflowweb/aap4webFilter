@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class VerificationFilter implements Filter {
 
-	private static final String VERIFICATION_SERVER_ADDRESS = "http://192.168.1.19:3000";
+	private static String VERIFICATION_SERVER_ADDRESS;
 	private static Logger logger = LoggerFactory
 			.getLogger(VerificationFilter.class);
 	private static HashMap verificationUriList = new HashMap();
@@ -39,6 +39,9 @@ public class VerificationFilter implements Filter {
 	 */
 	public void init(FilterConfig arg0) throws ServletException {
 		logger.debug("init verificationFilter");
+		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
+				"127.0.0.1:3000");
+		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
 
 		executorService.execute(new Runnable() {
 			public void run() {
@@ -57,6 +60,8 @@ public class VerificationFilter implements Filter {
 						conn.setDoInput(true);
 						conn.setDoOutput(false);
 
+						logger.debug("request get verification uri list");
+						logger.debug("request url : " + conn.getURL());
 						int resCode = conn.getResponseCode();
 						logger.debug("responseCode : " + resCode);
 						if (resCode == 200) {
@@ -72,7 +77,6 @@ public class VerificationFilter implements Filter {
 							logger.debug("response : "
 									+ responseData.toString());
 
-						
 							// update verification uri data
 							verificationUriList = mapper.readValue(
 									responseData.toString(), HashMap.class);
@@ -99,7 +103,7 @@ public class VerificationFilter implements Filter {
 
 					// sleep 1분
 					try {
-						Thread.sleep(6000);
+						Thread.sleep(60000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
