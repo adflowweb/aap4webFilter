@@ -40,7 +40,7 @@ public class VerificationFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 		logger.debug("init verificationFilter");
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
-				"127.0.0.1:3000");
+				"http://127.0.0.1:3000");
 		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
 
 		executorService.execute(new Runnable() {
