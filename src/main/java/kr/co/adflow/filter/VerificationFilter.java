@@ -126,6 +126,7 @@ public class VerificationFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		HttpClient client =null;
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 
@@ -144,7 +145,6 @@ public class VerificationFilter implements Filter {
 				&& req.getHeader("hash") != null) {
 
 			URI uri;
-			HttpClient client;
 			HttpGet httpGet = null;
 			try {
 				// create connection
@@ -191,6 +191,10 @@ public class VerificationFilter implements Filter {
 				if (httpGet != null) {
 					httpGet.releaseConnection();
 				}
+				if (client != null) {
+					client.getConnectionManager().shutdown();
+				}
+				
 			}
 		}
 		chain.doFilter(req, res);
