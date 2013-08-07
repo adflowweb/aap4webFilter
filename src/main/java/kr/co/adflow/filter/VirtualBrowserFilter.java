@@ -130,6 +130,8 @@ public class VirtualBrowserFilter implements Filter {
 						+ sessionID);
 				client = new DefaultHttpClient(connectionManager);
 				logger.debug("virtual_page_uri : " + requestURI);
+				logger.debug("virtualPageAddress:"+VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
+						+ sessionID);
 				
 				//POST
 				if (method.equals("POST")) {
