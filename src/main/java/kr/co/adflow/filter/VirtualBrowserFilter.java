@@ -34,6 +34,7 @@ public class VirtualBrowserFilter implements Filter {
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 	private PoolingClientConnectionManager connectionManager = null;
+	private HttpClient client = null;
 	
 	public void init(FilterConfig config) throws ServletException {
 		logger.debug("init virtualBrowserFilter");
@@ -49,6 +50,7 @@ public class VirtualBrowserFilter implements Filter {
 
 	public void destroy() {
 		executorService.shutdown();
+		client.getConnectionManager().shutdown();
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -120,7 +122,6 @@ public class VirtualBrowserFilter implements Filter {
 		public void run() {
 			long start = System.currentTimeMillis();
 			URI uri;
-			HttpClient client = null;
 			HttpPost httpPost = null;
 			HttpPut httpPut = null;
 			HttpResponse getHttpResponse = null;
@@ -186,9 +187,7 @@ public class VirtualBrowserFilter implements Filter {
 				if (httpPut != null) {
 					httpPut.releaseConnection();
 				}
-				if (client != null) {
-					client.getConnectionManager().shutdown();
-				}
+			
 			}
 			logger.debug("elapsedTime : "
 					+ (System.currentTimeMillis() - start) + " ms ");

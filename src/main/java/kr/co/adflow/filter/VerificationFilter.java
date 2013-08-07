@@ -40,6 +40,7 @@ public class VerificationFilter implements Filter {
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
+	private HttpClient client =null;
 
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
@@ -126,7 +127,6 @@ public class VerificationFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		HttpClient client =null;
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 
@@ -191,9 +191,7 @@ public class VerificationFilter implements Filter {
 				if (httpGet != null) {
 					httpGet.releaseConnection();
 				}
-				if (client != null) {
-					client.getConnectionManager().shutdown();
-				}
+			
 				
 			}
 		}
@@ -210,5 +208,7 @@ public class VerificationFilter implements Filter {
 
 	public void destroy() {
 		executorService.shutdown();
+		client.getConnectionManager().shutdown();
+		
 	}
 }
