@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -20,6 +21,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +39,7 @@ public class VerificationFilter implements Filter {
 
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
+	private PoolingClientConnectionManager connectionManager = null;
 
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
@@ -42,6 +49,11 @@ public class VerificationFilter implements Filter {
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
 				"http://127.0.0.1:3000");
 		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
+		//connection Manager Setting..
+		//add Setting
+		connectionManager = new PoolingClientConnectionManager();
+		connectionManager.setMaxTotal(400);
+		connectionManager.setDefaultMaxPerRoute(20);
 
 		executorService.execute(new Runnable() {
 			public void run() {
@@ -131,25 +143,24 @@ public class VerificationFilter implements Filter {
 		if (verificationUriList.containsKey(req.getRequestURI())
 				&& req.getHeader("hash") != null) {
 
-			URL url;
-			HttpURLConnection conn = null;
+			URI uri;
+			HttpClient client;
+			HttpGet httpGet = null;
 			try {
 				// create connection
-				url = new URL(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
+				client = new DefaultHttpClient(connectionManager);
+				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
 						+ req.getSession().getId());
-
-				conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("GET");
-				conn.setUseCaches(false);
-				conn.setDoInput(true);
-				conn.setDoOutput(false);
+				httpGet = new HttpGet(uri);
 
 				// set header hash
-				conn.setRequestProperty("hash", req.getHeader("hash"));
+				httpGet.addHeader("hash", req.getHeader("hash"));
 				logger.debug("request verification");
-				logger.debug("conn : " + conn);
-				int resCode = conn.getResponseCode();
-				logger.debug("responseCode : " + resCode);
+				logger.debug("HttpGet : " + httpGet.toString());
+				
+				//get Response
+				HttpResponse getHttpResponse = client.execute(httpGet);
+				int resCode = getHttpResponse.getStatusLine().getStatusCode();
 
 				switch (resCode) {
 				case 200: // 검증성공
@@ -177,8 +188,8 @@ public class VerificationFilter implements Filter {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				if (conn != null) {
-					conn.disconnect();
+				if (httpGet != null) {
+					httpGet.releaseConnection();
 				}
 			}
 		}

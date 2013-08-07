@@ -1,10 +1,8 @@
 package kr.co.adflow.filter;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,9 +16,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kr.co.adflow.testParser.TestClientModify;
 import kr.co.adflow.util.CharResponseWrapper;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +33,18 @@ public class VirtualBrowserFilter implements Filter {
 	private static String VERIFICATION_SERVER_ADDRESS;
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
-
+	private PoolingClientConnectionManager connectionManager = null;
+	
 	public void init(FilterConfig config) throws ServletException {
 		logger.debug("init virtualBrowserFilter");
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
 				"http://127.0.0.1:3000");
 		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
+		// connection Manager Setting..
+		//add Setting
+		connectionManager = new PoolingClientConnectionManager();
+		connectionManager.setMaxTotal(400);
+		connectionManager.setDefaultMaxPerRoute(20);
 	}
 
 	public void destroy() {
@@ -63,15 +73,16 @@ public class VirtualBrowserFilter implements Filter {
 			chain.doFilter(request, newResponse);
 
 			String result = newResponse.toString();
-			System.out.println("result:" + result);
-			/*
+			//ModifyData
+			/*System.out.println("result:" + result);
+			
 			 * TestClientModify modify = new TestClientModify(); final String
 			 * resultModify = modify.jsoupModify(result);
 			 */
 
 			// 검증페이지일 경우
-			if (VerificationFilter.getVerificationUriList().containsKey(
-					req.getRequestURI())) {
+		/*	if (VerificationFilter.getVerificationUriList().containsKey(
+					req.getRequestURI())) {*/
 				logger.debug("this is page for verify");
 				// "X-Requested-With"
 				String method = null;
@@ -82,7 +93,7 @@ public class VirtualBrowserFilter implements Filter {
 				executorService.execute(new RequestVirtualPage(req.getSession()
 						.getId(), req.getRequestURI(), method, result
 						.getBytes()));
-			}
+		//	}
 
 			out.write(result.getBytes());
 		} catch (Exception e) {
@@ -108,30 +119,42 @@ public class VirtualBrowserFilter implements Filter {
 		@Override
 		public void run() {
 			long start = System.currentTimeMillis();
-			URL url;
-			HttpURLConnection conn = null;
-			DataOutputStream wr = null;
+			URI uri;
+			HttpClient client;
+			HttpPost httpPost = null;
+			HttpPut httpPut = null;
+			HttpResponse getHttpResponse = null;
 			try {
 				// create connection
-				url = new URL(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
+				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
 						+ sessionID);
-				conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod(method);
-				conn.setRequestProperty("virtual_page_uri", requestURI);
+				client = new DefaultHttpClient(connectionManager);
 				logger.debug("virtual_page_uri : " + requestURI);
+				
+				//POST
+				if (method.equals("POST")) {
+					httpPost = new HttpPost(uri);
+					httpPost.addHeader("virtual_page_uri", requestURI);
+					
+					httpPost.setEntity(new ByteArrayEntity(data.clone()));
+					getHttpResponse = client.execute(httpPost);
+				//PUT
+				} else {
+					httpPut = new HttpPut(uri);
+					httpPut.addHeader("virtual_page_uri", requestURI);
+					httpPut.setEntity(new ByteArrayEntity(data.clone()));
+					getHttpResponse = client.execute(httpPut);
 
-				conn.setUseCaches(false);
+				}
+
+			/*	conn.setUseCaches(false);
 				conn.setDoInput(true);
-				conn.setDoOutput(true);
-
-				wr = new DataOutputStream(conn.getOutputStream());
-				wr.write(data);
-				wr.flush();
-
+				conn.setDoOutput(true);*/
+				//ResponseCode
+				int resCode = getHttpResponse.getStatusLine().getStatusCode();
 				logger.debug("request " + method + " virtualpage");
-				logger.debug("conn : " + conn);
-				int resCode = conn.getResponseCode();
 				logger.debug("responseCode : " + resCode);
+		
 				switch (resCode) {
 				case 200:
 					if (method.equals("POST")) {
@@ -154,15 +177,12 @@ public class VirtualBrowserFilter implements Filter {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				if (conn != null) {
-					conn.disconnect();
+				//realease
+				if (httpPost != null) {
+					httpPost.releaseConnection();
 				}
-				if (wr != null) {
-					try {
-						wr.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+				if (httpPut != null) {
+					httpPut.releaseConnection();
 				}
 			}
 			logger.debug("elapsedTime : "
