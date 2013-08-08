@@ -141,8 +141,8 @@ public class VerificationFilter implements Filter {
 
 		// verification uri check
 		// hiddenField(hash) 추가해야함
-		if (verificationUriList.containsKey(req.getRequestURI())
-				&& req.getHeader("hash") != null) {
+		//(verificationUriList.containsKey(req.getRequestURI()
+		if (req.getHeader("hash") != null) {
 
 			URI uri;
 			HttpGet httpGet = null;
@@ -151,7 +151,7 @@ public class VerificationFilter implements Filter {
 				client = new DefaultHttpClient(connectionManager);
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
 						+ req.getSession().getId());
-				httpGet = new HttpGet(uri);
+				httpGet = new HttpGet(uri); 
 
 				// set header hash
 				httpGet.addHeader("hash", req.getHeader("hash"));
