@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.co.adflow.util.CharResponseWrapper;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -108,32 +109,52 @@ public class VirtualBrowserFilter implements Filter {
 					try {
 						// create connection
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/"
-								+ "1234567890");
+								+ "/v1/virtualpages/" + "1234567890");
 						client = new DefaultHttpClient(connectionManager);
 						logger.debug("virtual_page_uri : "
 								+ req.getRequestURI());
 						logger.debug("virtualPageAddress:"
 								+ VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/"
-								+ "1234567890");
-//req.getSession().getId()
+								+ "/v1/virtualpages/" + "1234567890");
+						// req.getSession().getId()
 						// POST
 						if (method.equals("POST")) {
 							httpPost = new HttpPost(uri);
 							httpPost.addHeader("virtual_page_uri",
 									req.getRequestURI());
-
+							httpPost.setHeader("Connection", "keep-alive");
 							httpPost.setEntity(new ByteArrayEntity(result
 									.getBytes()));
+
+							Header[] headers1 = httpPost.getAllHeaders();
+
+							for (int i = 0; i < headers1.length; i++) {
+
+								String name = headers1[i].getName();
+								String value = headers1[i].getValue();
+								logger.debug("debugResponse Header:" + name
+										+ ":" + value);
+							}
+
 							getHttpResponse = client.execute(httpPost);
 							// PUT
 						} else {
 							httpPut = new HttpPut(uri);
 							httpPut.addHeader("virtual_page_uri",
 									req.getRequestURI());
+							httpPut.setHeader("Connection", "keep-alive");
 							httpPut.setEntity(new ByteArrayEntity(result
 									.getBytes()));
+
+							Header[] headers1 = httpPut.getAllHeaders();
+
+							for (int i = 0; i < headers1.length; i++) {
+
+								String name = headers1[i].getName();
+								String value = headers1[i].getValue();
+								logger.debug("debugResponse Header:" + name
+										+ ":" + value);
+							}
 							getHttpResponse = client.execute(httpPut);
 
 						}
@@ -143,6 +164,16 @@ public class VirtualBrowserFilter implements Filter {
 						 * conn.setDoOutput(true);
 						 */
 						// ResponseCode
+						Header[] headers = getHttpResponse.getAllHeaders();
+						// debug Response Header
+						for (int i = 0; i < headers.length; i++) {
+
+							String name = headers[i].getName();
+							String value = headers[i].getValue();
+							logger.debug("debugResponse Header:" + name + ":"
+									+ value);
+						}
+
 						int resCode = getHttpResponse.getStatusLine()
 								.getStatusCode();
 						logger.debug("request " + method + " virtualpage");
