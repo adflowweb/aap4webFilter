@@ -75,6 +75,8 @@ public class VirtualBrowserFilter implements Filter {
 			chain.doFilter(request, newResponse);
 
 			final String result = newResponse.toString();
+			final String sessionID = req.getSession().getId();
+			final String requestURI = req.getRequestURI();
 			// ModifyData
 			/*
 			 * System.out.println("result:" + result);
@@ -108,21 +110,19 @@ public class VirtualBrowserFilter implements Filter {
 					try {
 						// create connection
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/"
-								+ req.getSession().getId());
+								+ "/v1/virtualpages/" + sessionID);
 						client = new DefaultHttpClient(connectionManager);
 						logger.debug("virtual_page_uri : "
-								+ req.getRequestURI());
+								+ requestURI);
 						logger.debug("virtualPageAddress:"
 								+ VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/"
-								+ req.getSession().getId());
+								+ "/v1/virtualpages/" + sessionID);
 
 						// POST
 						if (method.equals("POST")) {
 							httpPost = new HttpPost(uri);
 							httpPost.addHeader("virtual_page_uri",
-									req.getRequestURI());
+									requestURI);
 
 							httpPost.setEntity(new ByteArrayEntity(result
 									.getBytes()));
@@ -131,7 +131,7 @@ public class VirtualBrowserFilter implements Filter {
 						} else {
 							httpPut = new HttpPut(uri);
 							httpPut.addHeader("virtual_page_uri",
-									req.getRequestURI());
+									requestURI);
 							httpPut.setEntity(new ByteArrayEntity(result
 									.getBytes()));
 							getHttpResponse = client.execute(httpPut);
