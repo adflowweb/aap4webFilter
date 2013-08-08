@@ -161,6 +161,7 @@ public class VerificationFilter implements Filter {
 
 				// set header hash
 				httpGet.addHeader("hash", req.getHeader("hash"));
+				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
 				logger.debug("HttpGet : " + httpGet.toString());
 				
@@ -194,9 +195,9 @@ public class VerificationFilter implements Filter {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				if (client != null) {
-				
-					client.getConnectionManager().releaseConnection(null,30,TimeUnit.MINUTES);
+				if (httpGet != null) {
+					httpGet.releaseConnection();
+					
 				}
 			
 				

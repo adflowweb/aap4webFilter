@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -32,10 +31,7 @@ import org.slf4j.LoggerFactory;
 public class VirtualBrowserFilter implements Filter {
 
 	private static String VERIFICATION_SERVER_ADDRESS;
-	// private ExecutorService executorService =
-	// Executors.newCachedThreadPool();
-	private ExecutorService executorService = Executors.newFixedThreadPool(50);
-
+	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 	private PoolingClientConnectionManager connectionManager = null;
 	private HttpClient client = null;
@@ -79,8 +75,6 @@ public class VirtualBrowserFilter implements Filter {
 			chain.doFilter(request, newResponse);
 
 			final String result = newResponse.toString();
-			final String sessionID = req.getSession().getId();
-			final String requestURI = req.getRequestURI();
 			// ModifyData
 			/*
 			 * System.out.println("result:" + result);
@@ -114,17 +108,21 @@ public class VirtualBrowserFilter implements Filter {
 					try {
 						// create connection
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/" + sessionID);
+								+ "/v1/virtualpages/"
+								+ req.getSession().getId());
 						client = new DefaultHttpClient(connectionManager);
-						logger.debug("virtual_page_uri : " + requestURI);
+						logger.debug("virtual_page_uri : "
+								+ req.getRequestURI());
 						logger.debug("virtualPageAddress:"
 								+ VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/" + sessionID);
+								+ "/v1/virtualpages/"
+								+ req.getSession().getId());
 
 						// POST
 						if (method.equals("POST")) {
 							httpPost = new HttpPost(uri);
-							httpPost.addHeader("virtual_page_uri", requestURI);
+							httpPost.addHeader("virtual_page_uri",
+									req.getRequestURI());
 
 							httpPost.setEntity(new ByteArrayEntity(result
 									.getBytes()));
@@ -132,7 +130,8 @@ public class VirtualBrowserFilter implements Filter {
 							// PUT
 						} else {
 							httpPut = new HttpPut(uri);
-							httpPut.addHeader("virtual_page_uri", requestURI);
+							httpPut.addHeader("virtual_page_uri",
+									req.getRequestURI());
 							httpPut.setEntity(new ByteArrayEntity(result
 									.getBytes()));
 							getHttpResponse = client.execute(httpPut);
@@ -232,13 +231,14 @@ public class VirtualBrowserFilter implements Filter {
 				if (method.equals("POST")) {
 					httpPost = new HttpPost(uri);
 					httpPost.addHeader("virtual_page_uri", requestURI);
-
+					httpPost.setHeader("Connection", "keep-alive");
 					httpPost.setEntity(new ByteArrayEntity(data.clone()));
 					getHttpResponse = client.execute(httpPost);
 					// PUT
 				} else {
 					httpPut = new HttpPut(uri);
 					httpPut.addHeader("virtual_page_uri", requestURI);
+					httpPut.setHeader("Connection", "keep-alive");
 					httpPut.setEntity(new ByteArrayEntity(data.clone()));
 					getHttpResponse = client.execute(httpPut);
 
@@ -276,10 +276,12 @@ public class VirtualBrowserFilter implements Filter {
 				e.printStackTrace();
 			} finally {
 				// realease
-				if (client != null) {
-					client.getConnectionManager().releaseConnection(null,30,TimeUnit.MINUTES);
+				if (httpPost != null) {
+					httpPost.releaseConnection();
 				}
-			
+				if (httpPut != null) {
+					httpPut.releaseConnection();
+				}
 
 			}
 			logger.debug("elapsedTime : "
