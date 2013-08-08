@@ -31,7 +31,10 @@ import org.slf4j.LoggerFactory;
 public class VirtualBrowserFilter implements Filter {
 
 	private static String VERIFICATION_SERVER_ADDRESS;
-	private ExecutorService executorService = Executors.newCachedThreadPool();
+	// private ExecutorService executorService =
+	// Executors.newCachedThreadPool();
+	private ExecutorService executorService = Executors.newFixedThreadPool(50);
+
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 	private PoolingClientConnectionManager connectionManager = null;
 	private HttpClient client = null;
@@ -112,8 +115,7 @@ public class VirtualBrowserFilter implements Filter {
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/virtualpages/" + sessionID);
 						client = new DefaultHttpClient(connectionManager);
-						logger.debug("virtual_page_uri : "
-								+ requestURI);
+						logger.debug("virtual_page_uri : " + requestURI);
 						logger.debug("virtualPageAddress:"
 								+ VERIFICATION_SERVER_ADDRESS
 								+ "/v1/virtualpages/" + sessionID);
@@ -121,8 +123,7 @@ public class VirtualBrowserFilter implements Filter {
 						// POST
 						if (method.equals("POST")) {
 							httpPost = new HttpPost(uri);
-							httpPost.addHeader("virtual_page_uri",
-									requestURI);
+							httpPost.addHeader("virtual_page_uri", requestURI);
 
 							httpPost.setEntity(new ByteArrayEntity(result
 									.getBytes()));
@@ -130,8 +131,7 @@ public class VirtualBrowserFilter implements Filter {
 							// PUT
 						} else {
 							httpPut = new HttpPut(uri);
-							httpPut.addHeader("virtual_page_uri",
-									requestURI);
+							httpPut.addHeader("virtual_page_uri", requestURI);
 							httpPut.setEntity(new ByteArrayEntity(result
 									.getBytes()));
 							getHttpResponse = client.execute(httpPut);
