@@ -35,14 +35,14 @@ public class VirtualBrowserFilter implements Filter {
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 	private PoolingClientConnectionManager connectionManager = null;
 	private HttpClient client = null;
-	
+
 	public void init(FilterConfig config) throws ServletException {
 		logger.debug("init virtualBrowserFilter");
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
 				"http://127.0.0.1:3000");
 		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
 		// connection Manager Setting..
-		//add Setting
+		// add Setting
 		connectionManager = new PoolingClientConnectionManager();
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(20);
@@ -74,28 +74,120 @@ public class VirtualBrowserFilter implements Filter {
 					(HttpServletResponse) response);
 			chain.doFilter(request, newResponse);
 
-			String result = newResponse.toString();
-			//ModifyData
-			/*System.out.println("result:" + result);
-			
+			final String result = newResponse.toString();
+			// ModifyData
+			/*
+			 * System.out.println("result:" + result);
+			 * 
 			 * TestClientModify modify = new TestClientModify(); final String
 			 * resultModify = modify.jsoupModify(result);
 			 */
 
 			// 검증페이지일 경우
-		/*	if (VerificationFilter.getVerificationUriList().containsKey(
-					req.getRequestURI())) {*/
-				logger.debug("this is page for verify");
-				// "X-Requested-With"
-				String method = null;
-				if (req.getHeader("X-Requested-With") == null) {
-					method = "POST";
-				} else
-					method = "PUT";
-				executorService.execute(new RequestVirtualPage(req.getSession()
-						.getId(), req.getRequestURI(), method, result
-						.getBytes()));
-		//	}
+			/*
+			 * if (VerificationFilter.getVerificationUriList().containsKey(
+			 * req.getRequestURI())) {
+			 */
+			logger.debug("this is page for verify");
+			// "X-Requested-With"
+			final String method;
+			if (req.getHeader("X-Requested-With") == null) {
+				method = "POST";
+			} else
+				method = "PUT";
+
+			executorService.execute(new Runnable() {
+
+				@Override
+				public void run() {
+					long start = System.currentTimeMillis();
+					URI uri;
+					HttpPost httpPost = null;
+					HttpPut httpPut = null;
+					HttpResponse getHttpResponse = null;
+					try {
+						// create connection
+						uri = new URI(VERIFICATION_SERVER_ADDRESS
+								+ "/v1/virtualpages/"
+								+ req.getSession().getId());
+						client = new DefaultHttpClient(connectionManager);
+						logger.debug("virtual_page_uri : "
+								+ req.getRequestURI());
+						logger.debug("virtualPageAddress:"
+								+ VERIFICATION_SERVER_ADDRESS
+								+ "/v1/virtualpages/"
+								+ req.getSession().getId());
+
+						// POST
+						if (method.equals("POST")) {
+							httpPost = new HttpPost(uri);
+							httpPost.addHeader("virtual_page_uri",
+									req.getRequestURI());
+
+							httpPost.setEntity(new ByteArrayEntity(result
+									.getBytes()));
+							getHttpResponse = client.execute(httpPost);
+							// PUT
+						} else {
+							httpPut = new HttpPut(uri);
+							httpPut.addHeader("virtual_page_uri",
+									req.getRequestURI());
+							httpPut.setEntity(new ByteArrayEntity(result
+									.getBytes()));
+							getHttpResponse = client.execute(httpPut);
+
+						}
+
+						/*
+						 * conn.setUseCaches(false); conn.setDoInput(true);
+						 * conn.setDoOutput(true);
+						 */
+						// ResponseCode
+						int resCode = getHttpResponse.getStatusLine()
+								.getStatusCode();
+						logger.debug("request " + method + " virtualpage");
+						logger.debug("responseCode : " + resCode);
+
+						switch (resCode) {
+						case 200:
+							if (method.equals("POST")) {
+								logger.debug("virtualpage created");
+							} else {
+								logger.debug("virtualpage modified");
+							}
+
+							break;
+						case 404:
+							logger.debug("404 not found");
+							break;
+						case 500:
+							logger.debug("500 internal server error");
+							break;
+						default:
+							logger.debug("undefined responseCode");
+							break;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						// realease
+						if (httpPost != null) {
+							httpPost.releaseConnection();
+						}
+						if (httpPut != null) {
+							httpPut.releaseConnection();
+						}
+
+					}
+					logger.debug("elapsedTime : "
+							+ (System.currentTimeMillis() - start) + " ms ");
+
+				}
+			});
+			// executorService.execute(new RequestVirtualPage(req.getSession()
+			// .getId(), req.getRequestURI(), method, result
+			// .getBytes()));
+			// }
 
 			out.write(result.getBytes());
 		} catch (Exception e) {
@@ -131,17 +223,18 @@ public class VirtualBrowserFilter implements Filter {
 						+ sessionID);
 				client = new DefaultHttpClient(connectionManager);
 				logger.debug("virtual_page_uri : " + requestURI);
-				logger.debug("virtualPageAddress:"+VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
+				logger.debug("virtualPageAddress:"
+						+ VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
 						+ sessionID);
-				
-				//POST
+
+				// POST
 				if (method.equals("POST")) {
 					httpPost = new HttpPost(uri);
 					httpPost.addHeader("virtual_page_uri", requestURI);
-					
+
 					httpPost.setEntity(new ByteArrayEntity(data.clone()));
 					getHttpResponse = client.execute(httpPost);
-				//PUT
+					// PUT
 				} else {
 					httpPut = new HttpPut(uri);
 					httpPut.addHeader("virtual_page_uri", requestURI);
@@ -150,14 +243,15 @@ public class VirtualBrowserFilter implements Filter {
 
 				}
 
-			/*	conn.setUseCaches(false);
-				conn.setDoInput(true);
-				conn.setDoOutput(true);*/
-				//ResponseCode
+				/*
+				 * conn.setUseCaches(false); conn.setDoInput(true);
+				 * conn.setDoOutput(true);
+				 */
+				// ResponseCode
 				int resCode = getHttpResponse.getStatusLine().getStatusCode();
 				logger.debug("request " + method + " virtualpage");
 				logger.debug("responseCode : " + resCode);
-		
+
 				switch (resCode) {
 				case 200:
 					if (method.equals("POST")) {
@@ -180,14 +274,14 @@ public class VirtualBrowserFilter implements Filter {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				//realease
+				// realease
 				if (httpPost != null) {
 					httpPost.releaseConnection();
 				}
 				if (httpPut != null) {
 					httpPut.releaseConnection();
 				}
-			
+
 			}
 			logger.debug("elapsedTime : "
 					+ (System.currentTimeMillis() - start) + " ms ");
