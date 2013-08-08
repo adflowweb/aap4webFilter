@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -275,12 +276,10 @@ public class VirtualBrowserFilter implements Filter {
 				e.printStackTrace();
 			} finally {
 				// realease
-				if (httpPost != null) {
-					httpPost.releaseConnection();
+				if (client != null) {
+					client.getConnectionManager().releaseConnection(null,30,TimeUnit.MINUTES);
 				}
-				if (httpPut != null) {
-					httpPut.releaseConnection();
-				}
+			
 
 			}
 			logger.debug("elapsedTime : "

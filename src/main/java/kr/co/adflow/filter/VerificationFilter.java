@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ManagedClientConnection;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -55,6 +57,7 @@ public class VerificationFilter implements Filter {
 		connectionManager = new PoolingClientConnectionManager();
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(20);
+		
 
 		executorService.execute(new Runnable() {
 			public void run() {
@@ -149,6 +152,9 @@ public class VerificationFilter implements Filter {
 			try {
 				// create connection
 				client = new DefaultHttpClient(connectionManager);
+				
+				
+				
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
 						+ req.getSession().getId());
 				httpGet = new HttpGet(uri); 
@@ -188,8 +194,9 @@ public class VerificationFilter implements Filter {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				if (httpGet != null) {
-					httpGet.releaseConnection();
+				if (client != null) {
+				
+					client.getConnectionManager().releaseConnection(null,30,TimeUnit.MINUTES);
 				}
 			
 				
