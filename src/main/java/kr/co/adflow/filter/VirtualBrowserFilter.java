@@ -109,15 +109,15 @@ public class VirtualBrowserFilter implements Filter {
 						// create connection
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/virtualpages/"
-								+ req.getSession().getId());
+								+ "1234567890");
 						client = new DefaultHttpClient(connectionManager);
 						logger.debug("virtual_page_uri : "
 								+ req.getRequestURI());
 						logger.debug("virtualPageAddress:"
 								+ VERIFICATION_SERVER_ADDRESS
 								+ "/v1/virtualpages/"
-								+ req.getSession().getId());
-
+								+ "1234567890");
+//req.getSession().getId()
 						// POST
 						if (method.equals("POST")) {
 							httpPost = new HttpPost(uri);
