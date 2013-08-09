@@ -6,6 +6,9 @@ import java.net.URI;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -35,7 +38,10 @@ public class VirtualBrowserFilter implements Filter {
 	private static String VERIFICATION_SERVER_ADDRESS;
 	// private ExecutorService executorService =
 	// Executors.newCachedThreadPool();
-	private ExecutorService executorService = Executors.newFixedThreadPool(50);
+	// private ExecutorService executorService =
+	// Executors.newFixedThreadPool(50);
+	private ExecutorService executorService = new ThreadPoolExecutor(2, 100,
+			30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
 	private final Logger logger = LoggerFactory
 			.getLogger(VirtualBrowserFilter.class);
