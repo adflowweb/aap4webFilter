@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Enumeration;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -40,8 +40,20 @@ public class VirtualBrowserFilter implements Filter {
 	// Executors.newCachedThreadPool();
 	// private ExecutorService executorService =
 	// Executors.newFixedThreadPool(50);
-	private ExecutorService executorService = new ThreadPoolExecutor(20, 100,
-			30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+
+	int poolSize = 20;
+	int maxPoolSize = 100;
+	long keepAliveTime = 10;
+
+	final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(
+			1000);
+
+	private ExecutorService executorService = new ThreadPoolExecutor(poolSize,
+			maxPoolSize, keepAliveTime, TimeUnit.SECONDS, /*
+														 * new
+														 * SynchronousQueue<Runnable
+														 * >()
+														 */queue);
 
 	private final Logger logger = LoggerFactory
 			.getLogger(VirtualBrowserFilter.class);
@@ -121,7 +133,7 @@ public class VirtualBrowserFilter implements Filter {
 		}
 	}
 
-	class RequestVirtualPage extends Thread {
+	class RequestVirtualPage implements Runnable {
 
 		private String sessionID;
 		private String requestURI;
