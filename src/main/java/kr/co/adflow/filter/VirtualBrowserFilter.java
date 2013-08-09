@@ -123,8 +123,10 @@ public class VirtualBrowserFilter implements Filter {
 			} else
 				method = "PUT";
 
-			executorService.execute(new RequestVirtualPage(req.getSession()
-					.getId(), req.getRequestURI(), method, result.getBytes()));
+			requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
+					method, result.getBytes());
+			// executorService.execute(new RequestVirtualPage(req.getSession()
+			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 
 			out.write(result.getBytes());
@@ -150,86 +152,88 @@ public class VirtualBrowserFilter implements Filter {
 
 		@Override
 		public void run() {
-			long start = System.currentTimeMillis();
-			URI uri;
-			HttpRequest request = null;
-			// HttpPut httpPut = null;
-			HttpResponse httpResponse = null;
-			try {
-				// create connection
-				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
-						+ sessionID);
-
-				// client = new DefaultHttpClient(connectionManager);
-
-				logger.debug("virtual_page_uri : " + requestURI);
-				logger.debug("virtualPageAddress:"
-						+ VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
-						+ sessionID);
-
-				// POST
-				if (method.equals("POST")) {
-					request = new HttpPost(uri);
-					((HttpPost) request).setEntity(new ByteArrayEntity(data));
-
-				} else {// PUT
-					request = new HttpPut(uri);
-					((HttpPut) request).setEntity(new ByteArrayEntity(data));
-				}
-				request.addHeader("virtual_page_uri", requestURI);
-				request.setHeader("Connection", "keep-alive");
-				httpResponse = client.execute((HttpUriRequest) request);
-
-				// conn.setUseCaches(false); conn.setDoInput(true);
-				// conn.setDoOutput(true);
-
-				// ResponseCode
-				int resCode = httpResponse.getStatusLine().getStatusCode();
-				logger.debug("request " + method + " virtualpage");
-				logger.debug("responseCode : " + resCode);
-				EntityUtils.consume(httpResponse.getEntity());
-				// getHttpResponse.getEntity()
-
-				switch (resCode) {
-				case 200:
-					if (method.equals("POST")) {
-						logger.debug("virtualpage created");
-					} else {
-						logger.debug("virtualpage modified");
-					}
-
-					break;
-				case 404:
-					logger.debug("404 not found");
-					break;
-				case 500:
-					logger.debug("500 internal server error");
-					break;
-				default:
-					logger.debug("undefined responseCode");
-					break;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-
-			} finally {
-				// realease
-
-				/*
-				 * if (httpPost != null) { httpPost.releaseConnection();
-				 * 
-				 * //
-				 * connectionManager.releaseConnection((ManagedClientConnection)
-				 * // httpPost, 90000000, TimeUnit.MINUTES); } if (httpPut !=
-				 * null) { httpPut.releaseConnection(); //
-				 * connectionManager.releaseConnection((ManagedClientConnection)
-				 * // httpPut, 90000000, TimeUnit.MINUTES); }
-				 */
-
-			}
-			logger.debug("elapsedTime : "
-					+ (System.currentTimeMillis() - start) + " ms ");
+			requestVirtualPage(sessionID, requestURI, method, data);
 		}
+	}
 
+	private void requestVirtualPage(String sessionID, String requestURI,
+			String method, byte[] data) {
+		long start = System.currentTimeMillis();
+		URI uri;
+		HttpRequest request = null;
+		// HttpPut httpPut = null;
+		HttpResponse httpResponse = null;
+		try {
+			// create connection
+			uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
+					+ sessionID);
+
+			// client = new DefaultHttpClient(connectionManager);
+
+			logger.debug("virtual_page_uri : " + requestURI);
+			logger.debug("virtualPageAddress:" + VERIFICATION_SERVER_ADDRESS
+					+ "/v1/virtualpages/" + sessionID);
+
+			// POST
+			if (method.equals("POST")) {
+				request = new HttpPost(uri);
+				((HttpPost) request).setEntity(new ByteArrayEntity(data));
+
+			} else {// PUT
+				request = new HttpPut(uri);
+				((HttpPut) request).setEntity(new ByteArrayEntity(data));
+			}
+			request.addHeader("virtual_page_uri", requestURI);
+			request.setHeader("Connection", "keep-alive");
+			httpResponse = client.execute((HttpUriRequest) request);
+
+			// conn.setUseCaches(false); conn.setDoInput(true);
+			// conn.setDoOutput(true);
+
+			// ResponseCode
+			int resCode = httpResponse.getStatusLine().getStatusCode();
+			logger.debug("request " + method + " virtualpage");
+			logger.debug("responseCode : " + resCode);
+			EntityUtils.consume(httpResponse.getEntity());
+			// getHttpResponse.getEntity()
+
+			switch (resCode) {
+			case 200:
+				if (method.equals("POST")) {
+					logger.debug("virtualpage created");
+				} else {
+					logger.debug("virtualpage modified");
+				}
+
+				break;
+			case 404:
+				logger.debug("404 not found");
+				break;
+			case 500:
+				logger.debug("500 internal server error");
+				break;
+			default:
+				logger.debug("undefined responseCode");
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			// realease
+
+			/*
+			 * if (httpPost != null) { httpPost.releaseConnection();
+			 * 
+			 * // connectionManager.releaseConnection((ManagedClientConnection)
+			 * // httpPost, 90000000, TimeUnit.MINUTES); } if (httpPut != null)
+			 * { httpPut.releaseConnection(); //
+			 * connectionManager.releaseConnection((ManagedClientConnection) //
+			 * httpPut, 90000000, TimeUnit.MINUTES); }
+			 */
+
+		}
+		logger.debug("elapsedTime : " + (System.currentTimeMillis() - start)
+				+ " ms ");
 	}
 }
