@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -21,11 +20,10 @@ import kr.co.adflow.util.CharResponseWrapper;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.conn.ManagedClientConnection;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.slf4j.Logger;
@@ -40,7 +38,7 @@ public class VirtualBrowserFilter implements Filter {
 
 	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 	private PoolingClientConnectionManager connectionManager = null;
-	private HttpClient client = null;
+	private DefaultHttpClient client = null;
 
 	public void init(FilterConfig config) throws ServletException {
 		logger.debug("init virtualBrowserFilter");
@@ -119,6 +117,7 @@ public class VirtualBrowserFilter implements Filter {
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/virtualpages/" + sessionID);
 						client = new DefaultHttpClient(connectionManager);
+						client.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy());
 					
 						logger.debug("virtual_page_uri : " + requestURI);
 						logger.debug("virtualPageAddress:"
@@ -249,7 +248,10 @@ public class VirtualBrowserFilter implements Filter {
 				// create connection
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
 						+ sessionID);
+				
+				
 				client = new DefaultHttpClient(connectionManager);
+			
 				logger.debug("virtual_page_uri : " + requestURI);
 				logger.debug("virtualPageAddress:"
 						+ VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
