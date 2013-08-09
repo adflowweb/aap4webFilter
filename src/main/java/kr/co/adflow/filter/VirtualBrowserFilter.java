@@ -18,13 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.co.adflow.util.CharResponseWrapper;
 
-import org.apache.http.Header;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,8 +82,8 @@ public class VirtualBrowserFilter implements Filter {
 			chain.doFilter(request, newResponse);
 
 			String result = newResponse.toString();
-			//String sessionID = req.getSession().getId();
-			//String requestURI = req.getRequestURI();
+			// String sessionID = req.getSession().getId();
+			// String requestURI = req.getRequestURI();
 			// ModifyData
 			/*
 			 * System.out.println("result:" + result);
@@ -132,15 +134,15 @@ public class VirtualBrowserFilter implements Filter {
 		public void run() {
 			long start = System.currentTimeMillis();
 			URI uri;
-			HttpPost httpPost = null;
-			HttpPut httpPut = null;
-			HttpResponse getHttpResponse = null;
+			HttpRequest request = null;
+			// HttpPut httpPut = null;
+			HttpResponse httpResponse = null;
 			try {
 				// create connection
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
 						+ sessionID);
 
-				//client = new DefaultHttpClient(connectionManager);
+				// client = new DefaultHttpClient(connectionManager);
 
 				logger.debug("virtual_page_uri : " + requestURI);
 				logger.debug("virtualPageAddress:"
@@ -149,28 +151,26 @@ public class VirtualBrowserFilter implements Filter {
 
 				// POST
 				if (method.equals("POST")) {
-					httpPost = new HttpPost(uri);
-					httpPost.addHeader("virtual_page_uri", requestURI);
-					httpPost.setHeader("Connection", "keep-alive");
-					httpPost.setEntity(new ByteArrayEntity(data.clone()));
-					getHttpResponse = client.execute(httpPost);
-					// PUT
-				} else {
-					httpPut = new HttpPut(uri);
-					httpPut.addHeader("virtual_page_uri", requestURI);
-					httpPut.setHeader("Connection", "keep-alive");
-					httpPut.setEntity(new ByteArrayEntity(data.clone()));
-					getHttpResponse = client.execute(httpPut);
+					request = new HttpPost(uri);
+					((HttpPost) request).setEntity(new ByteArrayEntity(data));
 
+				} else {// PUT
+					request = new HttpPut(uri);
+					((HttpPut) request).setEntity(new ByteArrayEntity(data));
 				}
+				request.addHeader("virtual_page_uri", requestURI);
+				request.setHeader("Connection", "keep-alive");
+				httpResponse = client.execute((HttpUriRequest) request);
 
 				// conn.setUseCaches(false); conn.setDoInput(true);
 				// conn.setDoOutput(true);
 
 				// ResponseCode
-				int resCode = getHttpResponse.getStatusLine().getStatusCode();
+				int resCode = httpResponse.getStatusLine().getStatusCode();
 				logger.debug("request " + method + " virtualpage");
 				logger.debug("responseCode : " + resCode);
+				EntityUtils.consume(httpResponse.getEntity());
+				// getHttpResponse.getEntity()
 
 				switch (resCode) {
 				case 200:
@@ -193,19 +193,20 @@ public class VirtualBrowserFilter implements Filter {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+
 			} finally {
 				// realease
 
-				if (httpPost != null) {
-					httpPost.releaseConnection();
-					// connectionManager.releaseConnection((ManagedClientConnection)
-					// httpPost, 90000000, TimeUnit.MINUTES);
-				}
-				if (httpPut != null) {
-					httpPut.releaseConnection();
-					// connectionManager.releaseConnection((ManagedClientConnection)
-					// httpPut, 90000000, TimeUnit.MINUTES);
-				}
+				/*
+				 * if (httpPost != null) { httpPost.releaseConnection();
+				 * 
+				 * //
+				 * connectionManager.releaseConnection((ManagedClientConnection)
+				 * // httpPost, 90000000, TimeUnit.MINUTES); } if (httpPut !=
+				 * null) { httpPut.releaseConnection(); //
+				 * connectionManager.releaseConnection((ManagedClientConnection)
+				 * // httpPut, 90000000, TimeUnit.MINUTES); }
+				 */
 
 			}
 			logger.debug("elapsedTime : "
