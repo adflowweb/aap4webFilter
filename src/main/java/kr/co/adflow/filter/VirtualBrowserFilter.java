@@ -51,7 +51,7 @@ public class VirtualBrowserFilter implements Filter {
 		// add Setting
 		connectionManager = new PoolingClientConnectionManager();
 		connectionManager.setMaxTotal(400);
-		connectionManager.setDefaultMaxPerRoute(50);
+		connectionManager.setDefaultMaxPerRoute(100);
 		client = new DefaultHttpClient(connectionManager);
 	}
 
