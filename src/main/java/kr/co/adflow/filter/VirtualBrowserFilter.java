@@ -196,7 +196,7 @@ public class VirtualBrowserFilter implements Filter {
 			} finally {
 				// realease
 
-		/*		if (httpPost != null) {
+				if (httpPost != null) {
 					httpPost.releaseConnection();
 					// connectionManager.releaseConnection((ManagedClientConnection)
 					// httpPost, 90000000, TimeUnit.MINUTES);
@@ -205,7 +205,7 @@ public class VirtualBrowserFilter implements Filter {
 					httpPut.releaseConnection();
 					// connectionManager.releaseConnection((ManagedClientConnection)
 					// httpPut, 90000000, TimeUnit.MINUTES);
-				}*/
+				}
 
 			}
 			logger.debug("elapsedTime : "
