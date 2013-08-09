@@ -36,7 +36,7 @@ public class VirtualBrowserFilter implements Filter {
 	// Executors.newCachedThreadPool();
 	private ExecutorService executorService = Executors.newFixedThreadPool(50);
 
-	private Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
+	private final Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client = null;
 
@@ -107,6 +107,7 @@ public class VirtualBrowserFilter implements Filter {
 
 				@Override
 				public void run() {
+					logger.debug("executorService Run..");
 					long start = System.currentTimeMillis();
 					URI uri;
 					HttpPost httpPost = null;
@@ -127,6 +128,8 @@ public class VirtualBrowserFilter implements Filter {
 
 						// POST
 						if (method.equals("POST")) {
+							
+							
 							httpPost = new HttpPost(uri);
 							httpPost.addHeader("virtual_page_uri", requestURI);
 							httpPost.setHeader("Connection", "keep-alive");
