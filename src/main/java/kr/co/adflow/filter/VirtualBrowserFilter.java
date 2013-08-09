@@ -118,7 +118,7 @@ public class VirtualBrowserFilter implements Filter {
 								+ "/v1/virtualpages/" + sessionID);
 						client = new DefaultHttpClient(connectionManager);
 						
-						client.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy());
+						//client.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy());
 					
 						logger.debug("virtual_page_uri : " + requestURI);
 						logger.debug("virtualPageAddress:"
@@ -199,12 +199,12 @@ public class VirtualBrowserFilter implements Filter {
 						e.printStackTrace();
 					} finally {
 						// realease
-						if (httpPost != null) {
+					/*	if (httpPost != null) {
 							httpPost.releaseConnection();
 						}
 						if (httpPut != null) {
 							httpPut.releaseConnection();
-						}
+						}*/
 
 					}
 					logger.debug("elapsedTime : "
@@ -223,7 +223,7 @@ public class VirtualBrowserFilter implements Filter {
 		}
 	}
 
-	class RequestVirtualPage extends Thread {
+	/*class RequestVirtualPage extends Thread {
 
 		private String sessionID;
 		private String requestURI;
@@ -274,10 +274,10 @@ public class VirtualBrowserFilter implements Filter {
 
 				}
 
-				/*
+				
 				 * conn.setUseCaches(false); conn.setDoInput(true);
 				 * conn.setDoOutput(true);
-				 */
+				 
 				// ResponseCode
 				int resCode = getHttpResponse.getStatusLine().getStatusCode();
 				logger.debug("request " + method + " virtualpage");
@@ -322,5 +322,5 @@ public class VirtualBrowserFilter implements Filter {
 					+ (System.currentTimeMillis() - start) + " ms ");
 		}
 
-	}
+	}*/
 }
