@@ -23,7 +23,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.slf4j.Logger;
@@ -36,9 +35,10 @@ public class VirtualBrowserFilter implements Filter {
 	// Executors.newCachedThreadPool();
 	private ExecutorService executorService = Executors.newFixedThreadPool(50);
 
-	private final Logger logger = LoggerFactory.getLogger(VirtualBrowserFilter.class);
+	private final Logger logger = LoggerFactory
+			.getLogger(VirtualBrowserFilter.class);
 	private PoolingClientConnectionManager connectionManager = null;
-	private DefaultHttpClient client = null;
+	private DefaultHttpClient client;
 
 	public void init(FilterConfig config) throws ServletException {
 		logger.debug("init virtualBrowserFilter");
@@ -50,7 +50,7 @@ public class VirtualBrowserFilter implements Filter {
 		connectionManager = new PoolingClientConnectionManager();
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(20);
-		
+		client = new DefaultHttpClient(connectionManager);
 	}
 
 	public void destroy() {
@@ -79,9 +79,9 @@ public class VirtualBrowserFilter implements Filter {
 					(HttpServletResponse) response);
 			chain.doFilter(request, newResponse);
 
-			final String result = newResponse.toString();
-			final String sessionID = req.getSession().getId();
-			final String requestURI = req.getRequestURI();
+			String result = newResponse.toString();
+			//String sessionID = req.getSession().getId();
+			//String requestURI = req.getRequestURI();
 			// ModifyData
 			/*
 			 * System.out.println("result:" + result);
@@ -97,127 +97,14 @@ public class VirtualBrowserFilter implements Filter {
 			 */
 			logger.debug("this is page for verify");
 			// "X-Requested-With"
-			final String method;
+			String method;
 			if (req.getHeader("X-Requested-With") == null) {
 				method = "POST";
 			} else
 				method = "PUT";
 
-			executorService.execute(new Runnable() {
-
-				@Override
-				public void run() {
-					logger.debug("executorService Run..");
-					long start = System.currentTimeMillis();
-					URI uri;
-					HttpPost httpPost = null;
-					HttpPut httpPut = null;
-					HttpResponse getHttpResponse = null;
-					try {
-						// create connection
-						uri = new URI(VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/" + sessionID);
-						client = new DefaultHttpClient(connectionManager);
-						
-						//client.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy());
-					
-						logger.debug("virtual_page_uri : " + requestURI);
-						logger.debug("virtualPageAddress:"
-								+ VERIFICATION_SERVER_ADDRESS
-								+ "/v1/virtualpages/" + sessionID);
-
-						// POST
-						if (method.equals("POST")) {
-							
-							
-							httpPost = new HttpPost(uri);
-							httpPost.addHeader("virtual_page_uri", requestURI);
-							httpPost.setHeader("Connection", "keep-alive");
-							
-							httpPost.setEntity(new ByteArrayEntity(result
-									.getBytes()));
-							Header[] httpReqHeaders = httpPost.getAllHeaders();
-							for (int i = 0; i < httpReqHeaders.length; i++) {
-								String name = httpReqHeaders[i].getName();
-								String value = httpReqHeaders[i].getValue();
-								logger.debug("reqHeader:" + name + ":" + value);
-							}
-
-							getHttpResponse = client.execute(httpPost);
-							// PUT
-						} else {
-							httpPut = new HttpPut(uri);
-							httpPut.addHeader("virtual_page_uri", requestURI);
-							httpPut.setHeader("Connection", "keep-alive");
-						
-							Header[] httpReqHeaders = httpPost.getAllHeaders();
-							for (int i = 0; i < httpReqHeaders.length; i++) {
-								String name = httpReqHeaders[i].getName();
-								String value = httpReqHeaders[i].getValue();
-								logger.debug("reqHeader:" + name + ":" + value);
-							}
-							httpPut.setEntity(new ByteArrayEntity(result
-									.getBytes()));
-							getHttpResponse = client.execute(httpPut);
-
-						}
-
-						/*
-						 * conn.setUseCaches(false); conn.setDoInput(true);
-						 * conn.setDoOutput(true);
-						 */
-						// ResponseCode
-						int resCode = getHttpResponse.getStatusLine()
-								.getStatusCode();
-						Header[] httpResHeader = getHttpResponse.getAllHeaders();
-						for (int i = 0; i < httpResHeader.length; i++) {
-							String name = httpResHeader[i].getName();
-							String value = httpResHeader[i].getValue();
-							logger.debug("httpResHeader:" + name + ":" + value);
-						}
-						
-						logger.debug("request " + method + " virtualpage");
-						logger.debug("responseCode : " + resCode);
-
-						switch (resCode) {
-						case 200:
-							if (method.equals("POST")) {
-								logger.debug("virtualpage created");
-							} else {
-								logger.debug("virtualpage modified");
-							}
-
-							break;
-						case 404:
-							logger.debug("404 not found");
-							break;
-						case 500:
-							logger.debug("500 internal server error");
-							break;
-						default:
-							logger.debug("undefined responseCode");
-							break;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					} finally {
-						// realease
-					/*	if (httpPost != null) {
-							httpPost.releaseConnection();
-						}
-						if (httpPut != null) {
-							httpPut.releaseConnection();
-						}*/
-
-					}
-					logger.debug("elapsedTime : "
-							+ (System.currentTimeMillis() - start) + " ms ");
-
-				}
-			});
-			// executorService.execute(new RequestVirtualPage(req.getSession()
-			// .getId(), req.getRequestURI(), method, result
-			// .getBytes()));
+			executorService.execute(new RequestVirtualPage(req.getSession()
+					.getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 
 			out.write(result.getBytes());
@@ -226,7 +113,7 @@ public class VirtualBrowserFilter implements Filter {
 		}
 	}
 
-	/*class RequestVirtualPage extends Thread {
+	class RequestVirtualPage extends Thread {
 
 		private String sessionID;
 		private String requestURI;
@@ -252,10 +139,9 @@ public class VirtualBrowserFilter implements Filter {
 				// create connection
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
 						+ sessionID);
-				
-				
+
 				client = new DefaultHttpClient(connectionManager);
-			
+
 				logger.debug("virtual_page_uri : " + requestURI);
 				logger.debug("virtualPageAddress:"
 						+ VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
@@ -265,22 +151,22 @@ public class VirtualBrowserFilter implements Filter {
 				if (method.equals("POST")) {
 					httpPost = new HttpPost(uri);
 					httpPost.addHeader("virtual_page_uri", requestURI);
-
+					httpPost.setHeader("Connection", "keep-alive");
 					httpPost.setEntity(new ByteArrayEntity(data.clone()));
 					getHttpResponse = client.execute(httpPost);
 					// PUT
 				} else {
 					httpPut = new HttpPut(uri);
 					httpPut.addHeader("virtual_page_uri", requestURI);
+					httpPut.setHeader("Connection", "keep-alive");
 					httpPut.setEntity(new ByteArrayEntity(data.clone()));
 					getHttpResponse = client.execute(httpPut);
 
 				}
 
-				
-				 * conn.setUseCaches(false); conn.setDoInput(true);
-				 * conn.setDoOutput(true);
-				 
+				// conn.setUseCaches(false); conn.setDoInput(true);
+				// conn.setDoOutput(true);
+
 				// ResponseCode
 				int resCode = getHttpResponse.getStatusLine().getStatusCode();
 				logger.debug("request " + method + " virtualpage");
@@ -309,21 +195,22 @@ public class VirtualBrowserFilter implements Filter {
 				e.printStackTrace();
 			} finally {
 				// realease
-				
-				
-				if (httpPost != null) {
+
+		/*		if (httpPost != null) {
 					httpPost.releaseConnection();
-					//connectionManager.releaseConnection((ManagedClientConnection) httpPost, 90000000, TimeUnit.MINUTES);
+					// connectionManager.releaseConnection((ManagedClientConnection)
+					// httpPost, 90000000, TimeUnit.MINUTES);
 				}
 				if (httpPut != null) {
 					httpPut.releaseConnection();
-					//connectionManager.releaseConnection((ManagedClientConnection) httpPut, 90000000, TimeUnit.MINUTES);
-				}
+					// connectionManager.releaseConnection((ManagedClientConnection)
+					// httpPut, 90000000, TimeUnit.MINUTES);
+				}*/
 
 			}
 			logger.debug("elapsedTime : "
 					+ (System.currentTimeMillis() - start) + " ms ");
 		}
 
-	}*/
+	}
 }
