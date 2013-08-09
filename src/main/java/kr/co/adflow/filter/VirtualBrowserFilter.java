@@ -140,7 +140,7 @@ public class VirtualBrowserFilter implements Filter {
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/virtualpages/"
 						+ sessionID);
 
-				client = new DefaultHttpClient(connectionManager);
+				//client = new DefaultHttpClient(connectionManager);
 
 				logger.debug("virtual_page_uri : " + requestURI);
 				logger.debug("virtualPageAddress:"
