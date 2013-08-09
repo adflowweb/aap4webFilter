@@ -22,10 +22,12 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,7 +119,14 @@ public class VirtualBrowserFilter implements Filter {
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/virtualpages/" + sessionID);
 						client = new DefaultHttpClient(connectionManager);
-						client.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy());
+						client.setKeepAliveStrategy(new ConnectionKeepAliveStrategy() {
+							
+							@Override
+							public long getKeepAliveDuration(HttpResponse arg0, HttpContext arg1) {
+								// TODO Auto-generated method stub
+								return 600000;
+							}
+						});
 					
 						logger.debug("virtual_page_uri : " + requestURI);
 						logger.debug("virtualPageAddress:"
