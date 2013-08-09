@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.co.adflow.util.CharResponseWrapper;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -124,14 +125,28 @@ public class VirtualBrowserFilter implements Filter {
 						if (method.equals("POST")) {
 							httpPost = new HttpPost(uri);
 							httpPost.addHeader("virtual_page_uri", requestURI);
-
+							httpPost.setHeader("connection", "keep-alive");
 							httpPost.setEntity(new ByteArrayEntity(result
 									.getBytes()));
+							Header[] httpReqHeaders = httpPost.getAllHeaders();
+							for (int i = 0; i < httpReqHeaders.length; i++) {
+								String name = httpReqHeaders[i].getName();
+								String value = httpReqHeaders[i].getValue();
+								logger.debug("reqHeader:" + name + ":" + value);
+							}
+
 							getHttpResponse = client.execute(httpPost);
 							// PUT
 						} else {
 							httpPut = new HttpPut(uri);
 							httpPut.addHeader("virtual_page_uri", requestURI);
+							httpPut.setHeader("connection", "keep-alive");
+							Header[] httpReqHeaders = httpPost.getAllHeaders();
+							for (int i = 0; i < httpReqHeaders.length; i++) {
+								String name = httpReqHeaders[i].getName();
+								String value = httpReqHeaders[i].getValue();
+								logger.debug("reqHeader:" + name + ":" + value);
+							}
 							httpPut.setEntity(new ByteArrayEntity(result
 									.getBytes()));
 							getHttpResponse = client.execute(httpPut);
@@ -145,6 +160,13 @@ public class VirtualBrowserFilter implements Filter {
 						// ResponseCode
 						int resCode = getHttpResponse.getStatusLine()
 								.getStatusCode();
+						Header[] httpResHeader = getHttpResponse.getAllHeaders();
+						for (int i = 0; i < httpResHeader.length; i++) {
+							String name = httpResHeader[i].getName();
+							String value = httpResHeader[i].getValue();
+							logger.debug("httpResHeader:" + name + ":" + value);
+						}
+						
 						logger.debug("request " + method + " virtualpage");
 						logger.debug("responseCode : " + resCode);
 
