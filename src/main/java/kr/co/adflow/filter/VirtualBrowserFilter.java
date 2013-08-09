@@ -40,7 +40,7 @@ public class VirtualBrowserFilter implements Filter {
 	// Executors.newCachedThreadPool();
 	// private ExecutorService executorService =
 	// Executors.newFixedThreadPool(50);
-	private ExecutorService executorService = new ThreadPoolExecutor(2, 100,
+	private ExecutorService executorService = new ThreadPoolExecutor(20, 100,
 			30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
 	private final Logger logger = LoggerFactory
