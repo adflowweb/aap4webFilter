@@ -127,7 +127,7 @@ public class VirtualBrowserFilter implements Filter {
 							httpPost = new HttpPost(uri);
 							httpPost.addHeader("virtual_page_uri", requestURI);
 							httpPost.setHeader("Connection", "keep-alive");
-							httpPost.addHeader("Connection", "keep-alive");
+							
 							httpPost.setEntity(new ByteArrayEntity(result
 									.getBytes()));
 							Header[] httpReqHeaders = httpPost.getAllHeaders();
@@ -143,7 +143,7 @@ public class VirtualBrowserFilter implements Filter {
 							httpPut = new HttpPut(uri);
 							httpPut.addHeader("virtual_page_uri", requestURI);
 							httpPut.setHeader("Connection", "keep-alive");
-							httpPut.addHeader("Connection", "keep-alive");
+						
 							Header[] httpReqHeaders = httpPost.getAllHeaders();
 							for (int i = 0; i < httpReqHeaders.length; i++) {
 								String name = httpReqHeaders[i].getName();
