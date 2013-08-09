@@ -155,6 +155,7 @@ public class VerificationFilter implements Filter {
 				
 				
 				
+				
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
 						+ req.getSession().getId());
 				httpGet = new HttpGet(uri); 
@@ -163,6 +164,10 @@ public class VerificationFilter implements Filter {
 				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
+				logger.debug("req.getHeader(hash):"+req.getHeader("hash"));
+					
+				
+				
 				logger.debug("HttpGet : " + httpGet.toString());
 				
 				//get Response
