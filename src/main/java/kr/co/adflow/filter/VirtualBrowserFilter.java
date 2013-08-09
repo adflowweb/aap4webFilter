@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,6 +24,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ManagedClientConnection;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -50,6 +52,7 @@ public class VirtualBrowserFilter implements Filter {
 		connectionManager = new PoolingClientConnectionManager();
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(20);
+		
 	}
 
 	public void destroy() {
@@ -300,11 +303,15 @@ public class VirtualBrowserFilter implements Filter {
 				e.printStackTrace();
 			} finally {
 				// realease
+				
+				
 				if (httpPost != null) {
 					httpPost.releaseConnection();
+					connectionManager.releaseConnection((ManagedClientConnection) httpPost, 90000000, TimeUnit.MINUTES);
 				}
 				if (httpPut != null) {
 					httpPut.releaseConnection();
+					connectionManager.releaseConnection((ManagedClientConnection) httpPut, 90000000, TimeUnit.MINUTES);
 				}
 
 			}
