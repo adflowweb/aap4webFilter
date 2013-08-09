@@ -116,6 +116,7 @@ public class VirtualBrowserFilter implements Filter {
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/virtualpages/" + sessionID);
 						client = new DefaultHttpClient(connectionManager);
+					
 						logger.debug("virtual_page_uri : " + requestURI);
 						logger.debug("virtualPageAddress:"
 								+ VERIFICATION_SERVER_ADDRESS
@@ -125,7 +126,8 @@ public class VirtualBrowserFilter implements Filter {
 						if (method.equals("POST")) {
 							httpPost = new HttpPost(uri);
 							httpPost.addHeader("virtual_page_uri", requestURI);
-							httpPost.setHeader("connection", "keep-alive");
+							httpPost.setHeader("Connection", "keep-alive");
+						
 							httpPost.setEntity(new ByteArrayEntity(result
 									.getBytes()));
 							Header[] httpReqHeaders = httpPost.getAllHeaders();
@@ -140,7 +142,7 @@ public class VirtualBrowserFilter implements Filter {
 						} else {
 							httpPut = new HttpPut(uri);
 							httpPut.addHeader("virtual_page_uri", requestURI);
-							httpPut.setHeader("connection", "keep-alive");
+							httpPut.setHeader("Connection", "keep-alive");
 							Header[] httpReqHeaders = httpPost.getAllHeaders();
 							for (int i = 0; i < httpReqHeaders.length; i++) {
 								String name = httpReqHeaders[i].getName();
