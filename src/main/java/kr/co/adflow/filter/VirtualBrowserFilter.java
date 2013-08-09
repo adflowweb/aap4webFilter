@@ -307,11 +307,11 @@ public class VirtualBrowserFilter implements Filter {
 				
 				if (httpPost != null) {
 					httpPost.releaseConnection();
-					connectionManager.releaseConnection((ManagedClientConnection) httpPost, 90000000, TimeUnit.MINUTES);
+					//connectionManager.releaseConnection((ManagedClientConnection) httpPost, 90000000, TimeUnit.MINUTES);
 				}
 				if (httpPut != null) {
 					httpPut.releaseConnection();
-					connectionManager.releaseConnection((ManagedClientConnection) httpPut, 90000000, TimeUnit.MINUTES);
+					//connectionManager.releaseConnection((ManagedClientConnection) httpPut, 90000000, TimeUnit.MINUTES);
 				}
 
 			}
