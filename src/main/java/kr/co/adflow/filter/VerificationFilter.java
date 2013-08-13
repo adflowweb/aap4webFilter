@@ -42,7 +42,7 @@ public class VerificationFilter implements Filter {
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
-	private HttpClient client =null;
+	private DefaultHttpClient client =null;
 
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
@@ -57,7 +57,7 @@ public class VerificationFilter implements Filter {
 		connectionManager = new PoolingClientConnectionManager();
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(20);
-		
+		client = new DefaultHttpClient(connectionManager);
 
 		executorService.execute(new Runnable() {
 			public void run() {
@@ -151,7 +151,7 @@ public class VerificationFilter implements Filter {
 			HttpGet httpGet = null;
 			try {
 				// create connection
-				client = new DefaultHttpClient(connectionManager);
+			
 				
 				
 				

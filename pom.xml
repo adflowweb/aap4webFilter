@@ -6,8 +6,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<!-- <deploy.target.dir>/Users/nadir93/Doc/Digital/Dev/workspaces/kepler/aap4web/aap4webFilter/target</deploy.target.dir> -->
-		<!-- <deploy.target.dir>/var/lib/tomcat7/webapps/ROOT/WEB-INF/lib</deploy.target.dir> -->
-		<deploy.target.dir>/home/master/tomcat6/webapps/hello/WEB-INF/lib</deploy.target.dir>
+		<deploy.target.dir>/var/lib/tomcat7/webapps/ROOT/WEB-INF/lib</deploy.target.dir>
+	<!-- 	<deploy.target.dir>/home/master/tomcat6/webapps/hello/WEB-INF/lib</deploy.target.dir> -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
