@@ -132,7 +132,7 @@ public class VerificationFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-
+		logger.debug("VerificationFilger doFilter....");
 		logger.debug("requestURI : " + req.getRequestURI());
 		logger.debug("requestMethod : " + req.getMethod());
 		logger.debug("contentType : " + req.getContentType());
@@ -145,6 +145,8 @@ public class VerificationFilter implements Filter {
 		// verification uri check
 		// hiddenField(hash) 추가해야함
 		//(verificationUriList.containsKey(req.getRequestURI()
+		logger.debug("if...befor step ...hash....");
+		logger.debug("req.getHeader(hash)::"+req.getHeader("hash"));
 		if (req.getHeader("hash") != null) {
 
 			URI uri;
