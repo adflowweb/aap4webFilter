@@ -177,7 +177,7 @@ public class VerificationFilter implements Filter {
 
 				switch (resCode) {
 				case 200: // 검증성공
-					logger.debug("verified");
+					logger.debug("verified Success!!!!");
 					// todo
 					// 검증로그전송
 					break;
