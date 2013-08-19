@@ -47,7 +47,7 @@ public class VerificationFilter implements Filter {
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
 	 */
-	public void init(FilterConfig arg0) throws ServletException {
+	public void init(FilterConfig filterConfig) throws ServletException {
 		logger.debug("init verificationFilter");
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
 				"http://127.0.0.1:3000");
