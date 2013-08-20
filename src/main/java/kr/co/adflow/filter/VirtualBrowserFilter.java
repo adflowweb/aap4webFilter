@@ -19,6 +19,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kr.co.adflow.testParser.TestClientModify;
 import kr.co.adflow.util.CharResponseWrapper;
 
 import org.apache.http.HttpRequest;
@@ -106,7 +107,7 @@ public class VirtualBrowserFilter implements Filter {
 			/*
 			 * System.out.println("result:" + result);
 			 * 
-			 * TestClientModify modify = new TestClientModify(); final String
+			 TestClientModify modify = new TestClientModify(); final String
 			 * resultModify = modify.jsoupModify(result);
 			 */
 
@@ -115,6 +116,10 @@ public class VirtualBrowserFilter implements Filter {
 			 * if (VerificationFilter.getVerificationUriList().containsKey(
 			 * req.getRequestURI())) {
 			 */
+			
+			TestClientModify modify = new TestClientModify();
+			String resultModify=modify.jsoupModify(result);
+			
 			logger.debug("this is page for verify");
 			// "X-Requested-With"
 			String method;
@@ -124,13 +129,13 @@ public class VirtualBrowserFilter implements Filter {
 				method = "PUT";
 
 			requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
-					method, result.getBytes());
+					method, resultModify.getBytes());
 			// executorService.execute(new RequestVirtualPage(req.getSession()
 			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 			
-			logger.debug("VitualpageCreateData:"+result);
-			out.write(result.getBytes());
+			logger.debug("VitualpageCreateData resultModify:"+resultModify);
+			out.write(resultModify.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -16,7 +16,7 @@ public class TestClientModify {
 		long startime = System.currentTimeMillis();
 		Document doc = Jsoup.parse(html);
 
-		Elements formEl = doc.select("form");
+	/*	Elements formEl = doc.select("form");
 
 		formEl.append("<input name=\"hash\" type=\"hidden\" id=\"hash\"/>");
 		Elements aEl = doc.select("a");
@@ -65,7 +65,7 @@ public class TestClientModify {
 		long stopTime = System.currentTimeMillis();
 
 		long resultTime = stopTime - startime;
-		logger.debug("ParsingTime:" + resultTime);
+		logger.debug("ParsingTime:" + resultTime);*/
 		return doc.html();
 	}
 
