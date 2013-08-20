@@ -128,7 +128,8 @@ public class VirtualBrowserFilter implements Filter {
 			// executorService.execute(new RequestVirtualPage(req.getSession()
 			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
-
+			
+			logger.debug("VitualpageCreateData:"+result);
 			out.write(result.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
