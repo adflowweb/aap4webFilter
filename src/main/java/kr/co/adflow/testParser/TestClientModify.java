@@ -16,11 +16,20 @@ public class TestClientModify {
 		long startime = System.currentTimeMillis();
 		Document doc = Jsoup.parse(html);
 		
-		logger.debug("JSoup Head Data Log");
-		logger.debug("doc.head().data():"+doc.head().data());
-		logger.debug("doc.head().html():"+doc.head().html());
-		logger.debug("doc.head().text():"+doc.head().text());
+
 		logger.debug("doc.head().toString():"+doc.head().toString());
+		
+		String headToString=doc.head().toString();
+		
+		
+		 
+	
+		 if(!(headToString.contains("ajax.googleapis.com/ajax/libs/jquery")&&headToString.contains("jquery.min.js"))){
+			 logger.debug("Jquery ADD!!");
+			 doc.head()
+				.append("<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>");
+		 }
+
 
 	/*	Elements formEl = doc.select("form");
 
