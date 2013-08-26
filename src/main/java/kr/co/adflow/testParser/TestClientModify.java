@@ -15,6 +15,12 @@ public class TestClientModify {
 
 		long startime = System.currentTimeMillis();
 		Document doc = Jsoup.parse(html);
+		
+		logger.debug("JSoup Head Data Log");
+		logger.debug("doc.head().data():"+doc.head().data());
+		logger.debug("doc.head().html():"+doc.head().html());
+		logger.debug("doc.head().text():"+doc.head().text());
+		logger.debug("doc.head().toString():"+doc.head().toString());
 
 	/*	Elements formEl = doc.select("form");
 
