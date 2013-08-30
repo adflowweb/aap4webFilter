@@ -183,10 +183,14 @@ public class VerificationFilter implements Filter {
 					break;
 				case 404:
 					logger.debug("404 not found");
-					break;
+					res.sendError(404);//임시코드
+					//break;
+					return;
 				case 500:
 					logger.debug("500 internal server error");
-					break;
+					res.sendError(500);//임시코드
+					//break;
+					return;
 				case 505: // 검증실패
 					logger.debug("Server Error 505");
 					res.sendError(505);
