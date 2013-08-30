@@ -117,8 +117,8 @@ public class VirtualBrowserFilter implements Filter {
 			 * req.getRequestURI())) {
 			 */
 			
-			TestClientModify modify = new TestClientModify();
-			String resultModify=modify.jsoupModify(result);
+		/*	TestClientModify modify = new TestClientModify();
+			String resultModify=modify.jsoupModify(result);*/
 			
 			logger.debug("this is page for verify");
 			// "X-Requested-With"
@@ -129,13 +129,13 @@ public class VirtualBrowserFilter implements Filter {
 				method = "PUT";
 
 			requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
-					method, resultModify.getBytes());
+					method, result.getBytes());
 			// executorService.execute(new RequestVirtualPage(req.getSession()
 			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 			
-			logger.debug("VitualpageCreateData resultModify:"+resultModify);
-			out.write(resultModify.getBytes());
+			logger.debug("VitualpageCreateData resultModify:"+result);
+			out.write(result.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
