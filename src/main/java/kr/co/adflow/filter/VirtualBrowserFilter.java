@@ -101,6 +101,8 @@ public class VirtualBrowserFilter implements Filter {
 			chain.doFilter(request, newResponse);
 
 			String result = newResponse.toString();
+			
+			logger.debug("ORG Result:"+result);
 			// String sessionID = req.getSession().getId();
 			// String requestURI = req.getRequestURI();
 			// ModifyData
@@ -119,7 +121,7 @@ public class VirtualBrowserFilter implements Filter {
 			
 		TestClientModify modify = new TestClientModify();
 			String resultModify=modify.jsoupModify(result);
-			
+			logger.debug("resultModify:"+resultModify);
 			logger.debug("this is page for verify");
 			// "X-Requested-With"
 			String method;
