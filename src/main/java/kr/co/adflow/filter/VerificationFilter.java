@@ -43,7 +43,7 @@ public class VerificationFilter implements Filter {
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client =null;
-
+	//test git 
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
 	 */
