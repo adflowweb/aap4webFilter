@@ -42,8 +42,9 @@ public class VerificationFilter implements Filter {
 	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
-	private DefaultHttpClient client =null;
-	//test git 
+	private DefaultHttpClient client = null;
+
+	// test git
 	/**
 	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
 	 */
@@ -52,8 +53,8 @@ public class VerificationFilter implements Filter {
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
 				"http://127.0.0.1:3000");
 		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
-		//connection Manager Setting..
-		//add Setting
+		// connection Manager Setting..
+		// add Setting
 		connectionManager = new PoolingClientConnectionManager();
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(20);
@@ -144,34 +145,28 @@ public class VerificationFilter implements Filter {
 
 		// verification uri check
 		// hiddenField(hash) 추가해야함
-		//(verificationUriList.containsKey(req.getRequestURI()
-		
+		// (verificationUriList.containsKey(req.getRequestURI()
+
 		if (req.getHeader("hash") != null) {
 
 			URI uri;
 			HttpGet httpGet = null;
 			try {
 				// create connection
-			
-				
-				
-				
-				
+
 				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
 						+ req.getSession().getId());
-				httpGet = new HttpGet(uri); 
+				httpGet = new HttpGet(uri);
 
 				// set header hash
 				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
-				logger.debug("req.getHeader(hash):"+req.getHeader("hash"));
-					
-				
-				
+				logger.debug("req.getHeader(hash):" + req.getHeader("hash"));
+
 				logger.debug("HttpGet : " + httpGet.toString());
-				
-				//get Response
+
+				// get Response
 				HttpResponse getHttpResponse = client.execute(httpGet);
 				int resCode = getHttpResponse.getStatusLine().getStatusCode();
 
@@ -183,13 +178,13 @@ public class VerificationFilter implements Filter {
 					break;
 				case 404:
 					logger.debug("404 not found");
-					res.sendError(404);//임시코드
-					//break;
+					res.sendError(404);// 임시코드
+					// break;
 					return;
 				case 500:
 					logger.debug("500 internal server error");
-					res.sendError(500);//임시코드
-					//break;
+					res.sendError(500);// 임시코드
+					// break;
 					return;
 				case 505: // 검증실패
 					logger.debug("Server Error 505");
@@ -207,10 +202,9 @@ public class VerificationFilter implements Filter {
 			} finally {
 				if (httpGet != null) {
 					httpGet.releaseConnection();
-					
+
 				}
-			
-				
+
 			}
 		}
 		chain.doFilter(req, res);
@@ -227,6 +221,6 @@ public class VerificationFilter implements Filter {
 	public void destroy() {
 		executorService.shutdown();
 		client.getConnectionManager().shutdown();
-		
+
 	}
 }

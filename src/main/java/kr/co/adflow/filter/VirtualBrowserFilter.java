@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Enumeration;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -137,6 +138,12 @@ public class VirtualBrowserFilter implements Filter {
 			// }
 			
 			logger.debug("VitualpageCreateData resultModify:"+resultModify);
+			UUID uuid = UUID.randomUUID();
+			//set txid
+			res.setHeader("TXID", uuid.toString());
+			//get urlPolicy
+			//set urlPolicy
+			res.setHeader("uPolocy", "N");
 			out.write(resultModify.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
