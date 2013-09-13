@@ -143,7 +143,7 @@ public class VirtualBrowserFilter implements Filter {
 			res.setHeader("TXID", uuid.toString());
 			//get urlPolicy
 			//set urlPolicy
-			res.setHeader("uPolocy", "N");
+			res.setHeader("uPolicy", "N");
 			out.write(resultModify.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
