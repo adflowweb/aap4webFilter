@@ -149,7 +149,7 @@ public class VerificationFilter implements Filter {
 		// hiddenField(hash) 추가해야함
 		// (verificationUriList.containsKey(req.getRequestURI()
 
-	//	if (req.getHeader("hash") != null) {
+		if (req.getHeader("hash") != null) {
 
 			URI uri;
 			HttpGet httpGet = null;
@@ -215,7 +215,7 @@ public class VerificationFilter implements Filter {
 				}
 
 			}
-	//	}
+		}
 		chain.doFilter(req, res);
 	}
 
