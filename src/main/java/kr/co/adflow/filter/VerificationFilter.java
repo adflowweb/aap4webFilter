@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -158,7 +160,14 @@ public class VerificationFilter implements Filter {
 						+ req.getSession().getId());
 				httpGet = new HttpGet(uri);
 
+				//PID ADD
+				RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
+				logger.debug("pid: " + rmxb.getName());
+				
+				
 				// set header hash
+			
+				httpGet.addHeader("filterId",rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
