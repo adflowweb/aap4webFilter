@@ -169,6 +169,7 @@ public class VerificationFilter implements Filter {
 			
 				httpGet.addHeader("filterId",rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
+				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
 				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
 				logger.debug("req.getHeader(hash):" + req.getHeader("hash"));
