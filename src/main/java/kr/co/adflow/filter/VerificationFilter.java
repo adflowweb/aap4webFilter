@@ -175,7 +175,7 @@ public class VerificationFilter implements Filter {
 					logger.debug("verificationFilter:" + headerName + ":"
 							+ header);
 
-					httpGet.setHeader(headerName, header);
+					//httpGet.setHeader(headerName, header);
 				}
 				httpGet.addHeader("filterId", rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
