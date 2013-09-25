@@ -97,14 +97,14 @@ public class VirtualBrowserFilter implements Filter {
 				logger.debug(param + ":" + req.getParameter(param));
 			}
 
-			// res set header
+		/*	// res set header
 			Enumeration en = req.getHeaderNames();
 			while (en.hasMoreElements()) {
 				String headerName = (String) en.nextElement();
 				String header = req.getHeader(headerName);
 				logger.debug("virtualPageFilter:" + headerName + ":" + header);
 				//res.addHeader(headerName, header);
-			}
+			}*/
 
 			out = res.getOutputStream();
 			newResponse = new CharResponseWrapper(

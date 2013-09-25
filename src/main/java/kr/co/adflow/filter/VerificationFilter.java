@@ -165,7 +165,7 @@ public class VerificationFilter implements Filter {
 				logger.debug("pid: " + rmxb.getName());
 
 				// set header hash
-				Enumeration en = req.getHeaderNames();
+			/*	Enumeration en = req.getHeaderNames();
 				while (en.hasMoreElements()) {
 					String headerName = (String) en.nextElement();
 					String header = req.getHeader(headerName);
@@ -173,7 +173,7 @@ public class VerificationFilter implements Filter {
 							+ header);
 
 					//httpGet.addHeader(headerName, header);
-				}
+				}*/
 				httpGet.addHeader("filterId", rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
