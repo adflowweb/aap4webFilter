@@ -36,15 +36,15 @@ public class TestClientModify {
 		 }
 		
 	
-	/*	 UUID uuid=UUID.randomUUID();
-		 RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
+		 UUID uuid=UUID.randomUUID();
+		/* RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
 		 logger.debug("pid: " + rmxb.getName());
 		 String temp=rmxb.getName();
-		 
+		 temp.split("@");*/
 		 String txid=uuid.toString();
 		 String policy="N";
 		
-		 doc.head().append("<script> var jsontext = '{\"TXID\": \""+txid+"\", \"uPolicy\": \""+policy+"\" }';</script>");*/
+		 doc.head().append("<script> var jsontext = {\"TXID\": \""+txid+"\", \"uPolicy\": \""+policy+"\" };</script>");
 		/*	UUID uuid = UUID.randomUUID();*/
 			//set txid
 			/*doc.head()
