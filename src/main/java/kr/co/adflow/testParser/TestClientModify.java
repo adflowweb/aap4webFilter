@@ -1,5 +1,7 @@
 package kr.co.adflow.testParser;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.UUID;
 
 import org.jsoup.Jsoup;
@@ -34,11 +36,15 @@ public class TestClientModify {
 		 }
 		
 	
-		 UUID uuid=UUID.randomUUID();
+	/*	 UUID uuid=UUID.randomUUID();
+		 RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
+		 logger.debug("pid: " + rmxb.getName());
+		 String temp=rmxb.getName();
+		 
 		 String txid=uuid.toString();
 		 String policy="N";
 		
-		 doc.head().append("<script> var jsontext = '{\"TXID\": \""+txid+"\", \"uPolicy\": \""+policy+"\" }';</script>");
+		 doc.head().append("<script> var jsontext = '{\"TXID\": \""+txid+"\", \"uPolicy\": \""+policy+"\" }';</script>");*/
 		/*	UUID uuid = UUID.randomUUID();*/
 			//set txid
 			/*doc.head()
