@@ -137,6 +137,7 @@ public class VerificationFilter implements Filter {
 		logger.debug("requestMethod : " + req.getMethod());
 		logger.debug("contentType : " + req.getContentType());
 
+		//parameter
 		for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 			String param = (String) e.nextElement();
 			logger.debug(param + ":" + req.getParameter(param));
@@ -161,8 +162,12 @@ public class VerificationFilter implements Filter {
 				RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
 				logger.debug("pid: " + rmxb.getName());
 
-
 				// set header hash
+				// req header
+				for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
+					String headerNames = (String) e.nextElement();
+					logger.debug(headerNames + ":" + req.getHeader(headerNames));
+				}
 
 				httpGet.addHeader("filterId",rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));

@@ -89,11 +89,20 @@ public class VirtualBrowserFilter implements Filter {
 			logger.debug("requestURI : " + req.getRequestURI());
 			logger.debug("requestMethod : " + req.getMethod());
 			logger.debug("contentType : " + req.getContentType());
-
+			
+			//req parameter
 			for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 				String param = (String) e.nextElement();
 				logger.debug(param + ":" + req.getParameter(param));
 			}
+			
+			
+			// req header
+			for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
+				String headerNames = (String) e.nextElement();
+				logger.debug(headerNames + ":" + req.getHeader(headerNames));
+			}
+			
 			out = res.getOutputStream();
 			newResponse = new CharResponseWrapper(
 					(HttpServletResponse) response);
@@ -101,14 +110,14 @@ public class VirtualBrowserFilter implements Filter {
 
 			String result = newResponse.toString();
 
-			logger.debug("ORG Result:"+result);
+			logger.debug("ORG Result:" + result);
 			// String sessionID = req.getSession().getId();
 			// String requestURI = req.getRequestURI();
 			// ModifyData
 			/*
 			 * System.out.println("result:" + result);
 			 * 
-			 TestClientModify modify = new TestClientModify(); final String
+			 * TestClientModify modify = new TestClientModify(); final String
 			 * resultModify = modify.jsoupModify(result);
 			 */
 
@@ -118,9 +127,9 @@ public class VirtualBrowserFilter implements Filter {
 			 * req.getRequestURI())) {
 			 */
 
-		TestClientModify modify = new TestClientModify();
-			String resultModify=modify.jsoupModify(result);
-			logger.debug("resultModify:"+resultModify);
+			TestClientModify modify = new TestClientModify();
+			String resultModify = modify.jsoupModify(result);
+			logger.debug("resultModify:" + resultModify);
 			logger.debug("this is page for verify");
 			// "X-Requested-With"
 			String method;
@@ -135,13 +144,12 @@ public class VirtualBrowserFilter implements Filter {
 			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 
-			logger.debug("VitualpageCreateData resultModify:"+resultModify);
-			/*UUID uuid = UUID.randomUUID();
-			//set txid
-			res.setHeader("TXID", uuid.toString());
-			//get urlPolicy
-			//set urlPolicy
-			res.setHeader("uPolicy", "N");*/
+			logger.debug("VitualpageCreateData resultModify:" + resultModify);
+			/*
+			 * UUID uuid = UUID.randomUUID(); //set txid res.setHeader("TXID",
+			 * uuid.toString()); //get urlPolicy //set urlPolicy
+			 * res.setHeader("uPolicy", "N");
+			 */
 			out.write(resultModify.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
