@@ -37,11 +37,14 @@ public class TestClientModify {
 		
 	
 		 UUID uuid=UUID.randomUUID();
-		/* RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
+		 RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
 		 logger.debug("pid: " + rmxb.getName());
 		 String temp=rmxb.getName();
-		 temp.split("@");*/
+		 String [] arrTemp=temp.split("@");
+		 String pid=arrTemp[0];
+		 logger.debug("PID:"+pid);
 		 String txid=uuid.toString();
+		 txid=pid+"-"+txid;
 		 String policy="N";
 		
 		 doc.head().append("<script> var jsontext = {\"TXID\": \""+txid+"\", \"uPolicy\": \""+policy+"\" };</script>");
