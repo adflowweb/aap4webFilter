@@ -140,8 +140,6 @@ public class VerificationFilter implements Filter {
 		logger.debug("requestMethod : " + req.getMethod());
 		logger.debug("contentType : " + req.getContentType());
 
-	
-
 		for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 			String param = (String) e.nextElement();
 			logger.debug(param + ":" + req.getParameter(param));
@@ -171,11 +169,12 @@ public class VerificationFilter implements Filter {
 				while (en.hasMoreElements()) {
 
 					String headerName = (String) en.nextElement();
-					
+
 					String header = req.getHeader(headerName);
-					
-					logger.debug("verificationFilter:"+headerName+":"+header);
-					
+
+					logger.debug("verificationFilter:" + headerName + ":"
+							+ header);
+
 					httpGet.setHeader(headerName, header);
 				}
 				httpGet.addHeader("filterId", rmxb.getName());
