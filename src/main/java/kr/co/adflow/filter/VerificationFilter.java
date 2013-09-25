@@ -167,15 +167,12 @@ public class VerificationFilter implements Filter {
 				// set header hash
 				Enumeration en = req.getHeaderNames();
 				while (en.hasMoreElements()) {
-
 					String headerName = (String) en.nextElement();
-
 					String header = req.getHeader(headerName);
-
 					logger.debug("verificationFilter:" + headerName + ":"
 							+ header);
 
-					//httpGet.setHeader(headerName, header);
+					//httpGet.addHeader(headerName, header);
 				}
 				httpGet.addHeader("filterId", rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
