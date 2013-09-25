@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,23 +17,23 @@ public class TestClientModify {
 
 		long startime = System.currentTimeMillis();
 		Document doc = Jsoup.parse(html);
-		
+
 
 		logger.debug("doc.head().toString():"+doc.head().toString());
-		
+
 		String headToString=doc.head().toString();
-		
-		
-		 
-	
+
+
+
+
 		 if(!(headToString.contains("ajax.googleapis.com/ajax/libs/jquery")&&headToString.contains("jquery.min.js"))){
 			 logger.debug("Jquery ADD!!");
 			 doc.head()
 				.append("<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>");
 			 logger.debug("doc.head().toString():"+doc.head().toString());
 		 }
-		
-	
+
+
 		 UUID uuid=UUID.randomUUID();
 		 RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
 		 logger.debug("pid: " + rmxb.getName());
@@ -46,13 +44,13 @@ public class TestClientModify {
 		 String txid=uuid.toString();
 		 txid=pid+"-"+txid;
 		 String policy="N";
-		
+
 		 doc.head().append("<script> var jsontext = {\"TXID\": \""+txid+"\", \"uPolicy\": \""+policy+"\" };</script>");
 		/*	UUID uuid = UUID.randomUUID();*/
 			//set txid
 			/*doc.head()
 			.append*/
-			
+
 			//get urlPolicy
 			//set urlPolicydoc.head()
 			/*doc.head()

@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Enumeration;
-import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -96,16 +94,6 @@ public class VirtualBrowserFilter implements Filter {
 				String param = (String) e.nextElement();
 				logger.debug(param + ":" + req.getParameter(param));
 			}
-
-		/*	// res set header
-			Enumeration en = req.getHeaderNames();
-			while (en.hasMoreElements()) {
-				String headerName = (String) en.nextElement();
-				String header = req.getHeader(headerName);
-				logger.debug("virtualPageFilter:" + headerName + ":" + header);
-				//res.addHeader(headerName, header);
-			}*/
-
 			out = res.getOutputStream();
 			newResponse = new CharResponseWrapper(
 					(HttpServletResponse) response);
@@ -113,14 +101,14 @@ public class VirtualBrowserFilter implements Filter {
 
 			String result = newResponse.toString();
 
-			logger.debug("ORG Result:" + result);
+			logger.debug("ORG Result:"+result);
 			// String sessionID = req.getSession().getId();
 			// String requestURI = req.getRequestURI();
 			// ModifyData
 			/*
 			 * System.out.println("result:" + result);
 			 * 
-			 * TestClientModify modify = new TestClientModify(); final String
+			 TestClientModify modify = new TestClientModify(); final String
 			 * resultModify = modify.jsoupModify(result);
 			 */
 
@@ -130,9 +118,9 @@ public class VirtualBrowserFilter implements Filter {
 			 * req.getRequestURI())) {
 			 */
 
-			TestClientModify modify = new TestClientModify();
-			String resultModify = modify.jsoupModify(result);
-			logger.debug("resultModify:" + resultModify);
+		TestClientModify modify = new TestClientModify();
+			String resultModify=modify.jsoupModify(result);
+			logger.debug("resultModify:"+resultModify);
 			logger.debug("this is page for verify");
 			// "X-Requested-With"
 			String method;
@@ -147,12 +135,13 @@ public class VirtualBrowserFilter implements Filter {
 			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 
-			logger.debug("VitualpageCreateData resultModify:" + resultModify);
-			/*
-			 * UUID uuid = UUID.randomUUID(); //set txid res.setHeader("TXID",
-			 * uuid.toString()); //get urlPolicy //set urlPolicy
-			 * res.setHeader("uPolicy", "N");
-			 */
+			logger.debug("VitualpageCreateData resultModify:"+resultModify);
+			/*UUID uuid = UUID.randomUUID();
+			//set txid
+			res.setHeader("TXID", uuid.toString());
+			//get urlPolicy
+			//set urlPolicy
+			res.setHeader("uPolicy", "N");*/
 			out.write(resultModify.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();

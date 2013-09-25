@@ -13,7 +13,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,9 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ManagedClientConnection;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -160,21 +157,14 @@ public class VerificationFilter implements Filter {
 						+ req.getSession().getId());
 				httpGet = new HttpGet(uri);
 
-				// PID ADD
+				//PID ADD
 				RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
 				logger.debug("pid: " + rmxb.getName());
 
-				// set header hash
-			/*	Enumeration en = req.getHeaderNames();
-				while (en.hasMoreElements()) {
-					String headerName = (String) en.nextElement();
-					String header = req.getHeader(headerName);
-					logger.debug("verificationFilter:" + headerName + ":"
-							+ header);
 
-					//httpGet.addHeader(headerName, header);
-				}*/
-				httpGet.addHeader("filterId", rmxb.getName());
+				// set header hash
+
+				httpGet.addHeader("filterId",rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
 				httpGet.setHeader("Connection", "keep-alive");
