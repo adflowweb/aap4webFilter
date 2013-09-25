@@ -138,12 +138,12 @@ public class VirtualBrowserFilter implements Filter {
 			// }
 			
 			logger.debug("VitualpageCreateData resultModify:"+resultModify);
-			UUID uuid = UUID.randomUUID();
+			/*UUID uuid = UUID.randomUUID();
 			//set txid
 			res.setHeader("TXID", uuid.toString());
 			//get urlPolicy
 			//set urlPolicy
-			res.setHeader("uPolicy", "N");
+			res.setHeader("uPolicy", "N");*/
 			out.write(resultModify.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
