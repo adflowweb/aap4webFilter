@@ -46,8 +46,8 @@ public class TestClientModify {
 		 String policy="N";
 
 		doc.head().append(
-				"<script> var jsontext = '{\"TXID\": \"" + txid
-						+ "\", \"uPolicy\": \"" + policy + "\" }';</script>");
+				"<script> var jsontext = {\"TXID\": \"" + txid
+						+ "\", \"uPolicy\": \"" + policy + "\" };</script>");
 		/*	UUID uuid = UUID.randomUUID();*/
 			//set txid
 			/*doc.head()
