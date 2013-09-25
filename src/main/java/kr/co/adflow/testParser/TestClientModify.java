@@ -33,12 +33,12 @@ public class TestClientModify {
 			 logger.debug("doc.head().toString():"+doc.head().toString());
 		 }
 		
+	
 		 UUID uuid=UUID.randomUUID();
 		 String txid=uuid.toString();
-		 String policy="n";
-		 
-		 doc.head().append("<script>var TXID="+txid+"</script>");
-		 doc.head().append("<script>var uPolicy="+policy+"</script>");
+		 String policy="N";
+		
+		 doc.head().append("<script> var jsontext = '{\"TXID\": \""+txid+"\", \"uPolicy\": \""+policy+"\" }';</script>");
 		/*	UUID uuid = UUID.randomUUID();*/
 			//set txid
 			/*doc.head()
