@@ -173,7 +173,7 @@ public class VerificationFilter implements Filter {
 				
 				}
 				//client ip 임시코드
-				httpGet.addHeader("clientIp",req.getRemoteAddr());
+				httpGet.addHeader("clientip",req.getRemoteAddr());
 				
 				//txid 
 				//user-agent
