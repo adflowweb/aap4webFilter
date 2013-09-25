@@ -131,13 +131,14 @@ public class VerificationFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		logger.debug("VerificationFilter doFilter....");
 		logger.debug("requestURI : " + req.getRequestURI());
 		logger.debug("requestMethod : " + req.getMethod());
 		logger.debug("contentType : " + req.getContentType());
-
+		logger.debug("req.getRemoteAddr():"+req.getRemoteAddr());
 		//parameter
 		for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 			String param = (String) e.nextElement();
@@ -171,7 +172,9 @@ public class VerificationFilter implements Filter {
 					logger.debug(headerNames + ":" + req.getHeader(headerNames));
 				
 				}
-				//client ip
+				//client ip 임시코드
+				
+				
 				//txid 
 				//user-agent
 			
