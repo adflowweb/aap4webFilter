@@ -163,7 +163,7 @@ public class VerificationFilter implements Filter {
 				logger.debug("pid: " + rmxb.getName());
 
 				// set header hash
-				// req header
+				// req header 
 				for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
 					String headerNames = (String) e.nextElement();
 					logger.debug(headerNames + ":" + req.getHeader(headerNames));
