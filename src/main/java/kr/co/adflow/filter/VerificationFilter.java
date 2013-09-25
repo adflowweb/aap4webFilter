@@ -27,6 +27,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,7 +189,7 @@ public class VerificationFilter implements Filter {
 				// get Response
 				HttpResponse getHttpResponse = client.execute(httpGet);
 				int resCode = getHttpResponse.getStatusLine().getStatusCode();
-
+				EntityUtils.consume(getHttpResponse.getEntity());
 				switch (resCode) {
 				case 200: // 검증성공
 					logger.debug("verified Success!!!!");
@@ -219,10 +220,7 @@ public class VerificationFilter implements Filter {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				if (httpGet != null) {
-					httpGet.releaseConnection();
-
-				}
+		
 
 			}
 		}
