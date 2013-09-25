@@ -167,16 +167,22 @@ public class VerificationFilter implements Filter {
 				for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
 					String headerNames = (String) e.nextElement();
 					logger.debug(headerNames + ":" + req.getHeader(headerNames));
-					//add Header
+					if(headerNames.equals("txid")){
+						logger.debug("txid..add");
 						httpGet.addHeader(headerNames, req.getHeader(headerNames));
+					}
 					
+					if(headerNames.equals("user-agent")){
+						logger.debug("user-agent...add");
+						httpGet.addHeader(headerNames, req.getHeader(headerNames));
+					}
 				}
 				//client ip
 				//txid 
 				//user-agent
 			
 				httpGet.addHeader("filterId",rmxb.getName());
-				
+				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
 				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
