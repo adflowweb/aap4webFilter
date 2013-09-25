@@ -164,18 +164,11 @@ public class VerificationFilter implements Filter {
 
 				// set header hash
 				// req header 
+		
 				for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
 					String headerNames = (String) e.nextElement();
 					logger.debug(headerNames + ":" + req.getHeader(headerNames));
-					if(headerNames.equals("txid")){
-						logger.debug("txid..add");
-						httpGet.addHeader(headerNames, req.getHeader(headerNames));
-					}
-					
-					if(headerNames.equals("user-agent")){
-						logger.debug("user-agent...add");
-						httpGet.addHeader(headerNames, req.getHeader(headerNames));
-					}
+				
 				}
 				//client ip
 				//txid 
@@ -183,6 +176,8 @@ public class VerificationFilter implements Filter {
 			
 				httpGet.addHeader("filterId",rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
+				httpGet.addHeader("txid", req.getHeader("txid"));
+				httpGet.addHeader("user-agent", req.getHeader("user-agent"));
 				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
 				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
