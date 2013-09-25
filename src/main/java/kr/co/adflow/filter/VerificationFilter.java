@@ -140,6 +140,8 @@ public class VerificationFilter implements Filter {
 		logger.debug("requestMethod : " + req.getMethod());
 		logger.debug("contentType : " + req.getContentType());
 
+	
+
 		for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 			String param = (String) e.nextElement();
 			logger.debug(param + ":" + req.getParameter(param));
@@ -160,14 +162,23 @@ public class VerificationFilter implements Filter {
 						+ req.getSession().getId());
 				httpGet = new HttpGet(uri);
 
-				//PID ADD
+				// PID ADD
 				RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
 				logger.debug("pid: " + rmxb.getName());
-				
-				
+
 				// set header hash
-			
-				httpGet.addHeader("filterId",rmxb.getName());
+				Enumeration en = req.getHeaderNames();
+				while (en.hasMoreElements()) {
+
+					String headerName = (String) en.nextElement();
+					
+					String header = req.getHeader(headerName);
+					
+					logger.debug("verificationFilter:"+headerName+":"+header);
+					
+					httpGet.setHeader(headerName, header);
+				}
+				httpGet.addHeader("filterId", rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
 				httpGet.setHeader("Connection", "keep-alive");
