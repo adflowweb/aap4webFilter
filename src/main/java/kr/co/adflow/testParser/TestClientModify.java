@@ -1,5 +1,7 @@
 package kr.co.adflow.testParser;
 
+import java.util.UUID;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -30,6 +32,22 @@ public class TestClientModify {
 				.append("<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>");
 			 logger.debug("doc.head().toString():"+doc.head().toString());
 		 }
+		
+		 UUID uuid=UUID.randomUUID();
+		 String txid=uuid.toString();
+		 String policy="n";
+		 
+		 doc.head().append("<script>var TXID="+txid+"</script>");
+		 doc.head().append("<script>var uPolicy="+policy+"</script>");
+		/*	UUID uuid = UUID.randomUUID();*/
+			//set txid
+			/*doc.head()
+			.append*/
+			
+			//get urlPolicy
+			//set urlPolicydoc.head()
+			/*doc.head()
+			.append("uPolicy", "N");*/
 
 
 	/*	Elements formEl = doc.select("form");
