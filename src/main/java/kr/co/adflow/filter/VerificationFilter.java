@@ -131,15 +131,15 @@ public class VerificationFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		
+
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		logger.debug("VerificationFilter doFilter....");
 		logger.debug("requestURI : " + req.getRequestURI());
 		logger.debug("requestMethod : " + req.getMethod());
 		logger.debug("contentType : " + req.getContentType());
-		logger.debug("req.getRemoteAddr():"+req.getRemoteAddr());
-		//parameter
+		logger.debug("req.getRemoteAddr():" + req.getRemoteAddr());
+		// parameter
 		for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 			String param = (String) e.nextElement();
 			logger.debug(param + ":" + req.getParameter(param));
@@ -160,25 +160,25 @@ public class VerificationFilter implements Filter {
 						+ req.getSession().getId());
 				httpGet = new HttpGet(uri);
 
-				//PID ADD
+				// PID ADD
 				RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
 				logger.debug("pid: " + rmxb.getName());
 
 				// set header hash
-				// req header 
-		
+				// req header
+
 				for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
 					String headerNames = (String) e.nextElement();
 					logger.debug(headerNames + ":" + req.getHeader(headerNames));
-				
+
 				}
-				//client ip 임시코드
-				httpGet.addHeader("clientip",req.getRemoteAddr());
-				
-				//txid 
-				//user-agent
-			
-				httpGet.addHeader("filterId",rmxb.getName());
+				// client ip 임시코드
+				httpGet.addHeader("clientip", req.getRemoteAddr());
+
+				// txid
+				// user-agent
+
+				httpGet.addHeader("filterId", rmxb.getName());
 				httpGet.addHeader("hash", req.getHeader("hash"));
 				httpGet.addHeader("txid", req.getHeader("txid"));
 				httpGet.addHeader("user-agent", req.getHeader("user-agent"));
@@ -223,7 +223,6 @@ public class VerificationFilter implements Filter {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-		
 
 			}
 		}

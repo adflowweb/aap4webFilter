@@ -27,8 +27,8 @@ public class EncodingFilter implements Filter {
 			if (ignore || (request.getCharacterEncoding() == null)) {
 				String encoding = selectEncoding(request);
 				if (encoding != null) {
-					
-					//utf - 8
+
+					// utf - 8
 					request.setCharacterEncoding(encoding);
 					response.setCharacterEncoding(encoding);
 

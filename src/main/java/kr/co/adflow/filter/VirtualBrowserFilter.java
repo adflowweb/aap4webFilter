@@ -111,15 +111,7 @@ public class VirtualBrowserFilter implements Filter {
 			String result = newResponse.toString();
 
 			logger.debug("ORG Result:" + result);
-			// String sessionID = req.getSession().getId();
-			// String requestURI = req.getRequestURI();
-			// ModifyData
-			/*
-			 * System.out.println("result:" + result);
-			 * 
-			 * TestClientModify modify = new TestClientModify(); final String
-			 * resultModify = modify.jsoupModify(result);
-			 */
+			
 
 			// 검증페이지일 경우
 			/*
@@ -129,8 +121,9 @@ public class VirtualBrowserFilter implements Filter {
 
 			TestClientModify modify = new TestClientModify();
 			String resultModify = modify.jsoupModify(result);
+			logger.debug("JSOUP Modify Data...");
 			logger.debug("resultModify:" + resultModify);
-			logger.debug("this is page for verify");
+			
 			// "X-Requested-With"
 			String method;
 			if (req.getHeader("X-Requested-With") == null) {
