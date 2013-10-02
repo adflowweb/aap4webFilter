@@ -37,20 +37,18 @@ public class TestJsFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		if (req.getRequestURI().toString().contains("aap.js")) {
-
+			logger.debug(req.getRequestURI().toString());
 			logger.debug("Test JS Filter if..");
 
 			if (onOff) {
-				res.setStatus(200);
+				chain.doFilter(request, response);
 				onOff=false;
 			} else {
 				res.setStatus(304);
 				onOff=true;
+				
 			}
 		}
-
-		chain.doFilter(request, response);
-
 	}
 
 	@Override
