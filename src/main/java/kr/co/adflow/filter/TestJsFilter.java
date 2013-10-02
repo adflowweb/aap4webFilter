@@ -40,13 +40,15 @@ public class TestJsFilter implements Filter {
 			logger.debug(req.getRequestURI().toString());
 			logger.debug("Test JS Filter if..");
 
-			if (onOff) {
-				onOff=!onOff;
-				chain.doFilter(request, response);
-			} else {
-				onOff=!onOff;
-				res.setStatus(304);
-			}
+			res.setStatus(304);
+				
+				
+			
+			
+				
+			
+		}else{
+			chain.doFilter(request, response);
 		}
 	}
 
