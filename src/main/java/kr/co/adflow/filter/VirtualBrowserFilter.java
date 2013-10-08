@@ -128,22 +128,38 @@ public class VirtualBrowserFilter implements Filter {
 			String method;
 			if (req.getHeader("X-Requested-With") == null) {
 				method = "POST";
-			} else
+				
+				logger.debug("resultModify");
+				requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
+						method, resultModify.getBytes());
+				logger.debug("VitualpageCreateData resultModify:" + resultModify);
+				
+				out.write(resultModify.getBytes());
+				
+				
+				
+			} else{
 				method = "PUT";
-
-			requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
-					method, result.getBytes());
+				logger.debug("result");
+				requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
+						method, result.getBytes());
+				logger.debug("VitualpageCreateData resul:" + result);
+				
+				out.write(result.getBytes());
+			}
+			
+			
 			// executorService.execute(new RequestVirtualPage(req.getSession()
 			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 
-			logger.debug("VitualpageCreateData result:" + result);
+		
 			/*
 			 * UUID uuid = UUID.randomUUID(); //set txid res.setHeader("TXID",
 			 * uuid.toString()); //get urlPolicy //set urlPolicy
 			 * res.setHeader("uPolicy", "N");
 			 */
-			out.write(result.getBytes());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
