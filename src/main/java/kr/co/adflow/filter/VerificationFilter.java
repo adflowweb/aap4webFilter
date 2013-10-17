@@ -183,6 +183,10 @@ public class VerificationFilter implements Filter {
 				httpGet.addHeader("txid", req.getHeader("txid"));
 				httpGet.addHeader("user-agent", req.getHeader("user-agent"));
 				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
+				//event Header Add
+				if (req.getHeader("X-Requested-With") != null) {
+				httpGet.addHeader("event", req.getHeader("event"));
+				}
 				httpGet.setHeader("Connection", "keep-alive");
 				logger.debug("request verification");
 				logger.debug("req.getHeader(hash):" + req.getHeader("hash"));
