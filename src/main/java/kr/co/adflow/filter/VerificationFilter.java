@@ -193,6 +193,9 @@ public class VerificationFilter implements Filter {
 						wr.write(json);
 						wr.flush();
 						
+						int resCode=urlConnection.getResponseCode();
+						logger.debug("urlConnection resCode:"+resCode);
+						
 
 				
 
