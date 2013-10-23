@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
@@ -155,19 +156,20 @@ public class VerificationFilter implements Filter {
 			public void run() {
 				while (true) {
 					URL url = null;
-					OutputStreamWriter wr = null;
+					OutputStream out = null;
 					HttpURLConnection urlConnection = null;
 					BufferedReader in = null;
 					String json = null;
 					try {
 						url = new URL(
 								"http://127.0.0.1:3000/v1/policy/uri/unknown");
-						urlConnection = (HttpURLConnection) url
-								.openConnection();
+						
 						urlConnection.setDoOutput(true);
 
 						urlConnection.setRequestMethod("POST");
 
+						urlConnection = (HttpURLConnection) url
+								.openConnection();
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
 
@@ -186,12 +188,12 @@ public class VerificationFilter implements Filter {
 						}
 						
 						logger.debug("json:"+json);
+						byte [] bs=json.getBytes();
 						
-						wr = new OutputStreamWriter(urlConnection
-								.getOutputStream());
-						if (json != null) {
-							wr.write(json);
-							wr.flush();
+						out = urlConnection.getOutputStream();
+						if (bs != null) {
+							out.write(bs);
+							out.flush();
 						}
 						int resCode = urlConnection.getResponseCode();
 						logger.debug("urlConnection resCode:" + resCode);
@@ -202,9 +204,9 @@ public class VerificationFilter implements Filter {
 						if (urlConnection != null) {
 							urlConnection.disconnect();
 						}
-						if (wr != null) {
+						if (out != null) {
 							try {
-								wr.close();
+								out.close();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
