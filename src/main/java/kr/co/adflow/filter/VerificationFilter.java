@@ -162,7 +162,7 @@ public class VerificationFilter implements Filter {
 			
 					try {
 						url = new URL(
-								"http://127.0.0.1:3000/policy/uri/unknown");
+								"http://127.0.0.1:3000/v1/policy/uri/unknown");
 						urlConnection = (HttpURLConnection) url
 								.openConnection();
 						urlConnection.setDoOutput(true);
