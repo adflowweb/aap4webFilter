@@ -349,6 +349,7 @@ public class VerificationFilter implements Filter {
 						
 						logger.debug("bfResponseData:"+bfResponseData.toString());
 						res.sendError(505);
+						printWriter= new PrintWriter(res.getOutputStream());
 						printWriter.print(bfResponseData);
 						EntityUtils.consume(getHttpResponse.getEntity());
 						
