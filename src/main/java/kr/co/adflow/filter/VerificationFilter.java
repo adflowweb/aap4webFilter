@@ -11,6 +11,9 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,8 +41,13 @@ public class VerificationFilter implements Filter {
 	private static Logger logger = LoggerFactory
 			.getLogger(VerificationFilter.class);
 	private static HashMap verificationUriList = new HashMap();
+	private static HashMap unKnowUriList = new HashMap();
+	private static HashSet flushList = new HashSet();
 
-	private ExecutorService executorService = Executors.newFixedThreadPool(1);
+	private ExecutorService executorVerifyListGet = Executors
+			.newFixedThreadPool(1);
+	private ExecutorService executorUnknowListGet = Executors
+			.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client = null;
@@ -60,7 +68,7 @@ public class VerificationFilter implements Filter {
 		connectionManager.setDefaultMaxPerRoute(20);
 		client = new DefaultHttpClient(connectionManager);
 
-		executorService.execute(new Runnable() {
+		executorVerifyListGet.execute(new Runnable() {
 			public void run() {
 				while (true) {
 					long start = System.currentTimeMillis();
@@ -70,7 +78,7 @@ public class VerificationFilter implements Filter {
 					try {
 						// create connection
 						url = new URL(VERIFICATION_SERVER_ADDRESS
-								+ "/v1/verificationuri");
+								+ "/v1/redis/uri");
 						conn = (HttpURLConnection) url.openConnection();
 						conn.setRequestMethod("GET");
 						conn.setUseCaches(false);
@@ -127,6 +135,55 @@ public class VerificationFilter implements Filter {
 				}
 			}
 		});
+		
+		
+		executorUnknowListGet.execute(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						if (flushList.size() == 0) {
+							logger.debug("first Flush..");
+							Set set = getUnKnowUriList().keySet();
+							Iterator it = set.iterator();
+							while (it.hasNext()) {
+								String key = (String) it.next();
+								logger.debug("UnknowUrl key:" + key);
+								flushList.add(key);
+							}
+
+						} else {
+
+							Set set = getUnKnowUriList().keySet();
+							Iterator it = set.iterator();
+							while (it.hasNext()) {
+								String key = (String) it.next();
+								logger.debug("UnknowUrlKey:"+key);
+								if (flushList.contains(key)) {
+									logger.debug("noFlush");
+								} else {
+									logger.debug("yesFlush");
+								}
+							}
+
+						}
+
+						try {
+							Thread.sleep(10000); //10초
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		
+		
+		
+		
+		
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -149,85 +206,107 @@ public class VerificationFilter implements Filter {
 		// hiddenField(hash) 추가해야함
 		// (verificationUriList.containsKey(req.getRequestURI()
 
-		if (req.getHeader("hash") != null) {
+		// unknow Url
+		if (!verificationUriList.containsKey(req.getRequestURI())) {
+			logger.debug("Unknow Uri");
+			logger.debug("req.UnKnowUri:" + req.getRequestURI());
+			unKnowUriList.put(req.getRequestURI(), "UnKnow");
 
-			URI uri;
-			HttpGet httpGet = null;
-			try {
-				// create connection
+			// verifyUrl
+		} else {
+			
+			
+			Object obj = null;
+			String policyIsV = null;
+			obj = (Object) verificationUriList.get(req.getRequestURI());
+			logger.debug("obj:" + obj.toString());
+			policyIsV = "\"uri_policy\":\"V\"";
+			//검증 대상 V 일경우 
+			//if (obj.toString().contains(policyIsV)) {
 
-				uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
-						+ req.getSession().getId());
-				httpGet = new HttpGet(uri);
+			if (req.getHeader("hash") != null) {
 
-				// PID ADD
-				RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
-				logger.debug("pid: " + rmxb.getName());
+				URI uri;
+				HttpGet httpGet = null;
+				try {
+					// create connection
 
-				// set header hash
-				// req header
+					uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
+							+ req.getSession().getId());
+					httpGet = new HttpGet(uri);
 
-				for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
-					String headerNames = (String) e.nextElement();
-					logger.debug(headerNames + ":" + req.getHeader(headerNames));
+					// PID ADD
+					RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
+					logger.debug("pid: " + rmxb.getName());
+
+					// set header hash
+					// req header
+
+					for (Enumeration e = req.getHeaderNames(); e
+							.hasMoreElements();) {
+						String headerNames = (String) e.nextElement();
+						logger.debug(headerNames + ":"
+								+ req.getHeader(headerNames));
+
+					}
+					// client ip 임시코드
+					httpGet.addHeader("clientip", req.getRemoteAddr());
+
+					// txid
+					// user-agent
+
+					httpGet.addHeader("filterId", rmxb.getName());
+					httpGet.addHeader("hash", req.getHeader("hash"));
+					httpGet.addHeader("txid", req.getHeader("txid"));
+					httpGet.addHeader("user-agent", req.getHeader("user-agent"));
+					httpGet.addHeader("virtual_page_uri", req.getRequestURI());
+					// event Header Add
+					if (req.getHeader("X-Requested-With") != null) {
+						httpGet.addHeader("event", req.getHeader("event"));
+					}
+					httpGet.setHeader("Connection", "keep-alive");
+					logger.debug("request verification");
+					logger.debug("req.getHeader(hash):" + req.getHeader("hash"));
+
+					logger.debug("HttpGet : " + httpGet.toString());
+
+					// get Response
+					HttpResponse getHttpResponse = client.execute(httpGet);
+					int resCode = getHttpResponse.getStatusLine()
+							.getStatusCode();
+					EntityUtils.consume(getHttpResponse.getEntity());
+					switch (resCode) {
+					case 200: // 검증성공
+						logger.debug("verified Success!!!!");
+						// todo
+						// 검증로그전송
+						break;
+					case 404:
+						logger.debug("404 not found");
+						res.sendError(404);// 임시코드
+						// break;
+						return;
+					case 500:
+						logger.debug("500 internal server error");
+						res.sendError(500);// 임시코드
+						// break;
+						return;
+					case 505: // 검증실패
+						logger.debug("Server Error 505");
+						res.sendError(505);
+
+						// todo
+						// 검증로그전송
+						return;
+					default:
+						logger.debug("undefined responseCode");
+						break;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
 
 				}
-				// client ip 임시코드
-				httpGet.addHeader("clientip", req.getRemoteAddr());
-
-				// txid
-				// user-agent
-
-				httpGet.addHeader("filterId", rmxb.getName());
-				httpGet.addHeader("hash", req.getHeader("hash"));
-				httpGet.addHeader("txid", req.getHeader("txid"));
-				httpGet.addHeader("user-agent", req.getHeader("user-agent"));
-				httpGet.addHeader("virtual_page_uri", req.getRequestURI());
-				//event Header Add
-				if (req.getHeader("X-Requested-With") != null) {
-				httpGet.addHeader("event", req.getHeader("event"));
-				}
-				httpGet.setHeader("Connection", "keep-alive");
-				logger.debug("request verification");
-				logger.debug("req.getHeader(hash):" + req.getHeader("hash"));
-
-				logger.debug("HttpGet : " + httpGet.toString());
-
-				// get Response
-				HttpResponse getHttpResponse = client.execute(httpGet);
-				int resCode = getHttpResponse.getStatusLine().getStatusCode();
-				EntityUtils.consume(getHttpResponse.getEntity());
-				switch (resCode) {
-				case 200: // 검증성공
-					logger.debug("verified Success!!!!");
-					// todo
-					// 검증로그전송
-					break;
-				case 404:
-					logger.debug("404 not found");
-					res.sendError(404);// 임시코드
-					// break;
-					return;
-				case 500:
-					logger.debug("500 internal server error");
-					res.sendError(500);// 임시코드
-					// break;
-					return;
-				case 505: // 검증실패
-					logger.debug("Server Error 505");
-					res.sendError(505);
-
-					// todo
-					// 검증로그전송
-					return;
-				default:
-					logger.debug("undefined responseCode");
-					break;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-
 			}
 		}
 		chain.doFilter(req, res);
@@ -241,8 +320,24 @@ public class VerificationFilter implements Filter {
 		verificationUriList = verificationUriList;
 	}
 
+	public static HashMap getUnKnowUriList() {
+		return unKnowUriList;
+	}
+
+	public static void setUnKnowUriList(HashMap unKnowUriList) {
+		VerificationFilter.unKnowUriList = unKnowUriList;
+	}
+
+	public static HashSet getFlushList() {
+		return flushList;
+	}
+
+	public static void setFlushList(HashSet flushList) {
+		VerificationFilter.flushList = flushList;
+	}
+
 	public void destroy() {
-		executorService.shutdown();
+		executorVerifyListGet.shutdown();
 		client.getConnectionManager().shutdown();
 
 	}
