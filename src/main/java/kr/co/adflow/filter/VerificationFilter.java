@@ -195,9 +195,10 @@ public class VerificationFilter implements Filter {
 							out = urlConnection.getOutputStream();
 							out.write(bs);
 							out.flush();
+							int resCode = urlConnection.getResponseCode();
+							logger.debug("urlConnection resCode:" + resCode);
 						}
-						int resCode = urlConnection.getResponseCode();
-						logger.debug("urlConnection resCode:" + resCode);
+						
 
 					} catch (Exception e) {
 						e.printStackTrace();
