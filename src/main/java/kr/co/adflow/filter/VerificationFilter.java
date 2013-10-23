@@ -266,7 +266,8 @@ public class VerificationFilter implements Filter {
 
 				URI uri;
 				HttpGet httpGet = null;
-				PrintWriter printWriter= new PrintWriter(response.getOutputStream());
+				PrintWriter printWriter=null;
+				BufferedReader br=null;
 				try {
 					// create connection
 
@@ -332,11 +333,21 @@ public class VerificationFilter implements Filter {
 						return;
 					case 505: // 검증실패
 						logger.debug("Server Error 505");
+						 getHttpResponse.getEntity().getContent();
 						
 						String responseData=getHttpResponse.toString();
 						
-						logger.debug("505responseData:"+responseData);
-						printWriter.print(responseData);
+						br = new BufferedReader(new InputStreamReader(getHttpResponse.getEntity().getContent()));
+						String line;
+						StringBuffer bfResponseData = new StringBuffer();
+						while ((line = br.readLine()) != null) {
+							bfResponseData.append(line);
+							bfResponseData.append('\r');
+						}
+						
+						
+						logger.debug("bfResponseData:"+bfResponseData.toString());
+						printWriter.print(bfResponseData);
 						res.sendError(505);
 
 						// todo
@@ -352,6 +363,14 @@ public class VerificationFilter implements Filter {
 					if(printWriter!=null){
 						try{
 						printWriter.close();
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+					
+					if(br!=null){
+						try{
+						br.close();
 						}catch(Exception e){
 							e.printStackTrace();
 						}
