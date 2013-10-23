@@ -173,6 +173,7 @@ public class VerificationFilter implements Filter {
 					
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
+						String json=null
 						while (it.hasNext()) {
 							String key = (String) it.next();
 							Object value = verificationUriList.get(key);
@@ -180,16 +181,16 @@ public class VerificationFilter implements Filter {
 							logger.debug("verificationUriList value:" + value);
 							if (value.toString().equals("U")) {
 								logger.debug("flush...value");
-								String json ="{\""+key+"\":\"{\"url_policy\":\"U\"}\"}";
-								wr = new OutputStreamWriter(urlConnection
-										.getOutputStream());
-								wr.write(json);
-								wr.flush();
+								json ="{\""+key+"\":\"{\"url_policy\":\"U\"}\"}";
+							
 								verificationUriList.put(key, json + "flush");
 							}
 						}
 						
-						
+						wr = new OutputStreamWriter(urlConnection
+								.getOutputStream());
+						wr.write(json);
+						wr.flush();
 						
 
 						/*in = new BufferedReader(new InputStreamReader(
