@@ -250,7 +250,9 @@ public class VerificationFilter implements Filter {
 
 			// verifyUrl
 		} else {
-
+			
+			logger.debug("Verify Uri req.getRequestURI():"+req.getRequestURI());
+			unKnowUriList.remove(req.getRequestURI());
 			Object obj = null;
 			String policyIsV = null;
 			obj = (Object) verificationUriList.get(req.getRequestURI());
