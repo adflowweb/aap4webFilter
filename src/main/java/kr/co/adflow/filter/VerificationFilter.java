@@ -318,16 +318,19 @@ public class VerificationFilter implements Filter {
 					switch (resCode) {
 					case 200: // 검증성공
 						logger.debug("verified Success!!!!");
+						EntityUtils.consume(getHttpResponse.getEntity());
 						// todo
 						// 검증로그전송
 						break;
 					case 404:
 						logger.debug("404 not found");
+						EntityUtils.consume(getHttpResponse.getEntity());
 						res.sendError(404);// 임시코드
 						// break;
 						return;
 					case 500:
 						logger.debug("500 internal server error");
+						EntityUtils.consume(getHttpResponse.getEntity());
 						res.sendError(500);// 임시코드
 						// break;
 						return;
@@ -346,6 +349,7 @@ public class VerificationFilter implements Filter {
 						
 						logger.debug("bfResponseData:"+bfResponseData.toString());
 						printWriter.print(bfResponseData);
+						EntityUtils.consume(getHttpResponse.getEntity());
 						res.sendError(505);
 
 						// todo
@@ -356,7 +360,7 @@ public class VerificationFilter implements Filter {
 						break;
 					}
 					
-					EntityUtils.consume(getHttpResponse.getEntity());
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
