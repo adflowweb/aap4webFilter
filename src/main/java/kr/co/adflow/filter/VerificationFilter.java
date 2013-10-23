@@ -166,7 +166,7 @@ public class VerificationFilter implements Filter {
 						urlConnection = (HttpURLConnection) url
 								.openConnection();
 						urlConnection.setDoOutput(true);
-						urlConnection.setDoInput(false);
+						urlConnection.setDoInput(true);
 						urlConnection.setRequestMethod("POST");
 				
 
