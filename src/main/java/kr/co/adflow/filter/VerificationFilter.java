@@ -159,7 +159,7 @@ public class VerificationFilter implements Filter {
 					OutputStreamWriter wr = null;
 					HttpURLConnection urlConnection = null;
 					BufferedReader in = null;
-			
+					String json=null;
 					try {
 						url = new URL(
 								"http://127.0.0.1:3000/v1/policy/uri/unknown");
@@ -173,7 +173,7 @@ public class VerificationFilter implements Filter {
 					
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
-						String json=null;
+					
 						while (it.hasNext()) {
 							String key = (String) it.next();
 							Object value = verificationUriList.get(key);
@@ -187,11 +187,11 @@ public class VerificationFilter implements Filter {
 							}
 						}
 						
-						OutputStreamWriter wr2 = new OutputStreamWriter(urlConnection
+					/*	wr = new OutputStreamWriter(urlConnection
 								.getOutputStream());
 					
-						wr2.write(json);
-						wr2.flush();
+						wr.write(json);
+						wr.flush();*/
 						
 
 				
@@ -218,6 +218,8 @@ public class VerificationFilter implements Filter {
 					
 					}
 				}
+				
+				
 			}
 		});
 
