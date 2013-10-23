@@ -173,7 +173,7 @@ public class VerificationFilter implements Filter {
 					
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
-						String json=null
+						String json=null;
 						while (it.hasNext()) {
 							String key = (String) it.next();
 							Object value = verificationUriList.get(key);
