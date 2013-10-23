@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
@@ -135,55 +136,90 @@ public class VerificationFilter implements Filter {
 				}
 			}
 		});
-		
-		
+
 		executorUnknowListGet.execute(new Runnable() {
 			public void run() {
 				while (true) {
+					URL url = null;
+					OutputStreamWriter wr = null;
+					HttpURLConnection urlConnection = null;
+					BufferedReader in = null;
+					Set set = null;
+					Iterator it = null;
 					try {
+						url = new URL(
+								"http://127.0.0.1:8080/TestList/TestServlet");
+						urlConnection = (HttpURLConnection) url
+								.openConnection();
+						urlConnection.setDoOutput(true);
+						wr = new OutputStreamWriter(urlConnection
+								.getOutputStream());
+
 						if (flushList.size() == 0) {
 							logger.debug("first Flush..");
-							Set set = getUnKnowUriList().keySet();
-							Iterator it = set.iterator();
+							set = getUnKnowUriList().keySet();
+							it = set.iterator();
 							while (it.hasNext()) {
 								String key = (String) it.next();
 								logger.debug("UnknowUrl key:" + key);
+								wr.write(key);
+								wr.flush();
 								flushList.add(key);
 							}
 
 						} else {
 
-							Set set = getUnKnowUriList().keySet();
-							Iterator it = set.iterator();
+							set = getUnKnowUriList().keySet();
+							it = set.iterator();
 							while (it.hasNext()) {
 								String key = (String) it.next();
-								logger.debug("UnknowUrlKey:"+key);
+								logger.debug("UnknowUrlKey:" + key);
 								if (flushList.contains(key)) {
 									logger.debug("noFlush");
 								} else {
+									wr.write(key);
+									wr.flush();
+									flushList.add(key);
 									logger.debug("yesFlush");
 								}
 							}
 
 						}
 
+						in = new BufferedReader(new InputStreamReader(
+								urlConnection.getInputStream()));
+
 						try {
-							Thread.sleep(10000); //10초
+							Thread.sleep(10000); // 10초
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
+					} finally {
+						if (urlConnection != null) {
+							urlConnection.disconnect();
+						}
+						if (wr != null) {
+							try {
+								wr.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						if (in != null) {
+							try {
+								in.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
 					}
 				}
 			}
 		});
-		
-		
-		
-		
-		
+
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -214,15 +250,14 @@ public class VerificationFilter implements Filter {
 
 			// verifyUrl
 		} else {
-			
-			
+
 			Object obj = null;
 			String policyIsV = null;
 			obj = (Object) verificationUriList.get(req.getRequestURI());
 			logger.debug("obj:" + obj.toString());
 			policyIsV = "\"uri_policy\":\"V\"";
-			//검증 대상 V 일경우 
-			//if (obj.toString().contains(policyIsV)) {
+			// 검증 대상 V 일경우
+			// if (obj.toString().contains(policyIsV)) {
 
 			if (req.getHeader("hash") != null) {
 
