@@ -184,7 +184,9 @@ public class VerificationFilter implements Filter {
 								verificationUriList.put(key, json + "flush");
 							}
 						}
-
+						
+						logger.debug("json:"+json);
+						
 						wr = new OutputStreamWriter(urlConnection
 								.getOutputStream());
 						if (json != null) {
