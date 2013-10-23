@@ -190,8 +190,8 @@ public class VerificationFilter implements Filter {
 						
 						
 
-						in = new BufferedReader(new InputStreamReader(
-								urlConnection.getInputStream()));
+						/*in = new BufferedReader(new InputStreamReader(
+								urlConnection.getInputStream()));*/
 
 						try {
 							Thread.sleep(10000); // 10초
@@ -212,13 +212,13 @@ public class VerificationFilter implements Filter {
 								e.printStackTrace();
 							}
 						}
-						if (in != null) {
+					/*	if (in != null) {
 							try {
 								in.close();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-						}
+						}*/
 					}
 				}
 			}
