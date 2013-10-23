@@ -166,7 +166,7 @@ public class VerificationFilter implements Filter {
 						urlConnection = (HttpURLConnection) url
 								.openConnection();
 						urlConnection.setDoOutput(true);
-					//	urlConnection.setDoInput(true);
+					
 						urlConnection.setRequestMethod("POST");
 				
 
@@ -189,12 +189,12 @@ public class VerificationFilter implements Filter {
 						
 						wr = new OutputStreamWriter(urlConnection
 								.getOutputStream());
+					
 						wr.write(json);
 						wr.flush();
 						
 
-						/*in = new BufferedReader(new InputStreamReader(
-								urlConnection.getInputStream()));*/
+				
 
 						try {
 							Thread.sleep(10000); // 10초
@@ -215,13 +215,7 @@ public class VerificationFilter implements Filter {
 								e.printStackTrace();
 							}
 						}
-						if (in != null) {
-							try {
-								in.close();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
+					
 					}
 				}
 			}
