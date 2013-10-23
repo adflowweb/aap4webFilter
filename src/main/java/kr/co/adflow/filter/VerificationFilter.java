@@ -163,13 +163,13 @@ public class VerificationFilter implements Filter {
 					try {
 						url = new URL(
 								"http://127.0.0.1:3000/v1/policy/uri/unknown");
-						
+						urlConnection = (HttpURLConnection) url
+								.openConnection();
 						urlConnection.setDoOutput(true);
 
 						urlConnection.setRequestMethod("POST");
 
-						urlConnection = (HttpURLConnection) url
-								.openConnection();
+						
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
 
