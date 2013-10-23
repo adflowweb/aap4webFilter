@@ -314,7 +314,7 @@ public class VerificationFilter implements Filter {
 					HttpResponse getHttpResponse = client.execute(httpGet);
 					int resCode = getHttpResponse.getStatusLine()
 							.getStatusCode();
-					EntityUtils.consume(getHttpResponse.getEntity());
+					
 					switch (resCode) {
 					case 200: // 검증성공
 						logger.debug("verified Success!!!!");
@@ -355,10 +355,12 @@ public class VerificationFilter implements Filter {
 						logger.debug("undefined responseCode");
 						break;
 					}
+					
+					EntityUtils.consume(getHttpResponse.getEntity());
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					httpGet.releaseConnection();
+					
 					if(printWriter!=null){
 						try{
 						printWriter.close();
