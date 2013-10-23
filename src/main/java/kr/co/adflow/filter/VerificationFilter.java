@@ -187,21 +187,16 @@ public class VerificationFilter implements Filter {
 							}
 						}
 						
-					/*	wr = new OutputStreamWriter(urlConnection
+						wr = new OutputStreamWriter(urlConnection
 								.getOutputStream());
 					
 						wr.write(json);
-						wr.flush();*/
+						wr.flush();
 						
 
 				
 
-						try {
-							Thread.sleep(10000); // 10초
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
@@ -216,6 +211,13 @@ public class VerificationFilter implements Filter {
 							}
 						}
 					
+					}
+					
+					try {
+						Thread.sleep(10000); // 10초
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 				
