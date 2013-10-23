@@ -187,11 +187,11 @@ public class VerificationFilter implements Filter {
 							}
 						}
 						
-						wr = new OutputStreamWriter(urlConnection
+						OutputStreamWriter wr2 = new OutputStreamWriter(urlConnection
 								.getOutputStream());
 					
-						wr.write(json);
-						wr.flush();
+						wr2.write(json);
+						wr2.flush();
 						
 
 				
