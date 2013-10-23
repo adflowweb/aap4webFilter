@@ -187,11 +187,12 @@ public class VerificationFilter implements Filter {
 							}
 						}
 						
-						logger.debug("json:"+json);
-						byte [] bs=json.getBytes();
 						
-						out = urlConnection.getOutputStream();
-						if (bs != null) {
+						if (json != null) {
+							logger.debug("json:"+json);
+							byte [] bs=json.getBytes();
+							
+							out = urlConnection.getOutputStream();
 							out.write(bs);
 							out.flush();
 						}
