@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
@@ -265,6 +266,7 @@ public class VerificationFilter implements Filter {
 
 				URI uri;
 				HttpGet httpGet = null;
+				PrintWriter printWriter= new PrintWriter(response.getOutputStream());
 				try {
 					// create connection
 
@@ -330,6 +332,11 @@ public class VerificationFilter implements Filter {
 						return;
 					case 505: // 검증실패
 						logger.debug("Server Error 505");
+						
+						String responseData=getHttpResponse.toString();
+						
+						logger.debug("505responseData:"+responseData);
+						printWriter.print(responseData);
 						res.sendError(505);
 
 						// todo
@@ -342,7 +349,13 @@ public class VerificationFilter implements Filter {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-
+					if(printWriter!=null){
+						try{
+						printWriter.close();
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		}
