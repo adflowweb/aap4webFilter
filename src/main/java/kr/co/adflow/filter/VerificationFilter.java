@@ -43,8 +43,7 @@ public class VerificationFilter implements Filter {
 	private static Logger logger = LoggerFactory
 			.getLogger(VerificationFilter.class);
 	private static HashMap verificationUriList = new HashMap();
-	private static HashMap unKnowUriList = new HashMap();
-	private static HashSet flushList = new HashSet();
+
 
 	private ExecutorService executorVerifyListGet = Executors
 			.newFixedThreadPool(1);
@@ -80,7 +79,7 @@ public class VerificationFilter implements Filter {
 					try {
 						// create connection
 						url = new URL(VERIFICATION_SERVER_ADDRESS
-								+ "/v1/redis/uri");
+								+ "/v1/policy/uri");
 						conn = (HttpURLConnection) url.openConnection();
 						conn.setRequestMethod("GET");
 						conn.setUseCaches(false);
@@ -104,9 +103,24 @@ public class VerificationFilter implements Filter {
 							logger.debug("response : "
 									+ responseData.toString());
 
-							// update verification uri data
-							verificationUriList = mapper.readValue(
-									responseData.toString(), HashMap.class);
+							// insert verification uri data
+
+							Set set = mapper.readValue(responseData.toString(),
+									HashMap.class).keySet();
+							Iterator it = set.iterator();
+
+							while (it.hasNext()) {
+								String key = (String) it.next();
+								Object value = mapper.readValue(
+										responseData.toString(), HashMap.class)
+										.get(key);
+								if (!verificationUriList.containsKey(key)) {
+									verificationUriList.put(key,
+											value.toString());
+								}
+
+							}
+
 							logger.debug("verificationUriList : "
 									+ verificationUriList);
 						}
@@ -145,8 +159,7 @@ public class VerificationFilter implements Filter {
 					OutputStreamWriter wr = null;
 					HttpURLConnection urlConnection = null;
 					BufferedReader in = null;
-					Set set = null;
-					Iterator it = null;
+			
 					try {
 						url = new URL(
 								"http://127.0.0.1:8080/TestList/TestServlet");
@@ -156,36 +169,24 @@ public class VerificationFilter implements Filter {
 						wr = new OutputStreamWriter(urlConnection
 								.getOutputStream());
 
-						if (flushList.size() == 0) {
-							logger.debug("first Flush..");
-							set = getUnKnowUriList().keySet();
-							it = set.iterator();
-							while (it.hasNext()) {
-								String key = (String) it.next();
-								logger.debug("UnknowUrl key:" + key);
+					
+						Set set = verificationUriList.keySet();
+						Iterator it = set.iterator();
+						while (it.hasNext()) {
+							String key = (String) it.next();
+							Object value = verificationUriList.get(key);
+							logger.debug("verificationUriList key:" + key);
+							logger.debug("verificationUriList value:" + value);
+							if (value.toString().equals("U")) {
+								logger.debug("flush...value");
 								wr.write(key);
 								wr.flush();
-								flushList.add(key);
+								verificationUriList.put(key, value + "flush");
 							}
-
-						} else {
-
-							set = getUnKnowUriList().keySet();
-							it = set.iterator();
-							while (it.hasNext()) {
-								String key = (String) it.next();
-								logger.debug("UnknowUrlKey:" + key);
-								if (flushList.contains(key)) {
-									logger.debug("noFlush");
-								} else {
-									wr.write(key);
-									wr.flush();
-									flushList.add(key);
-									logger.debug("yesFlush");
-								}
-							}
-
 						}
+						
+						
+						
 
 						in = new BufferedReader(new InputStreamReader(
 								urlConnection.getInputStream()));
@@ -245,16 +246,16 @@ public class VerificationFilter implements Filter {
 
 		// unknow Url
 		if (!verificationUriList.containsKey(req.getRequestURI())) {
-			logger.debug("Unknow Uri");
-			logger.debug("req.UnKnowUri:" + req.getRequestURI());
-			unKnowUriList.put(req.getRequestURI(), "UnKnow");
+			logger.debug("unknow uri");
+			logger.debug("req.uri:" + req.getRequestURI());
+			verificationUriList.put(req.getRequestURI(), "U");
 
 			// verifyUrl
 		} else {
 
 			logger.debug("Verify Uri req.getRequestURI():"
 					+ req.getRequestURI());
-			unKnowUriList.remove(req.getRequestURI());
+		
 			Object obj = null;
 			String policyIsV = null;
 			obj = (Object) verificationUriList.get(req.getRequestURI());
@@ -354,7 +355,7 @@ public class VerificationFilter implements Filter {
 						printWriter = new PrintWriter(res.getOutputStream());
 						printWriter.print(bfResponseData);
 						printWriter.flush();
-						EntityUtils.consume(getHttpResponse.getEntity());
+					
 
 						// todo
 						// 검증로그전송
@@ -398,21 +399,7 @@ public class VerificationFilter implements Filter {
 		verificationUriList = verificationUriList;
 	}
 
-	public static HashMap getUnKnowUriList() {
-		return unKnowUriList;
-	}
 
-	public static void setUnKnowUriList(HashMap unKnowUriList) {
-		VerificationFilter.unKnowUriList = unKnowUriList;
-	}
-
-	public static HashSet getFlushList() {
-		return flushList;
-	}
-
-	public static void setFlushList(HashSet flushList) {
-		VerificationFilter.flushList = flushList;
-	}
 
 	public void destroy() {
 		executorVerifyListGet.shutdown();
