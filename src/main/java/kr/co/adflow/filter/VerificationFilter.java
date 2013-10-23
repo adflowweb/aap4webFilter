@@ -167,8 +167,7 @@ public class VerificationFilter implements Filter {
 								.openConnection();
 						urlConnection.setDoOutput(true);
 						urlConnection.setRequestMethod("POST");
-						wr = new OutputStreamWriter(urlConnection
-								.getOutputStream());
+				
 
 					
 						Set set = verificationUriList.keySet();
@@ -181,6 +180,8 @@ public class VerificationFilter implements Filter {
 							if (value.toString().equals("U")) {
 								logger.debug("flush...value");
 								String json ="{\""+key+"\":\"{\"url_policy\":\"U\"}\"}";
+								wr = new OutputStreamWriter(urlConnection
+										.getOutputStream());
 								wr.write(json);
 								wr.flush();
 								verificationUriList.put(key, json + "flush");
