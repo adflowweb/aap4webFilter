@@ -348,15 +348,17 @@ public class VerificationFilter implements Filter {
 						
 						
 						logger.debug("bfResponseData:"+bfResponseData.toString());
+						res.sendError(505);
 						printWriter.print(bfResponseData);
 						EntityUtils.consume(getHttpResponse.getEntity());
-						res.sendError(505);
+						
 
 						// todo
 						// 검증로그전송
 						return;
 					default:
 						logger.debug("undefined responseCode");
+						EntityUtils.consume(getHttpResponse.getEntity());
 						break;
 					}
 					
