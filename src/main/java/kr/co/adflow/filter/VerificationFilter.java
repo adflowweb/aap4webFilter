@@ -251,8 +251,9 @@ public class VerificationFilter implements Filter {
 
 			// verifyUrl
 		} else {
-			
-			logger.debug("Verify Uri req.getRequestURI():"+req.getRequestURI());
+
+			logger.debug("Verify Uri req.getRequestURI():"
+					+ req.getRequestURI());
 			unKnowUriList.remove(req.getRequestURI());
 			Object obj = null;
 			String policyIsV = null;
@@ -266,8 +267,9 @@ public class VerificationFilter implements Filter {
 
 				URI uri;
 				HttpGet httpGet = null;
-				PrintWriter printWriter=null;
-				BufferedReader br=null;
+				PrintWriter printWriter = null;
+				BufferedReader br = null;
+				HttpResponse getHttpResponse = null;
 				try {
 					// create connection
 
@@ -311,76 +313,74 @@ public class VerificationFilter implements Filter {
 					logger.debug("HttpGet : " + httpGet.toString());
 
 					// get Response
-					HttpResponse getHttpResponse = client.execute(httpGet);
+					getHttpResponse = client.execute(httpGet);
 					int resCode = getHttpResponse.getStatusLine()
 							.getStatusCode();
-					
+
 					switch (resCode) {
 					case 200: // 검증성공
 						logger.debug("verified Success!!!!");
-						EntityUtils.consume(getHttpResponse.getEntity());
+
 						// todo
 						// 검증로그전송
 						break;
 					case 404:
 						logger.debug("404 not found");
-						EntityUtils.consume(getHttpResponse.getEntity());
+					
 						res.sendError(404);// 임시코드
 						// break;
 						return;
 					case 500:
 						logger.debug("500 internal server error");
-						EntityUtils.consume(getHttpResponse.getEntity());
+						
 						res.sendError(500);// 임시코드
 						// break;
 						return;
 					case 505: // 검증실패
 						logger.debug("Server Error 505");
-						
-						
-						br = new BufferedReader(new InputStreamReader(getHttpResponse.getEntity().getContent()));
+
+						br = new BufferedReader(new InputStreamReader(
+								getHttpResponse.getEntity().getContent()));
 						String line;
 						StringBuffer bfResponseData = new StringBuffer();
 						while ((line = br.readLine()) != null) {
 							bfResponseData.append(line);
 							bfResponseData.append('\r');
 						}
-						
-						
-						logger.debug("bfResponseData:"+bfResponseData.toString());
+
+						logger.debug("bfResponseData:"
+								+ bfResponseData.toString());
 						res.setStatus(505);
-						printWriter= new PrintWriter(res.getOutputStream());
+						printWriter = new PrintWriter(res.getOutputStream());
 						printWriter.print(bfResponseData);
 						printWriter.flush();
 						EntityUtils.consume(getHttpResponse.getEntity());
-						
 
 						// todo
 						// 검증로그전송
 						return;
 					default:
 						logger.debug("undefined responseCode");
-						EntityUtils.consume(getHttpResponse.getEntity());
+						
 						break;
 					}
-					
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					
-					if(printWriter!=null){
-						try{
-						printWriter.close();
-						}catch(Exception e){
+					EntityUtils.consume(getHttpResponse.getEntity());
+					if (printWriter != null) {
+						try {
+							printWriter.close();
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
-					
-					if(br!=null){
-						try{
-						br.close();
-						}catch(Exception e){
+
+					if (br != null) {
+						try {
+							br.close();
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
