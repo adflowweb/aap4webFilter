@@ -162,10 +162,11 @@ public class VerificationFilter implements Filter {
 			
 					try {
 						url = new URL(
-								"http://127.0.0.1:8080/TestList/TestServlet");
+								"http://127.0.0.1:3000/policy/uri/unknown");
 						urlConnection = (HttpURLConnection) url
 								.openConnection();
 						urlConnection.setDoOutput(true);
+						urlConnection.setRequestMethod("POST");
 						wr = new OutputStreamWriter(urlConnection
 								.getOutputStream());
 
@@ -179,9 +180,10 @@ public class VerificationFilter implements Filter {
 							logger.debug("verificationUriList value:" + value);
 							if (value.toString().equals("U")) {
 								logger.debug("flush...value");
-								wr.write(key);
+								String json ="{\""+key+"\":\"{\"url_policy\":\"U\"}\"}";
+								wr.write(json);
 								wr.flush();
-								verificationUriList.put(key, value + "flush");
+								verificationUriList.put(key, json + "flush");
 							}
 						}
 						
