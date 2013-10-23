@@ -166,7 +166,7 @@ public class VerificationFilter implements Filter {
 						urlConnection = (HttpURLConnection) url
 								.openConnection();
 						urlConnection.setDoOutput(true);
-						urlConnection.setDoInput(true);
+					//	urlConnection.setDoInput(true);
 						urlConnection.setRequestMethod("POST");
 				
 
@@ -192,8 +192,8 @@ public class VerificationFilter implements Filter {
 						
 						
 
-						in = new BufferedReader(new InputStreamReader(
-								urlConnection.getInputStream()));
+						/*in = new BufferedReader(new InputStreamReader(
+								urlConnection.getInputStream()));*/
 
 						try {
 							Thread.sleep(10000); // 10초
