@@ -44,7 +44,6 @@ public class VerificationFilter implements Filter {
 			.getLogger(VerificationFilter.class);
 	private static HashMap verificationUriList = new HashMap();
 
-
 	private ExecutorService executorVerifyListGet = Executors
 			.newFixedThreadPool(1);
 	private ExecutorService executorUnknowListGet = Executors
@@ -159,21 +158,19 @@ public class VerificationFilter implements Filter {
 					OutputStreamWriter wr = null;
 					HttpURLConnection urlConnection = null;
 					BufferedReader in = null;
-					String json=null;
+					String json = null;
 					try {
 						url = new URL(
 								"http://127.0.0.1:3000/v1/policy/uri/unknown");
 						urlConnection = (HttpURLConnection) url
 								.openConnection();
 						urlConnection.setDoOutput(true);
-					
-						urlConnection.setRequestMethod("POST");
-				
 
-					
+						urlConnection.setRequestMethod("POST");
+
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
-					
+
 						while (it.hasNext()) {
 							String key = (String) it.next();
 							Object value = verificationUriList.get(key);
@@ -181,25 +178,22 @@ public class VerificationFilter implements Filter {
 							logger.debug("verificationUriList value:" + value);
 							if (value.toString().equals("U")) {
 								logger.debug("flush...value");
-								json ="{\""+key+"\":\"{\"url_policy\":\"U\"}\"}";
-							
+								json = "{\"" + key
+										+ "\":\"{\"url_policy\":\"U\"}\"}";
+
 								verificationUriList.put(key, json + "flush");
 							}
 						}
-						
+
 						wr = new OutputStreamWriter(urlConnection
 								.getOutputStream());
-					
-						wr.write(json);
-						wr.flush();
-						
-						int resCode=urlConnection.getResponseCode();
-						logger.debug("urlConnection resCode:"+resCode);
-						
+						if (json != null) {
+							wr.write(json);
+							wr.flush();
+						}
+						int resCode = urlConnection.getResponseCode();
+						logger.debug("urlConnection resCode:" + resCode);
 
-				
-
-					
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
@@ -213,9 +207,9 @@ public class VerificationFilter implements Filter {
 								e.printStackTrace();
 							}
 						}
-					
+
 					}
-					
+
 					try {
 						Thread.sleep(10000); // 10초
 					} catch (InterruptedException e) {
@@ -223,8 +217,7 @@ public class VerificationFilter implements Filter {
 						e.printStackTrace();
 					}
 				}
-				
-				
+
 			}
 		});
 
@@ -261,7 +254,7 @@ public class VerificationFilter implements Filter {
 
 			logger.debug("Verify Uri req.getRequestURI():"
 					+ req.getRequestURI());
-		
+
 			Object obj = null;
 			String policyIsV = null;
 			obj = (Object) verificationUriList.get(req.getRequestURI());
@@ -333,13 +326,13 @@ public class VerificationFilter implements Filter {
 						break;
 					case 404:
 						logger.debug("404 not found");
-					
+
 						res.sendError(404);// 임시코드
 						// break;
 						return;
 					case 500:
 						logger.debug("500 internal server error");
-						
+
 						res.sendError(500);// 임시코드
 						// break;
 						return;
@@ -361,14 +354,13 @@ public class VerificationFilter implements Filter {
 						printWriter = new PrintWriter(res.getOutputStream());
 						printWriter.print(bfResponseData);
 						printWriter.flush();
-					
 
 						// todo
 						// 검증로그전송
 						return;
 					default:
 						logger.debug("undefined responseCode");
-						
+
 						break;
 					}
 
@@ -404,8 +396,6 @@ public class VerificationFilter implements Filter {
 	public static void setVerificationUriList(HashMap verificationUriList) {
 		verificationUriList = verificationUriList;
 	}
-
-
 
 	public void destroy() {
 		executorVerifyListGet.shutdown();
