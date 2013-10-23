@@ -166,6 +166,7 @@ public class VerificationFilter implements Filter {
 						urlConnection = (HttpURLConnection) url
 								.openConnection();
 						urlConnection.setDoOutput(true);
+						urlConnection.setDoInput(false);
 						urlConnection.setRequestMethod("POST");
 				
 
@@ -213,13 +214,13 @@ public class VerificationFilter implements Filter {
 								e.printStackTrace();
 							}
 						}
-					/*	if (in != null) {
+						if (in != null) {
 							try {
 								in.close();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-						}*/
+						}
 					}
 				}
 			}
