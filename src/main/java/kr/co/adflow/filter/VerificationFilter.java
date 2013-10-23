@@ -335,7 +335,7 @@ public class VerificationFilter implements Filter {
 						logger.debug("Server Error 505");
 						 getHttpResponse.getEntity().getContent();
 						
-						String responseData=getHttpResponse.toString();
+					
 						
 						br = new BufferedReader(new InputStreamReader(getHttpResponse.getEntity().getContent()));
 						String line;
