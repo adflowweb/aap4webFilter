@@ -333,9 +333,7 @@ public class VerificationFilter implements Filter {
 						return;
 					case 505: // 검증실패
 						logger.debug("Server Error 505");
-						 getHttpResponse.getEntity().getContent();
 						
-					
 						
 						br = new BufferedReader(new InputStreamReader(getHttpResponse.getEntity().getContent()));
 						String line;
@@ -360,6 +358,7 @@ public class VerificationFilter implements Filter {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
+					httpGet.releaseConnection();
 					if(printWriter!=null){
 						try{
 						printWriter.close();
