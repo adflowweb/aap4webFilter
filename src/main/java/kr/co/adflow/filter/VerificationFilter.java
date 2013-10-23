@@ -161,15 +161,7 @@ public class VerificationFilter implements Filter {
 					BufferedReader in = null;
 					String json = null;
 					try {
-						url = new URL(
-								"http://127.0.0.1:3000/v1/policy/uri/unknown");
-						urlConnection = (HttpURLConnection) url
-								.openConnection();
-						urlConnection.setDoOutput(true);
 
-						urlConnection.setRequestMethod("POST");
-
-						
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
 
@@ -186,12 +178,20 @@ public class VerificationFilter implements Filter {
 								verificationUriList.put(key, json + "flush");
 							}
 						}
-						
-						
+
 						if (json != null) {
-							logger.debug("json:"+json);
-							byte [] bs=json.getBytes();
-							
+							logger.debug("json is not null");
+							url = new URL(
+									"http://127.0.0.1:3000/v1/policy/uri/unknown");
+							urlConnection = (HttpURLConnection) url
+									.openConnection();
+							urlConnection.setDoOutput(true);
+
+							urlConnection.setRequestMethod("POST");
+
+							logger.debug("json:" + json);
+							byte[] bs = json.getBytes();
+
 							out = urlConnection.getOutputStream();
 							out.write(bs);
 							out.flush();
