@@ -110,7 +110,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			String result = newResponse.toString();
 
-			logger.debug("ORG Result:" + result);
+			//logger.debug("ORG Result:" + result);
 			
 
 			// 검증페이지일 경우
@@ -121,8 +121,8 @@ public class VirtualBrowserFilter implements Filter {
 
 			TestClientModify modify = new TestClientModify();
 			String resultModify = modify.jsoupModify(result);
-			logger.debug("JSOUP Modify Data...");
-			logger.debug("resultModify:" + resultModify);
+			//logger.debug("JSOUP Modify Data...");
+			//logger.debug("resultModify:" + resultModify);
 			
 			// "X-Requested-With"
 			String method;
@@ -132,7 +132,7 @@ public class VirtualBrowserFilter implements Filter {
 				logger.debug("resultModify");
 				requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
 						method, resultModify.getBytes());
-				logger.debug("VitualpageCreateData resultModify:" + resultModify);
+				//logger.debug("VitualpageCreateData resultModify:" + resultModify);
 				
 				out.write(resultModify.getBytes());
 				
@@ -143,7 +143,7 @@ public class VirtualBrowserFilter implements Filter {
 				logger.debug("result");
 				requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
 						method, result.getBytes());
-				logger.debug("VitualpageCreateData resul:" + result);
+				//logger.debug("VitualpageCreateData resul:" + result);
 				
 				out.write(result.getBytes());
 			}
