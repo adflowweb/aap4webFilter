@@ -47,7 +47,7 @@ public class VerificationFilter implements Filter {
 
 	private ExecutorService executorVerifyListGet = Executors
 			.newFixedThreadPool(1);
-	private ExecutorService executorUnknowListGet = Executors
+	private ExecutorService executorUnknownListFlush = Executors
 			.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
@@ -148,7 +148,7 @@ public class VerificationFilter implements Filter {
 			}
 		});
 
-		executorUnknowListGet.execute(new Runnable() {
+		executorUnknownListFlush.execute(new Runnable() {
 			public void run() {
 				while (true) {
 					URL url = null;
@@ -250,8 +250,8 @@ public class VerificationFilter implements Filter {
 
 		// unknow Url
 		if (!verificationUriList.containsKey(req.getRequestURI())) {
-			logger.debug("unknow uri");
-			logger.debug("req.uri:" + req.getRequestURI());
+			logger.debug("unKnown URI!!");
+			logger.debug("req.unKnown URI:" + req.getRequestURI());
 			verificationUriList.put(req.getRequestURI(), "U");
 
 			// verifyUrl
@@ -404,6 +404,7 @@ public class VerificationFilter implements Filter {
 
 	public void destroy() {
 		executorVerifyListGet.shutdown();
+		executorUnknownListFlush.shutdown();
 		client.getConnectionManager().shutdown();
 
 	}
