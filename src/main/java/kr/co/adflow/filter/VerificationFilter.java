@@ -114,11 +114,8 @@ public class VerificationFilter implements Filter {
 								Object value = mapper.readValue(
 										responseData.toString(), HashMap.class)
 										.get(key);
-								if (!verificationUriList.containsKey(key)) {
 									verificationUriList.put(key,
 											value.toString());
-								}
-
 							}
 
 							logger.debug("verificationUriList : "
@@ -159,12 +156,12 @@ public class VerificationFilter implements Filter {
 					OutputStream out = null;
 					HttpURLConnection urlConnection = null;
 					BufferedReader in = null;
-					String json = null;
+					StringBuffer bf = null;
 					try {
 
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
-
+						bf.append("{\"unknownurl\":\"");
 						while (it.hasNext()) {
 							String key = (String) it.next();
 							Object value = verificationUriList.get(key);
@@ -172,26 +169,25 @@ public class VerificationFilter implements Filter {
 							logger.debug("verificationUriList value:" + value);
 							if (value.toString().equals("U")) {
 								logger.debug("flush...value");
-								json = "{\"" + key
-										+ "\":\"{\"url_policy\":\"U\"}\"}";
+								bf.append("{\\\""
+										+ key
+										+ "\\\":\\\"{\\\"url_policy\\\":\\\"U\\\"}\\\"},");
 
-								verificationUriList.put(key, json + "flush");
+								verificationUriList.put(key, "F");
 							}
 						}
-
-						if (json != null) {
-							logger.debug("json is not null");
+						bf.append("\"}");
+					
+						if (!bf.toString().equals("{\"unknownurl\":\"\"}")) {
+							bf.deleteCharAt(bf.toString().length() - 3);
+							logger.debug("bf.toString():" + bf.toString());
 							url = new URL(
-									"http://127.0.0.1:3000/v1/policy/uri/unknown");
+									"http://192.168.1.45:3000/v1/policy/uri/unknown");
 							urlConnection = (HttpURLConnection) url
 									.openConnection();
 							urlConnection.setDoOutput(true);
-
 							urlConnection.setRequestMethod("POST");
-
-							logger.debug("json:" + json);
-							byte[] bs = json.getBytes();
-
+							byte[] bs = bf.toString().getBytes("UTF-8");
 							out = urlConnection.getOutputStream();
 							out.write(bs);
 							out.flush();
