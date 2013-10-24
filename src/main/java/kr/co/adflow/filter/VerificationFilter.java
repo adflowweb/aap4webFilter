@@ -182,7 +182,7 @@ public class VerificationFilter implements Filter {
 							bf.deleteCharAt(bf.toString().length() - 3);
 							logger.debug("bf.toString():" + bf.toString());
 							url = new URL(
-									"http://192.168.1.45:3000/v1/policy/uri/unknown");
+									"http://127.0.0.1:3000/v1/policy/uri/unknown");
 							urlConnection = (HttpURLConnection) url
 									.openConnection();
 							urlConnection.setDoOutput(true);
