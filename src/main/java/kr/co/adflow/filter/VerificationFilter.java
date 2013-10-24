@@ -156,7 +156,7 @@ public class VerificationFilter implements Filter {
 					OutputStream out = null;
 					HttpURLConnection urlConnection = null;
 					BufferedReader in = null;
-					StringBuffer bf = null;
+					StringBuffer bf = new StringBuffer();
 					try {
 
 						Set set = verificationUriList.keySet();
