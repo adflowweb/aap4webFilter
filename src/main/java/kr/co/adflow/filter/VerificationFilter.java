@@ -114,8 +114,7 @@ public class VerificationFilter implements Filter {
 								Object value = mapper.readValue(
 										responseData.toString(), HashMap.class)
 										.get(key);
-									verificationUriList.put(key,
-											value.toString());
+								verificationUriList.put(key, value.toString());
 							}
 
 							logger.debug("verificationUriList : "
@@ -156,12 +155,23 @@ public class VerificationFilter implements Filter {
 					OutputStream out = null;
 					HttpURLConnection urlConnection = null;
 					BufferedReader in = null;
-					StringBuffer bf = new StringBuffer();
+					String flushStr = null;
+					HashMap flushMap = new HashMap();
+					ObjectMapper objectMapper = null;
+
 					try {
+
+						url = new URL(
+								"http://127.0.0.1:3000/v1/policy/uri/unknown");
+						urlConnection = (HttpURLConnection) url
+								.openConnection();
+						urlConnection.setDoOutput(true);
+						urlConnection.setRequestMethod("POST");
+						out = urlConnection.getOutputStream();
 
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
-						bf.append("{\"unknownurl\":\"");
+
 						while (it.hasNext()) {
 							String key = (String) it.next();
 							Object value = verificationUriList.get(key);
@@ -169,36 +179,29 @@ public class VerificationFilter implements Filter {
 							logger.debug("verificationUriList value:" + value);
 							if (value.toString().equals("U")) {
 								logger.debug("flush...value");
-								bf.append("{\\\""
-										+ key
-										+ "\\\":\\\"{\\\"url_policy\\\":\\\"U\\\"}\\\"},");
-
+								flushMap.put(key, value);
 								verificationUriList.put(key, "F");
+
 							}
 						}
-						bf.append("\"}");
-					
-						if (!bf.toString().equals("{\"unknownurl\":\"\"}")) {
-							bf.deleteCharAt(bf.toString().length() - 3);
-							logger.debug("bf.toString():" + bf.toString());
-							url = new URL(
-									"http://127.0.0.1:3000/v1/policy/uri/unknown");
-							urlConnection = (HttpURLConnection) url
-									.openConnection();
-							urlConnection.setDoOutput(true);
-							urlConnection.setRequestMethod("POST");
-							byte[] bs = bf.toString().getBytes("UTF-8");
-							out = urlConnection.getOutputStream();
+
+						if (flushMap.size() > 0) {
+							objectMapper= new ObjectMapper();
+							flushStr = objectMapper.writeValueAsString(flushMap);
+							logger.debug("flushStr:" + flushStr);
+							byte[] bs = flushStr.toString().getBytes("UTF-8");
 							out.write(bs);
 							out.flush();
 							int resCode = urlConnection.getResponseCode();
 							logger.debug("urlConnection resCode:" + resCode);
 						}
-						
 
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
+
+						flushMap = null;
+						objectMapper = null;
 						if (urlConnection != null) {
 							urlConnection.disconnect();
 						}
