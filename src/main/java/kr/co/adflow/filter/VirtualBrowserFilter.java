@@ -40,7 +40,7 @@ public class VirtualBrowserFilter implements Filter {
 	// Executors.newCachedThreadPool();
 	// private ExecutorService executorService =
 	// Executors.newFixedThreadPool(50);
-	private static String event=null;
+
 	int poolSize = 20;
 	int maxPoolSize = 100;
 	long keepAliveTime = 10;
@@ -89,20 +89,19 @@ public class VirtualBrowserFilter implements Filter {
 			logger.debug("requestURI : " + req.getRequestURI());
 			logger.debug("requestMethod : " + req.getMethod());
 			logger.debug("contentType : " + req.getContentType());
-			
-			//req parameter
+
+			// req parameter
 			for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 				String param = (String) e.nextElement();
 				logger.debug(param + ":" + req.getParameter(param));
 			}
-			
-			
+
 			// req header
 			for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
 				String headerNames = (String) e.nextElement();
 				logger.debug(headerNames + ":" + req.getHeader(headerNames));
 			}
-			
+
 			out = res.getOutputStream();
 			newResponse = new CharResponseWrapper(
 					(HttpServletResponse) response);
@@ -110,8 +109,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			String result = newResponse.toString();
 
-			//logger.debug("ORG Result:" + result);
-			
+			// logger.debug("ORG Result:" + result);
 
 			// 검증페이지일 경우
 			/*
@@ -121,46 +119,43 @@ public class VirtualBrowserFilter implements Filter {
 
 			TestClientModify modify = new TestClientModify();
 			String resultModify = modify.jsoupModify(result);
-			//logger.debug("JSOUP Modify Data...");
-			//logger.debug("resultModify:" + resultModify);
-			
+			// logger.debug("JSOUP Modify Data...");
+			// logger.debug("resultModify:" + resultModify);
+
 			// "X-Requested-With"
 			String method;
 			if (req.getHeader("X-Requested-With") == null) {
 				method = "POST";
-				
+
 				logger.debug("resultModify");
-				requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
-						method, resultModify.getBytes());
-				//logger.debug("VitualpageCreateData resultModify:" + resultModify);
-				
+				requestVirtualPage(req, req.getSession().getId(),
+						req.getRequestURI(), method, resultModify.getBytes());
+				// logger.debug("VitualpageCreateData resultModify:" +
+				// resultModify);
+
 				out.write(resultModify.getBytes());
-				
-				
-				
-			} else{
+
+			} else {
 				method = "PUT";
 				logger.debug("result");
-				event=req.getHeader("event");
-				requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
-						method, result.getBytes());
-				//logger.debug("VitualpageCreateData resul:" + result);
-				
+
+				requestVirtualPage(req, req.getSession().getId(),
+						req.getRequestURI(), method, result.getBytes());
+				// logger.debug("VitualpageCreateData resul:" + result);
+
 				out.write(result.getBytes());
 			}
-			
-			
+
 			// executorService.execute(new RequestVirtualPage(req.getSession()
 			// .getId(), req.getRequestURI(), method, result.getBytes()));
 			// }
 
-		
 			/*
 			 * UUID uuid = UUID.randomUUID(); //set txid res.setHeader("TXID",
 			 * uuid.toString()); //get urlPolicy //set urlPolicy
 			 * res.setHeader("uPolicy", "N");
 			 */
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -172,23 +167,25 @@ public class VirtualBrowserFilter implements Filter {
 		private String requestURI;
 		private String method;
 		private byte[] data;
+		private HttpServletRequest req;
 
-		public RequestVirtualPage(String sessionID, String requestURI,
-				String method, byte[] data) {
+		public RequestVirtualPage(HttpServletRequest req, String sessionID,
+				String requestURI, String method, byte[] data) {
 			this.sessionID = sessionID;
 			this.requestURI = requestURI;
 			this.method = method;
 			this.data = data;
+			this.req = req;
 		}
 
 		@Override
 		public void run() {
-			requestVirtualPage(sessionID, requestURI, method, data);
+			requestVirtualPage(req, sessionID, requestURI, method, data);
 		}
 	}
 
-	private void requestVirtualPage(String sessionID, String requestURI,
-			String method, byte[] data) {
+	private void requestVirtualPage(HttpServletRequest req, String sessionID,
+			String requestURI, String method, byte[] data) {
 		long start = System.currentTimeMillis();
 		URI uri;
 		HttpRequest request = null;
@@ -212,7 +209,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			} else {// PUT
 				request = new HttpPut(uri);
-				request.addHeader("event",event);
+				request.addHeader("event",req.getHeader("event"));
 				((HttpPut) request).setEntity(new ByteArrayEntity(data));
 			}
 			request.addHeader("virtual_page_uri", requestURI);
