@@ -40,7 +40,7 @@ public class VirtualBrowserFilter implements Filter {
 	// Executors.newCachedThreadPool();
 	// private ExecutorService executorService =
 	// Executors.newFixedThreadPool(50);
-
+	private static String event=null;
 	int poolSize = 20;
 	int maxPoolSize = 100;
 	long keepAliveTime = 10;
@@ -141,6 +141,7 @@ public class VirtualBrowserFilter implements Filter {
 			} else{
 				method = "PUT";
 				logger.debug("result");
+				event=req.getHeader("event");
 				requestVirtualPage(req.getSession().getId(), req.getRequestURI(),
 						method, result.getBytes());
 				//logger.debug("VitualpageCreateData resul:" + result);
@@ -211,6 +212,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			} else {// PUT
 				request = new HttpPut(uri);
+				request.addHeader("event",event);
 				((HttpPut) request).setEntity(new ByteArrayEntity(data));
 			}
 			request.addHeader("virtual_page_uri", requestURI);
