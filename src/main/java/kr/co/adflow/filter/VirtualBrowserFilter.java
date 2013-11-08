@@ -216,8 +216,7 @@ public class VirtualBrowserFilter implements Filter {
 			request.setHeader("Connection", "keep-alive");
 			httpResponse = client.execute((HttpUriRequest) request);
 
-			// conn.setUseCaches(false); conn.setDoInput(true);
-			// conn.setDoOutput(true);
+			
 
 			// ResponseCode
 			int resCode = httpResponse.getStatusLine().getStatusCode();

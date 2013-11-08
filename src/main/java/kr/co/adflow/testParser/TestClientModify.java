@@ -4,6 +4,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.UUID;
 
+import kr.cipher.seed.Seed128Cipher;
+
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -43,6 +46,10 @@ public class TestClientModify {
 		String policy = "N";
 
 		//add head txid,uPolicy
+		
+
+		
+		
 		doc.head().append(
 				"<script> var jsontext = {\"TXID\": \"" + txid
 						+ "\", \"uPolicy\": \"" + policy + "\" };</script>");
