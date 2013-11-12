@@ -1,6 +1,7 @@
 package kr.co.adflow.filter;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +13,11 @@ import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.Certificate;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.crypto.Cipher;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,6 +35,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import kr.cipher.seed.Seed128Cipher;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -267,7 +276,11 @@ public class VerificationFilter implements Filter {
 			policyIsV = "\"uri_policy\":\"V\"";
 			// 검증 대상 V 일경우
 			// if (obj.toString().contains(policyIsV)) {
-
+			//EngMsgBlock ,EncKeyBlock
+			//
+			/*if(req.getHeader("EngMsgBlock")!=null&&req.getHeader("EncKeyBlock")!=null){
+				
+			}*/
 			if (req.getHeader("hash") != null) {
 
 				URI uri;
@@ -275,6 +288,7 @@ public class VerificationFilter implements Filter {
 				PrintWriter printWriter = null;
 				BufferedReader br = null;
 				HttpResponse getHttpResponse = null;
+				FileInputStream is = null;
 				try {
 					// create connection
 
@@ -296,6 +310,35 @@ public class VerificationFilter implements Filter {
 								+ req.getHeader(headerNames));
 
 					}
+					//개인키 read 
+					String passwd="123456";
+					String alias = "adf";
+					is = new FileInputStream("/home/adf.keystore");
+					KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+					keystore.load(is, passwd.toCharArray());
+					Key key = keystore.getKey(alias, passwd.toCharArray());
+					if (key instanceof PrivateKey) {
+						logger.debug("Private key read!!!!");
+					}
+				/*	//EncKeyBlock 을 개인키로 decryption! 
+					String encKeyBlock=req.getHeader("EncKeyBlock");
+					byte [] ciperData=encKeyBlock.getBytes();
+					Cipher clsCipher = Cipher.getInstance("RSA");
+					clsCipher.init(Cipher.DECRYPT_MODE, key);
+					byte[] arrData = clsCipher.doFinal(ciperData);
+					String decryptionKey = new java.math.BigInteger(arrData).toString(16);
+					logger.debug("DecryptionKey:"+decryptionKey);
+					
+					//EngMsgBlock 대칭키로 decryption!
+
+					String engMsgBlock=req.getHeader("EngMsgBlock");
+					
+					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decryptionKey.getBytes(), null);
+					logger.debug("DecMessage:" + engMsgBlock);*/
+					
+					
+					
+					
 					// client ip 임시코드
 					httpGet.addHeader("clientip", req.getRemoteAddr());
 
@@ -384,6 +427,14 @@ public class VerificationFilter implements Filter {
 					if (br != null) {
 						try {
 							br.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					
+					if (is != null) {
+						try {
+							is.close();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
