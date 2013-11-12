@@ -5,6 +5,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +41,15 @@ public class AESUtil {
 
 	public String keyPassDecryption(byte[] encrypted) {
 		byte[] original = null;
-		String decPrivatePass=null;
+		String decPrivatePass = null;
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
 			original = cipher.doFinal(encrypted);
-			decPrivatePass= new java.math.BigInteger(original).toString(16);
-			logger.debug("decPrivatePass:"+decPrivatePass);
+			decPrivatePass = new java.math.BigInteger(original).toString(16);
+			logger.debug("decPrivatePass:" + decPrivatePass);
+			logger.debug("Original string: " + original + " "
+					+ Hex.encodeHexString(original));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
