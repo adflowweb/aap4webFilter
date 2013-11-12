@@ -14,7 +14,7 @@ public class CerFileRead_Test {
 
 	@Test
 	public void test() throws CertificateException, IOException {
-		FileInputStream fis = new FileInputStream("c:\\adf.cer");
+		FileInputStream fis = new FileInputStream("/home/adf.cer");
 		BufferedInputStream bis = new BufferedInputStream(fis);
 
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
