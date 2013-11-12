@@ -45,11 +45,12 @@ public class AESUtil {
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
 			original = cipher.doFinal(encrypted);
-			decPrivatePass = new java.math.BigInteger(original).toString(16);
+			decPrivatePass = new String(original);;
 			logger.debug("decPrivatePass:" + decPrivatePass);
 			logger.debug("Original string: " + original + " "
 					+ Hex.encodeHexString(original));
-
+			
+		   
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
