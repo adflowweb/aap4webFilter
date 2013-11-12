@@ -27,6 +27,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -37,7 +40,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import kr.cipher.seed.Seed128Cipher;
+import kr.co.adflow.util.AESUtil;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -61,6 +66,8 @@ public class VerificationFilter implements Filter {
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client = null;
+	private static byte [] encPrivateKeyPass=null;
+	private static String decPrivateKeyPass=null;
 
 	// test git
 	/**
@@ -77,7 +84,12 @@ public class VerificationFilter implements Filter {
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(20);
 		client = new DefaultHttpClient(connectionManager);
-
+		AESUtil aesUtil= new AESUtil();
+		encPrivateKeyPass=aesUtil.getEncryptPassWord();
+		decPrivateKeyPass=aesUtil.keyPassDecryption(encPrivateKeyPass);
+		
+		
+		logger.debug("encryptedPrivateKey string: " + Hex.encodeHexString(encPrivateKeyPass));
 		executorVerifyListGet.execute(new Runnable() {
 			public void run() {
 				while (true) {
@@ -310,13 +322,14 @@ public class VerificationFilter implements Filter {
 								+ req.getHeader(headerNames));
 
 					}
-			/*		//개인키 read 
-					String passwd="123456";
-					String alias = "adf";
+					//개인키 pass AES 적용 
+				
+	
+				/*	String alias = "adf";
 					is = new FileInputStream("/home/adf.keystore");
 					KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-					keystore.load(is, passwd.toCharArray());
-					Key key = keystore.getKey(alias, passwd.toCharArray());
+					keystore.load(is, decPrivateKeyPass.toCharArray());
+					Key key = keystore.getKey(alias, decPrivateKeyPass.toCharArray());
 					if (key instanceof PrivateKey) {
 						logger.debug("Private key read!!!!");
 					}*/
