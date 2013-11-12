@@ -310,7 +310,7 @@ public class VerificationFilter implements Filter {
 								+ req.getHeader(headerNames));
 
 					}
-					//개인키 read 
+			/*		//개인키 read 
 					String passwd="123456";
 					String alias = "adf";
 					is = new FileInputStream("/home/adf.keystore");
@@ -319,7 +319,7 @@ public class VerificationFilter implements Filter {
 					Key key = keystore.getKey(alias, passwd.toCharArray());
 					if (key instanceof PrivateKey) {
 						logger.debug("Private key read!!!!");
-					}
+					}*/
 				/*	//EncKeyBlock 을 개인키로 decryption! 
 					String encKeyBlock=req.getHeader("EncKeyBlock");
 					byte [] ciperData=encKeyBlock.getBytes();
