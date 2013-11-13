@@ -50,7 +50,8 @@ public class TestClientModify {
 			String policy = "N";
 
 			// 대칭키 생성
-			byte[] privateKey = null;
+			
+			byte[] symmeTricKey = null;
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
 					+ policy + "\" }";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
@@ -58,16 +59,16 @@ public class TestClientModify {
 			generator.init(128, random);
 			Key secureKey = generator.generateKey();
 
-			privateKey = secureKey.getEncoded();
+			symmeTricKey = secureKey.getEncoded();
 
-			String strPrivateKey = new java.math.BigInteger(privateKey)
+			String strSymmeTricKey = new java.math.BigInteger(symmeTricKey)
 					.toString(16);
 			logger.debug("encMsgBlock Message:" + encMsgBlock);
-			logger.debug("pirvateKey:" + strPrivateKey);
+			logger.debug("strSymmeTricKey:" + strSymmeTricKey);
 
 			// 대칭키를 이용해서 msg 를 암호화(Seed)
 
-			encMsgBlock = Seed128Cipher.encrypt(encMsgBlock, privateKey, null);
+			encMsgBlock = Seed128Cipher.encrypt(encMsgBlock, symmeTricKey, null);
 			logger.debug("SEEDEncMessage:" + encMsgBlock);
 
 			// 공개키 얻어오기(client)
@@ -90,7 +91,7 @@ public class TestClientModify {
 			// 공개키로 대칭키를 암호화
 			Cipher clsCipher = Cipher.getInstance("RSA");
 			clsCipher.init(Cipher.ENCRYPT_MODE, publicKey);// 공개키
-			byte[] arrCipherData = clsCipher.doFinal(privateKey);// 대칭키
+			byte[] arrCipherData = clsCipher.doFinal(symmeTricKey);// 대칭키
 			encKeyBlock = new java.math.BigInteger(arrCipherData).toString(16);
 			logger.debug("encKeyBlock:" + encKeyBlock);
 			logger.debug("encMsgBlock:" + encMsgBlock);
