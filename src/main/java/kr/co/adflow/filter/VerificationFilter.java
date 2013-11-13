@@ -322,6 +322,7 @@ public class VerificationFilter implements Filter {
 								+ req.getHeader(headerNames));
 
 					}
+					logger.debug("DECPrivateKeyPass:"+decPrivateKeyPass);
 					//개인키 pass AES 적용 
 				
 	

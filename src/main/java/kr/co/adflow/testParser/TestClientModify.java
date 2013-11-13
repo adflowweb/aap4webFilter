@@ -70,9 +70,9 @@ public class TestClientModify {
 			encMsgBlock = Seed128Cipher.encrypt(encMsgBlock, privateKey, null);
 			logger.debug("SEEDEncMessage:" + encMsgBlock);
 
-			// 공개키 얻어오기
+			// 공개키 얻어오기(client)
 			
-			fileInputStream = new FileInputStream("/home/adf.cer");
+			fileInputStream = new FileInputStream("/home/AgentPubKey.der");
 			bufferedInputStream = new BufferedInputStream(fileInputStream);
 
 			CertificateFactory cf = CertificateFactory.getInstance("X.509");

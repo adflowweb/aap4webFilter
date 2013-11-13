@@ -47,7 +47,7 @@ public class AESUtil {
 			original = cipher.doFinal(encrypted);
 			decPrivatePass = new String(original);;
 			logger.debug("decPrivatePass:" + decPrivatePass);
-			logger.debug("Original string: " + original + " "
+			logger.debug("Original string: " + decPrivatePass + " "
 					+ Hex.encodeHexString(original));
 			
 		   
