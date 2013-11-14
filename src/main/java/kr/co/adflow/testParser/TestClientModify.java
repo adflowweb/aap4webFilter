@@ -66,10 +66,9 @@ public class TestClientModify {
 			symmeTricKey = secureKey.getEncoded();
 			//임시코드
 			//strSymmeTricKey
-			String strSymmeTricKey1=new java.math.BigInteger(symmeTricKey)
-			.toString(16); 
-			String strSymmeTricKey = new java.math.BigInteger(symmeTricKey)
-					.toString(16);
+			String strSymmeTricKey1=new String(symmeTricKey);
+		 
+			String strSymmeTricKey = new String(symmeTricKey);
 			logger.debug("encMsgBlock Message:" + encMsgBlock);
 			logger.debug("strSymmeTricKey:" + strSymmeTricKey);
 
@@ -92,15 +91,14 @@ public class TestClientModify {
 
 			byte[] publicKeyByte = publicKey.getEncoded();
 
-			String publicKeyStr = new java.math.BigInteger(publicKeyByte)
-					.toString(16);
+			String publicKeyStr = new String(publicKeyByte);
 			logger.debug("publicKeyStr:" + publicKeyStr);
 
 			// 공개키로 대칭키를 암호화
 			Cipher clsCipher = Cipher.getInstance("RSA");
 			clsCipher.init(Cipher.ENCRYPT_MODE, publicKey);// 공개키
 			byte[] arrCipherData = clsCipher.doFinal(symmeTricKey);// 대칭키
-			encKeyBlock = new java.math.BigInteger(arrCipherData).toString(16);
+			encKeyBlock = new String(arrCipherData);
 			logger.debug("encKeyBlock:" + encKeyBlock);
 			logger.debug("encMsgBlock:" + encMsgBlock);
 			//임시코드
