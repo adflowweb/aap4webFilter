@@ -16,6 +16,7 @@ import javax.crypto.KeyGenerator;
 
 import kr.cipher.seed.Seed128Cipher;
 
+import org.apache.commons.codec.binary.Hex;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -66,8 +67,8 @@ public class TestClientModify {
 			symmeTricKey = secureKey.getEncoded();
 			//임시코드
 			//strSymmeTricKey
-			String strSymmeTricKey1=this.byteArrayToHex(symmeTricKey);
-			String strSymmeTricKey =this.byteArrayToHex(symmeTricKey);
+			String strSymmeTricKey1=Hex.encodeHexString(symmeTricKey);
+			String strSymmeTricKey =Hex.encodeHexString(symmeTricKey);
 			logger.debug("encMsgBlock Message:" + encMsgBlock);
 			logger.debug("strSymmeTricKey:" + strSymmeTricKey);
 
@@ -90,14 +91,14 @@ public class TestClientModify {
 
 			byte[] publicKeyByte = publicKey.getEncoded();
 
-			String publicKeyStr = this.byteArrayToHex(publicKeyByte);
+			String publicKeyStr = Hex.encodeHexString(publicKeyByte);
 			logger.debug("publicKeyStr:" + publicKeyStr);
 
 			// 공개키로 대칭키를 암호화
 			Cipher clsCipher = Cipher.getInstance("RSA");
 			clsCipher.init(Cipher.ENCRYPT_MODE, publicKey);// 공개키
 			byte[] arrCipherData = clsCipher.doFinal(symmeTricKey);// 대칭키
-			encKeyBlock = this.byteArrayToHex(arrCipherData);
+			encKeyBlock = Hex.encodeHexString(arrCipherData);
 			logger.debug("encKeyBlock:" + encKeyBlock);
 			logger.debug("encMsgBlock:" + encMsgBlock);
 			//임시코드
@@ -142,7 +143,7 @@ public class TestClientModify {
 	}
 	
 	
-	public  String byteArrayToHex(byte[] ba) {
+/*	public  String byteArrayToHex(byte[] ba) {
 
 	    if (ba == null || ba.length == 0) {
 
@@ -164,6 +165,6 @@ public class TestClientModify {
 
 	    return sb.toString();
 
-	} 
+	} */
 
 }
