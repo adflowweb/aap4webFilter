@@ -31,13 +31,15 @@ public class KeyStore_Test {
 				Certificate cert = keystore.getCertificate(alias);
 
 				byte[] privateKeyByte = key.getEncoded();
-				String privateKeyStr = new java.math.BigInteger(privateKeyByte).toString(16);
+				String privateKeyStr = this.byteArrayToHex(privateKeyByte);
 				// Get public key
 				PublicKey publicKey = cert.getPublicKey();
 
 				byte[] publicKeyByte = publicKey.getEncoded();
+				
+				
 
-				String publicKeyStr = new java.math.BigInteger(publicKeyByte).toString(16);
+				String publicKeyStr = this.byteArrayToHex(privateKeyByte);
 				System.out.println("privateKeyStr" + privateKeyStr);
 				System.out.println("publicKeyStr:" + publicKeyStr);
 
@@ -55,4 +57,30 @@ public class KeyStore_Test {
 			}
 		}
 	}
+	
+	public static String byteArrayToHex(byte[] ba) {
+
+	    if (ba == null || ba.length == 0) {
+
+	        return null;
+
+	    }
+
+	    StringBuffer sb = new StringBuffer(ba.length * 2);
+
+	    String hexNumber;
+
+	    for (int x = 0; x < ba.length; x++) {
+
+	        hexNumber = "0" + Integer.toHexString(0xff & ba[x]);
+
+	        sb.append(hexNumber.substring(hexNumber.length() - 2));
+
+	    }
+
+	    return sb.toString();
+
+	} 
+	
+	
 }

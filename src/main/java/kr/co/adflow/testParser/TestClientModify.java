@@ -66,9 +66,8 @@ public class TestClientModify {
 			symmeTricKey = secureKey.getEncoded();
 			//임시코드
 			//strSymmeTricKey
-			String strSymmeTricKey1=new String(symmeTricKey);
-		 
-			String strSymmeTricKey = new String(symmeTricKey);
+			String strSymmeTricKey1=this.byteArrayToHex(symmeTricKey);
+			String strSymmeTricKey =this.byteArrayToHex(symmeTricKey);
 			logger.debug("encMsgBlock Message:" + encMsgBlock);
 			logger.debug("strSymmeTricKey:" + strSymmeTricKey);
 
@@ -91,14 +90,14 @@ public class TestClientModify {
 
 			byte[] publicKeyByte = publicKey.getEncoded();
 
-			String publicKeyStr = new String(publicKeyByte);
+			String publicKeyStr = this.byteArrayToHex(publicKeyByte);
 			logger.debug("publicKeyStr:" + publicKeyStr);
 
 			// 공개키로 대칭키를 암호화
 			Cipher clsCipher = Cipher.getInstance("RSA");
 			clsCipher.init(Cipher.ENCRYPT_MODE, publicKey);// 공개키
 			byte[] arrCipherData = clsCipher.doFinal(symmeTricKey);// 대칭키
-			encKeyBlock = new String(arrCipherData);
+			encKeyBlock = this.byteArrayToHex(arrCipherData);
 			logger.debug("encKeyBlock:" + encKeyBlock);
 			logger.debug("encMsgBlock:" + encMsgBlock);
 			//임시코드
@@ -141,5 +140,30 @@ public class TestClientModify {
 		}
 		return doc.html();
 	}
+	
+	
+	public  String byteArrayToHex(byte[] ba) {
+
+	    if (ba == null || ba.length == 0) {
+
+	        return null;
+
+	    }
+
+	    StringBuffer sb = new StringBuffer(ba.length * 2);
+
+	    String hexNumber;
+
+	    for (int x = 0; x < ba.length; x++) {
+
+	        hexNumber = "0" + Integer.toHexString(0xff & ba[x]);
+
+	        sb.append(hexNumber.substring(hexNumber.length() - 2));
+
+	    }
+
+	    return sb.toString();
+
+	} 
 
 }
