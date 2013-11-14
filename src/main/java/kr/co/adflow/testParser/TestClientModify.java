@@ -107,7 +107,7 @@ public class TestClientModify {
 			logger.debug("orgMsg:"+orgMsg);
 			logger.debug("strSymmeTricKey1:"+strSymmeTricKey1);
 			logger.debug("seedEncMsg:"+seedEncMsg);
-			doc.head().append("<script> var orgMsg =\"" + orgMsg +"\";"+ "</script>");//원본메세지
+			doc.head().append("<script> var orgMsg =" + orgMsg +";"+ "</script>");//원본메세지
 			doc.head().append("<script> var strSymmeTricKey1 =\"" + strSymmeTricKey1 +"\";"+ "</script>");//대칭키
 			doc.head().append("<script> var seedEncMsg =\"" + seedEncMsg +"\";"+ "</script>");//인크립트 메세지
 		
