@@ -50,8 +50,12 @@ public class TestClientModify {
 			String policy = "N";
 
 			// 대칭키 생성
-			
+		
+		
 			byte[] symmeTricKey = null;
+			//임시코드
+			String orgMsg= "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
+					+ policy + "\" }";
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
 					+ policy + "\" }";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
@@ -60,14 +64,18 @@ public class TestClientModify {
 			Key secureKey = generator.generateKey();
 
 			symmeTricKey = secureKey.getEncoded();
-
+			//임시코드
+			//strSymmeTricKey
+			String strSymmeTricKey1=new java.math.BigInteger(symmeTricKey)
+			.toString(16); 
 			String strSymmeTricKey = new java.math.BigInteger(symmeTricKey)
 					.toString(16);
 			logger.debug("encMsgBlock Message:" + encMsgBlock);
 			logger.debug("strSymmeTricKey:" + strSymmeTricKey);
 
 			// 대칭키를 이용해서 msg 를 암호화(Seed)
-
+			//임시코드
+			String seedEncMsg=Seed128Cipher.encrypt(encMsgBlock, symmeTricKey, null);
 			encMsgBlock = Seed128Cipher.encrypt(encMsgBlock, symmeTricKey, null);
 			logger.debug("SEEDEncMessage:" + encMsgBlock);
 
@@ -95,6 +103,14 @@ public class TestClientModify {
 			encKeyBlock = new java.math.BigInteger(arrCipherData).toString(16);
 			logger.debug("encKeyBlock:" + encKeyBlock);
 			logger.debug("encMsgBlock:" + encMsgBlock);
+			//임시코드
+			logger.debug("orgMsg:"+orgMsg);
+			logger.debug("strSymmeTricKey1:"+strSymmeTricKey1);
+			logger.debug("seedEncMsg:"+seedEncMsg);
+			doc.head().append("<script> var orgMsg =" + orgMsg + "</script>");//원본메세지
+			doc.head().append("<script> var strSymmeTricKey1 =" + strSymmeTricKey1 + "</script>");//대칭키
+			doc.head().append("<script> var seedEncMsg =" + seedEncMsg + "</script>");//인크립트 메세지
+		
 			doc.head().append(
 					"<script> var EncKeyBlock =" + encKeyBlock + "</script>");
 			doc.head().append(
