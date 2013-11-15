@@ -116,7 +116,7 @@ public class TestClientModify {
 			doc.head().append(
 					"<script> var EncKeyBlock = \"" + encKeyBlock +"\";"+ "</script>");
 			doc.head().append(
-					"<script> var EngMsgBlock = \"" + encMsgBlock +"\";"+ "</script>");
+					"<script> var EncMsgBlock = \"" + encMsgBlock +"\";"+ "</script>");
 
 		} catch (Exception e) {
 			e.printStackTrace();

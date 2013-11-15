@@ -8,6 +8,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
+import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 public class CerFileRead_Test {
@@ -25,8 +26,7 @@ public class CerFileRead_Test {
 
 		byte[] publicKeyByte = publicKey.getEncoded();
 
-		String publicKeyStr = new java.math.BigInteger(publicKeyByte)
-				.toString(16);
+		String publicKeyStr = Hex.encodeHexString(publicKeyByte);
 		System.out.println("publicKeyStr:" + publicKeyStr);
 
 	}

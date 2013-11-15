@@ -13,6 +13,7 @@ import javax.crypto.KeyGenerator;
 
 import kr.cipher.seed.Seed128Cipher;
 
+import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 public class PKI_Test {
@@ -34,8 +35,7 @@ public class PKI_Test {
 
 			privateKey = secureKey.getEncoded();
 
-			String pirvateKey = new java.math.BigInteger(privateKey)
-					.toString(16);
+			String pirvateKey = Hex.encodeHexString(privateKey);
 			System.out.println("ORG Message:"+encMsgBlock);
 			System.out.println("pirvateKey:" + pirvateKey);
 			
@@ -100,22 +100,20 @@ public class PKI_Test {
 
 			// private Key encryption
 
-			String pirvateKey = new java.math.BigInteger(privateKey)
-					.toString(16);
+			String pirvateKey = Hex.encodeHexString(privateKey);
 			System.out.println("pirvateKey:" + pirvateKey);
 
 			Cipher clsCipher = Cipher.getInstance("RSA");
 			clsCipher.init(Cipher.ENCRYPT_MODE, clsPublicKey);
 			byte[] arrCipherData = clsCipher.doFinal(privateKey);
-			String strCipher = new java.math.BigInteger(arrCipherData)
-					.toString(16);
+			String strCipher = Hex.encodeHexString(arrCipherData);
 			System.out.println("EncryptionKey:"+ strCipher);
 
 			// private Key decryption
 			clsCipher.init(Cipher.DECRYPT_MODE, clsPrivateKey);
 			byte[] arrData = clsCipher.doFinal(arrCipherData);
 
-			String strResult = new java.math.BigInteger(arrData).toString(16);
+			String strResult = Hex.encodeHexString(arrData);
 			System.out.println("DecryptionKey:"+strResult);
 			
 			
