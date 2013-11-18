@@ -49,7 +49,7 @@ public class RSA_Test {
 			// 암호화 한다.
 			String strPinNumber = "1234567890";
 
-			Cipher clsCipher = Cipher.getInstance("RSA");
+			Cipher clsCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 			clsCipher.init(Cipher.ENCRYPT_MODE, clsPublicKey);
 			byte[] arrCipherData = clsCipher.doFinal(strPinNumber.getBytes());
 			String strCipher = new String(arrCipherData);

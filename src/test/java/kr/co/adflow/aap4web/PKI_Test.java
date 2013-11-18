@@ -100,12 +100,12 @@ public class PKI_Test {
 
 			// private Key encryption
 
-			String pirvateKey = Hex.encodeHexString(privateKey);
+			String pirvateKey = Hex.encodeHexString(privateKey);//대칭키
 			System.out.println("pirvateKey:" + pirvateKey);
 
 			Cipher clsCipher = Cipher.getInstance("RSA");
 			clsCipher.init(Cipher.ENCRYPT_MODE, clsPublicKey);
-			byte[] arrCipherData = clsCipher.doFinal(privateKey);
+			byte[] arrCipherData = clsCipher.doFinal(privateKey);//대칭커/
 			String strCipher = Hex.encodeHexString(arrCipherData);
 			System.out.println("EncryptionKey:"+ strCipher);
 

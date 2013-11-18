@@ -12,6 +12,9 @@ import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.PrivateKey;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.crypto.Cipher;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,6 +32,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kr.cipher.seed.Seed128Cipher;
 import kr.co.adflow.util.AESUtil;
 
 import org.apache.commons.codec.binary.Hex;
@@ -281,8 +286,8 @@ public class VerificationFilter implements Filter {
 			/*if(req.getHeader("EngMsgBlock")!=null&&req.getHeader("EncKeyBlock")!=null){
 				
 			}*/
-			if (req.getHeader("hash") != null) {
-
+		//	if (req.getHeader("hash") != null) {
+          if(req.getHeader("EngMsgBlock")!=null&&req.getHeader("EncKeyBlock")!=null){
 				URI uri;
 				HttpGet httpGet = null;
 				PrintWriter printWriter = null;
@@ -314,21 +319,21 @@ public class VerificationFilter implements Filter {
 					//개인키 pass AES 적용 
 				
 	
-				/*	String alias = "adf";
+					String alias = "adf";
 					is = new FileInputStream("/home/adf.keystore");
 					KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 					keystore.load(is, decPrivateKeyPass.toCharArray());
 					Key key = keystore.getKey(alias, decPrivateKeyPass.toCharArray());
 					if (key instanceof PrivateKey) {
 						logger.debug("Private key read!!!!");
-					}*/
-				/*	//EncKeyBlock 을 개인키로 decryption! 
+					}
+					//EncKeyBlock 을 개인키로 decryption! 
 					String encKeyBlock=req.getHeader("EncKeyBlock");
 					byte [] ciperData=encKeyBlock.getBytes();
 					Cipher clsCipher = Cipher.getInstance("RSA");
 					clsCipher.init(Cipher.DECRYPT_MODE, key);
 					byte[] arrData = clsCipher.doFinal(ciperData);
-					String decryptionKey = new java.math.BigInteger(arrData).toString(16);
+					String decryptionKey = Hex.encodeHexString(arrData);
 					logger.debug("DecryptionKey:"+decryptionKey);
 					
 					//EngMsgBlock 대칭키로 decryption!
@@ -336,7 +341,7 @@ public class VerificationFilter implements Filter {
 					String engMsgBlock=req.getHeader("EngMsgBlock");
 					
 					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decryptionKey.getBytes(), null);
-					logger.debug("DecMessage:" + engMsgBlock);*/
+					logger.debug("DecMessage:" + engMsgBlock);
 					
 					
 					
