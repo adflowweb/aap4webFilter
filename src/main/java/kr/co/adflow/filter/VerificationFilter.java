@@ -289,7 +289,7 @@ public class VerificationFilter implements Filter {
 			try{
 		//	if (req.getHeader("hash") != null) {
 			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step1..");
-			String test1=req.getHeader("engmsgblock");
+			String test1=req.getHeader("encmsgblock");
 			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step2..");
 			logger.debug("test1:"+test1.toString());
 			String test2=req.getHeader("enckeyblock");
