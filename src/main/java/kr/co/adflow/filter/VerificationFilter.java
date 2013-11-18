@@ -288,6 +288,8 @@ public class VerificationFilter implements Filter {
 			}*/
 		//	if (req.getHeader("hash") != null) {
           if(req.getHeader("engmsgblock")!=null&&req.getHeader("enckeyblock")!=null){
+        	  
+        	  logger.debug("Client Request Header engMsgBlock is Not Null!!!!!!!!!!!!!!");
 				URI uri;
 				HttpGet httpGet = null;
 				PrintWriter printWriter = null;
