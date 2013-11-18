@@ -286,6 +286,7 @@ public class VerificationFilter implements Filter {
 			/*if(req.getHeader("EngMsgBlock")!=null&&req.getHeader("EncKeyBlock")!=null){
 				
 			}*/
+			try{
 		//	if (req.getHeader("hash") != null) {
 			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step1..");
 			String test1=req.getHeader("engmsgblock");
@@ -294,6 +295,9 @@ public class VerificationFilter implements Filter {
 			String test2=req.getHeader("enckeyblock");
 			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step3..");
 			logger.debug("test2:"+test2.toString());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 			
 			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step4..");
           if(req.getHeader("engmsgblock")!=null&&req.getHeader("enckeyblock")!=null){
