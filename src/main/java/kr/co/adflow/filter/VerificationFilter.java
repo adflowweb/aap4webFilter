@@ -272,7 +272,6 @@ public class VerificationFilter implements Filter {
 			// verifyUrl
 		} else {
 
-
 			logger.debug("Verify Uri req.getRequestURI():"
 					+ req.getRequestURI());
 
@@ -291,32 +290,22 @@ public class VerificationFilter implements Filter {
 			 * 
 			 * }
 			 */
-			try {
-				
-				Enumeration e = req.getHeaderNames();
+			/*
+			 * try {
+			 * 
+			 * Enumeration e = req.getHeaderNames();
+			 * 
+			 * while (e.hasMoreElements()) { String temp = (String)
+			 * e.nextElement();
+			 * 
+			 * logger.debug("tempHeader:"+temp); }
+			 * 
+			 * } catch (Exception e) { e.printStackTrace(); }
+			 */
 
-				while (e.hasMoreElements()) {
-					String temp = (String) e.nextElement();
-					
-					logger.debug("tempHeader:"+temp);
-				}
-				// if (req.getHeader("hash") != null) {
-				logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step1..");
-				String test1 = req.getHeader("encmsgblock");
-				logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step2..");
-				logger.debug("test1:" + test1.toString());
-				String test2 = req.getHeader("enckeyblock");
-				logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step3..");
-				logger.debug("test2:" + test2.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step4..");
 			if (req.getHeader("encmsgblock") != null
 					&& req.getHeader("enckeyblock") != null) {
 
-				logger.debug("Client Request Header engMsgBlock is Not Null!!!!!!!!!!!!!!");
 				URI uri;
 				HttpGet httpGet = null;
 				PrintWriter printWriter = null;
@@ -359,12 +348,10 @@ public class VerificationFilter implements Filter {
 					}
 					// EncKeyBlock 을 개인키로 decryption!
 					String encKeyBlock = req.getHeader("enckeyblock");
-					
-					
-					//byte[] ciperData = encKeyBlock.getBytes();
-					
-					byte[] ciperData=hexStringToByteArray(encKeyBlock);
-					
+
+				
+					byte[] ciperData = this.hexStringToByteArray(encKeyBlock);
+
 					Cipher clsCipher = Cipher.getInstance("RSA");
 					clsCipher.init(Cipher.DECRYPT_MODE, key);
 					byte[] arrData = clsCipher.doFinal(ciperData);
@@ -372,11 +359,11 @@ public class VerificationFilter implements Filter {
 					logger.debug("DecryptionKey:" + decryptionKey);
 
 					// EngMsgBlock 대칭키로 decryption!
-				
+
 					String engMsgBlock = req.getHeader("encmsgblock");
-					byte [] decKey=hexStringToByteArray(decryptionKey);
-					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock,
-							decKey, null);
+					byte[] decKey = this.hexStringToByteArray(decryptionKey);
+					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decKey,
+							null);
 					logger.debug("DecMessage:" + engMsgBlock);
 
 					// client ip 임시코드
@@ -499,16 +486,15 @@ public class VerificationFilter implements Filter {
 		client.getConnectionManager().shutdown();
 
 	}
-	
-	
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
+
+	public byte[] hexStringToByteArray(String s) {
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
+					.digit(s.charAt(i + 1), 16));
+		}
+		return data;
 	}
-	
+
 }
