@@ -287,7 +287,7 @@ public class VerificationFilter implements Filter {
 				
 			}*/
 		//	if (req.getHeader("hash") != null) {
-          if(req.getHeader("EngMsgBlock")!=null&&req.getHeader("EncKeyBlock")!=null){
+          if(req.getHeader("engmsgblock")!=null&&req.getHeader("enckeyblock")!=null){
 				URI uri;
 				HttpGet httpGet = null;
 				PrintWriter printWriter = null;
@@ -328,7 +328,7 @@ public class VerificationFilter implements Filter {
 						logger.debug("Private key read!!!!");
 					}
 					//EncKeyBlock 을 개인키로 decryption! 
-					String encKeyBlock=req.getHeader("EncKeyBlock");
+					String encKeyBlock=req.getHeader("enckeyblock");
 					byte [] ciperData=encKeyBlock.getBytes();
 					Cipher clsCipher = Cipher.getInstance("RSA");
 					clsCipher.init(Cipher.DECRYPT_MODE, key);
@@ -338,7 +338,7 @@ public class VerificationFilter implements Filter {
 					
 					//EngMsgBlock 대칭키로 decryption!
 
-					String engMsgBlock=req.getHeader("EngMsgBlock");
+					String engMsgBlock=req.getHeader("engmsgblock");
 					
 					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decryptionKey.getBytes(), null);
 					logger.debug("DecMessage:" + engMsgBlock);
