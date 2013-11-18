@@ -287,6 +287,15 @@ public class VerificationFilter implements Filter {
 				
 			}*/
 		//	if (req.getHeader("hash") != null) {
+			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step1..");
+			String test1=req.getHeader("engmsgblock");
+			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step2..");
+			logger.debug("test1:"+test1.toString());
+			String test2=req.getHeader("enckeyblock");
+			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step3..");
+			logger.debug("test2:"+test2.toString());
+			
+			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step4..");
           if(req.getHeader("engmsgblock")!=null&&req.getHeader("enckeyblock")!=null){
         	  
         	  logger.debug("Client Request Header engMsgBlock is Not Null!!!!!!!!!!!!!!");
