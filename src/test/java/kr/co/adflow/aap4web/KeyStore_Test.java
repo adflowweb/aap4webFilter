@@ -19,7 +19,7 @@ public class KeyStore_Test {
 		try {
 			String passwd="123456";
 			String alias = "adf";
-			is = new FileInputStream("/home/adf.keystore");
+			is = new FileInputStream("c:\\adf.keystore");
 
 			KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 			keystore.load(is, passwd.toCharArray());

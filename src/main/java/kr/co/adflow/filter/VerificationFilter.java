@@ -359,7 +359,12 @@ public class VerificationFilter implements Filter {
 					}
 					// EncKeyBlock 을 개인키로 decryption!
 					String encKeyBlock = req.getHeader("enckeyblock");
-					byte[] ciperData = encKeyBlock.getBytes();
+					
+					
+					//byte[] ciperData = encKeyBlock.getBytes();
+					
+					byte[] ciperData=hexStringToByteArray(encKeyBlock);
+					
 					Cipher clsCipher = Cipher.getInstance("RSA");
 					clsCipher.init(Cipher.DECRYPT_MODE, key);
 					byte[] arrData = clsCipher.doFinal(ciperData);
@@ -367,7 +372,7 @@ public class VerificationFilter implements Filter {
 					logger.debug("DecryptionKey:" + decryptionKey);
 
 					// EngMsgBlock 대칭키로 decryption!
-
+				
 					String engMsgBlock = req.getHeader("encmsgblock");
 
 					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock,
@@ -494,4 +499,16 @@ public class VerificationFilter implements Filter {
 		client.getConnectionManager().shutdown();
 
 	}
+	
+	
+	public static byte[] hexStringToByteArray(String s) {
+	    int len = s.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	                             + Character.digit(s.charAt(i+1), 16));
+	    }
+	    return data;
+	}
+	
 }
