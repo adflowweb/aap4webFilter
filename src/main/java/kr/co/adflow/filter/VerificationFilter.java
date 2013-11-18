@@ -300,7 +300,7 @@ public class VerificationFilter implements Filter {
 			}
 			
 			logger.debug("verification Filter Log!!!!!!!!!!!!!!!!!!!Step4..");
-          if(req.getHeader("engmsgblock")!=null&&req.getHeader("enckeyblock")!=null){
+          if(req.getHeader("encmsgblock")!=null&&req.getHeader("enckeyblock")!=null){
         	  
         	  logger.debug("Client Request Header engMsgBlock is Not Null!!!!!!!!!!!!!!");
 				URI uri;
@@ -353,7 +353,7 @@ public class VerificationFilter implements Filter {
 					
 					//EngMsgBlock 대칭키로 decryption!
 
-					String engMsgBlock=req.getHeader("engmsgblock");
+					String engMsgBlock=req.getHeader("encmsgblock");
 					
 					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decryptionKey.getBytes(), null);
 					logger.debug("DecMessage:" + engMsgBlock);
