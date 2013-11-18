@@ -374,9 +374,9 @@ public class VerificationFilter implements Filter {
 					// EngMsgBlock 대칭키로 decryption!
 				
 					String engMsgBlock = req.getHeader("encmsgblock");
-
+					byte [] decKey=hexStringToByteArray(decryptionKey);
 					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock,
-							decryptionKey.getBytes(), null);
+							decKey, null);
 					logger.debug("DecMessage:" + engMsgBlock);
 
 					// client ip 임시코드
