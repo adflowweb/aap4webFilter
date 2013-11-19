@@ -292,7 +292,6 @@ public class VerificationFilter implements Filter {
 			 * }
 			 */
 			// Header Debug
-		
 
 			if (req.getHeader("encmsgblock") != null
 					&& req.getHeader("enckeyblock") != null) {
@@ -377,7 +376,9 @@ public class VerificationFilter implements Filter {
 						logger.debug("jsonKey:" + jsonKey);
 						JsonNode jsonNode = actualObj.get(jsonKey);
 						logger.debug("jsonValue:" + jsonNode.toString());
-						httpGet.addHeader(jsonKey, jsonNode.toString());
+						String value=jsonNode.toString();
+						value=value.replace("\"", "");
+						httpGet.addHeader(jsonKey, value);
 
 					}
 
