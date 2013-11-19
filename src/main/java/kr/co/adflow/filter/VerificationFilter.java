@@ -41,6 +41,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -290,18 +291,14 @@ public class VerificationFilter implements Filter {
 			 * 
 			 * }
 			 */
-			/*
-			 * try {
-			 * 
-			 * Enumeration e = req.getHeaderNames();
-			 * 
-			 * while (e.hasMoreElements()) { String temp = (String)
-			 * e.nextElement();
-			 * 
-			 * logger.debug("tempHeader:"+temp); }
-			 * 
-			 * } catch (Exception e) { e.printStackTrace(); }
-			 */
+			// Header Debug
+			Enumeration e = req.getHeaderNames();
+
+			while (e.hasMoreElements()) {
+				String temp = (String) e.nextElement();
+
+				logger.debug("DebugHeader:" + temp);
+			}
 
 			if (req.getHeader("encmsgblock") != null
 					&& req.getHeader("enckeyblock") != null) {
@@ -349,7 +346,6 @@ public class VerificationFilter implements Filter {
 					// EncKeyBlock 을 개인키로 decryption!
 					String encKeyBlock = req.getHeader("enckeyblock");
 
-				
 					byte[] ciperData = this.hexStringToByteArray(encKeyBlock);
 
 					Cipher clsCipher = Cipher.getInstance("RSA");
@@ -372,15 +368,34 @@ public class VerificationFilter implements Filter {
 					// txid
 					// user-agent
 
+					// DecMessage Parsing
+
+					ObjectMapper mapper = new ObjectMapper();
+
+					JsonNode actualObj = mapper.readTree(engMsgBlock);
+
+					Iterator it = actualObj.getFieldNames();
+
+					// addHeader
+					while (it.hasNext()) {
+
+						String jsonKey = (String) it.next();
+						logger.debug("jsonKey:" + jsonKey);
+						JsonNode jsonNode = actualObj.get(jsonKey);
+						logger.debug("jsonValue:" + jsonNode.toString());
+						httpGet.addHeader(jsonKey, jsonNode.toString());
+
+					}
+
 					httpGet.addHeader("filterId", rmxb.getName());
-					httpGet.addHeader("hash", req.getHeader("hash"));
-					httpGet.addHeader("txid", req.getHeader("txid"));
+
 					httpGet.addHeader("user-agent", req.getHeader("user-agent"));
 					httpGet.addHeader("virtual_page_uri", req.getRequestURI());
-					// event Header Add
-					if (req.getHeader("X-Requested-With") != null) {
-						httpGet.addHeader("event", req.getHeader("event"));
-					}
+					/*
+					 * // event Header Add if (req.getHeader("X-Requested-With")
+					 * != null) { httpGet.addHeader("event",
+					 * req.getHeader("event")); }
+					 */
 					httpGet.setHeader("Connection", "keep-alive");
 					logger.debug("request verification");
 					logger.debug("req.getHeader(hash):" + req.getHeader("hash"));

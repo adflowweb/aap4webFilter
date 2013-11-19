@@ -209,7 +209,7 @@ public class VirtualBrowserFilter implements Filter {
 
 			} else {// PUT
 				request = new HttpPut(uri);
-				request.addHeader("event",req.getHeader("event"));
+				//request.addHeader("event",req.getHeader("event"));
 				((HttpPut) request).setEntity(new ByteArrayEntity(data));
 			}
 			request.addHeader("virtual_page_uri", requestURI);
