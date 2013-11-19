@@ -292,19 +292,7 @@ public class VerificationFilter implements Filter {
 			 * }
 			 */
 			// Header Debug
-			try {
-
-				Enumeration e = req.getHeaderNames();
-
-				while (e.hasMoreElements()) {
-					String temp = (String) e.nextElement();
-
-					logger.debug("tempHeader:" + temp);
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		
 
 			if (req.getHeader("encmsgblock") != null
 					&& req.getHeader("enckeyblock") != null) {
