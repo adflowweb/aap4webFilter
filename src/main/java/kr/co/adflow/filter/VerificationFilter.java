@@ -292,12 +292,18 @@ public class VerificationFilter implements Filter {
 			 * }
 			 */
 			// Header Debug
-			Enumeration e = req.getHeaderNames();
+			try {
 
-			while (e.hasMoreElements()) {
-				String temp = (String) e.nextElement();
+				Enumeration e = req.getHeaderNames();
 
-				logger.debug("DebugHeader:" + temp);
+				while (e.hasMoreElements()) {
+					String temp = (String) e.nextElement();
+
+					logger.debug("tempHeader:" + temp);
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
 			if (req.getHeader("encmsgblock") != null
@@ -391,11 +397,11 @@ public class VerificationFilter implements Filter {
 
 					httpGet.addHeader("user-agent", req.getHeader("user-agent"));
 					httpGet.addHeader("virtual_page_uri", req.getRequestURI());
-					/*
-					 * // event Header Add if (req.getHeader("X-Requested-With")
-					 * != null) { httpGet.addHeader("event",
-					 * req.getHeader("event")); }
-					 */
+
+					if (req.getHeader("X-Requested-With") != null) {
+						httpGet.addHeader("event", req.getHeader("event"));
+					}
+
 					httpGet.setHeader("Connection", "keep-alive");
 					logger.debug("request verification");
 					logger.debug("req.getHeader(hash):" + req.getHeader("hash"));
