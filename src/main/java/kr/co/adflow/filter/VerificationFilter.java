@@ -376,10 +376,13 @@ public class VerificationFilter implements Filter {
 						logger.debug("jsonKey:" + jsonKey);
 						JsonNode jsonNode = actualObj.get(jsonKey);
 						logger.debug("jsonValue:" + jsonNode.toString());
-
 						String value = jsonNode.toString();
-
 						logger.debug("value:" + value);
+						if(!jsonKey.equals("hash")){
+							logger.debug("ifJsonKey:"+jsonKey);
+							value=value.replace("\"","");
+							logger.debug("ifJsonValue:"+value);
+						}
 						httpGet.addHeader(jsonKey, value);
 
 					}
