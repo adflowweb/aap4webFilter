@@ -112,53 +112,52 @@ public class VirtualBrowserFilter implements Filter {
 			// logger.debug("ORG Result:" + result);
 
 			// 검증페이지일 경우
-			/*
-			 * if (VerificationFilter.getVerificationUriList().containsKey(
-			 * req.getRequestURI())) {
-			 */
-			
-			if(VerificationFilter.getVerificationUriList().containsKey(req.getRequestURI())){
-			String policy=(String)req.getAttribute("uri_policy");
-			TestClientModify modify = new TestClientModify();
-			String resultModify = modify.jsoupModify(result,policy);
-			// logger.debug("JSOUP Modify Data...");
-			// logger.debug("resultModify:" + resultModify);
+			// 임시 코드
+			String policy = (String) req.getAttribute("uri_policy");
+			if (policy.equals("V")||policy.equals("M")) {
 
-			// "X-Requested-With"
-			String method;
-			if (req.getHeader("X-Requested-With") == null) {
-				method = "POST";
+				TestClientModify modify = new TestClientModify();
+				String resultModify = modify.jsoupModify(result, policy);
+				// logger.debug("JSOUP Modify Data...");
+				// logger.debug("resultModify:" + resultModify);
 
-				logger.debug("resultModify");
-				requestVirtualPage(req, req.getSession().getId(),
-						req.getRequestURI(), method, resultModify.getBytes());
-				// logger.debug("VitualpageCreateData resultModify:" +
-				// resultModify);
+				// "X-Requested-With"
+				String method;
+				if (req.getHeader("X-Requested-With") == null) {
+					method = "POST";
 
-				out.write(resultModify.getBytes());
+					logger.debug("resultModify");
+					requestVirtualPage(req, req.getSession().getId(),
+							req.getRequestURI(), method,
+							resultModify.getBytes());
+					// logger.debug("VitualpageCreateData resultModify:" +
+					// resultModify);
 
-			} else {
-				method = "PUT";
-				logger.debug("result");
+					out.write(resultModify.getBytes());
 
-				requestVirtualPage(req, req.getSession().getId(),
-						req.getRequestURI(), method, result.getBytes());
-				// logger.debug("VitualpageCreateData resul:" + result);
+				} else {
+					method = "PUT";
+					logger.debug("result");
 
-				out.write(result.getBytes());
+					requestVirtualPage(req, req.getSession().getId(),
+							req.getRequestURI(), method, result.getBytes());
+					// logger.debug("VitualpageCreateData resul:" + result);
+
+					out.write(result.getBytes());
+				}
+
+				// executorService.execute(new
+				// RequestVirtualPage(req.getSession()
+				// .getId(), req.getRequestURI(), method, result.getBytes()));
+				// }
+
+				/*
+				 * UUID uuid = UUID.randomUUID(); //set txid
+				 * res.setHeader("TXID", uuid.toString()); //get urlPolicy //set
+				 * urlPolicy res.setHeader("uPolicy", "N");
+				 */
+
 			}
-
-			// executorService.execute(new RequestVirtualPage(req.getSession()
-			// .getId(), req.getRequestURI(), method, result.getBytes()));
-			// }
-
-			/*
-			 * UUID uuid = UUID.randomUUID(); //set txid res.setHeader("TXID",
-			 * uuid.toString()); //get urlPolicy //set urlPolicy
-			 * res.setHeader("uPolicy", "N");
-			 */
-			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -212,14 +211,12 @@ public class VirtualBrowserFilter implements Filter {
 
 			} else {// PUT
 				request = new HttpPut(uri);
-				//request.addHeader("event",req.getHeader("event"));
+				// request.addHeader("event",req.getHeader("event"));
 				((HttpPut) request).setEntity(new ByteArrayEntity(data));
 			}
 			request.addHeader("virtual_page_uri", requestURI);
 			request.setHeader("Connection", "keep-alive");
 			httpResponse = client.execute((HttpUriRequest) request);
-
-			
 
 			// ResponseCode
 			int resCode = httpResponse.getStatusLine().getStatusCode();

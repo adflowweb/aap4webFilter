@@ -272,7 +272,7 @@ public class VerificationFilter implements Filter {
 				logger.debug("unKnown URI!!");
 				logger.debug("req.unKnown URI:" + req.getRequestURI());
 				verificationUriList.put(req.getRequestURI(), "U");
-
+				req.setAttribute("uri_policy", "U");
 				// verifyUrl
 			} else {
 
