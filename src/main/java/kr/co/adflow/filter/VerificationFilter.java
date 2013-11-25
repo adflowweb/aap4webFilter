@@ -263,7 +263,7 @@ public class VerificationFilter implements Filter {
 		HttpResponse getHttpResponse = null;
 		FileInputStream is = null;
 		try {
-			
+
 			for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 				String param = (String) e.nextElement();
 				logger.debug(param + ":" + req.getParameter(param));
@@ -296,7 +296,7 @@ public class VerificationFilter implements Filter {
 				String uri_Policy = (String) policyMap.get("uri_policy");
 				logger.debug("uri_policy:" + uri_Policy);
 				req.setAttribute("uri_policy", uri_Policy);
-				
+
 				// 검증 대상 V 일경우
 				// if (obj.toString().contains(policyIsV)) {
 				// EngMsgBlock ,EncKeyBlock
@@ -452,7 +452,6 @@ public class VerificationFilter implements Filter {
 						printWriter.print(bfResponseData);
 						printWriter.flush();
 
-					
 						return;
 					default:
 						logger.debug("undefined responseCode");
@@ -467,7 +466,13 @@ public class VerificationFilter implements Filter {
 		catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			EntityUtils.consume(getHttpResponse.getEntity());
+			try {
+				if (getHttpResponse.getEntity() != null) {
+					EntityUtils.consume(getHttpResponse.getEntity());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			if (printWriter != null) {
 				try {
 					printWriter.close();
