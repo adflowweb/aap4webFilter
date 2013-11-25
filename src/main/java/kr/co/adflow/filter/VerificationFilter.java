@@ -272,15 +272,24 @@ public class VerificationFilter implements Filter {
 
 			// verifyUrl
 		} else {
+			try {
+				logger.debug("Verify Uri req.getRequestURI():"
+						+ req.getRequestURI());
 
-			logger.debug("Verify Uri req.getRequestURI():"
-					+ req.getRequestURI());
+				Object obj = null;
+				String policy = null;
+				obj = (Object) verificationUriList.get(req.getRequestURI());
+				logger.debug("obj:" + obj.toString());
 
-			Object obj = null;
-			String policyIsV = null;
-			obj = (Object) verificationUriList.get(req.getRequestURI());
-			logger.debug("obj:" + obj.toString());
-			policyIsV = "\"uri_policy\":\"V\"";
+				policy = obj.toString();
+				ObjectMapper mapper = new ObjectMapper();
+				HashMap policyMap = mapper.readValue(policy, HashMap.class);
+				String uri_Policy = (String) policyMap.get("uri_policy");
+				logger.debug("uri_policy:" + uri_Policy);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			// 검증 대상 V 일경우
 			// if (obj.toString().contains(policyIsV)) {
 			// EngMsgBlock ,EncKeyBlock
@@ -363,8 +372,6 @@ public class VerificationFilter implements Filter {
 
 					// DecMessage Parsing
 
-					ObjectMapper mapper = new ObjectMapper();
-
 					JsonNode actualObj = mapper.readTree(engMsgBlock);
 
 					Iterator it = actualObj.getFieldNames();
@@ -378,10 +385,10 @@ public class VerificationFilter implements Filter {
 						logger.debug("jsonValue:" + jsonNode.toString());
 						String value = jsonNode.toString();
 						logger.debug("value:" + value);
-						if(!jsonKey.equals("hash")){
-							logger.debug("ifJsonKey:"+jsonKey);
-							value=value.replace("\"","");
-							logger.debug("ifJsonValue:"+value);
+						if (!jsonKey.equals("hash")) {
+							logger.debug("ifJsonKey:" + jsonKey);
+							value = value.replace("\"", "");
+							logger.debug("ifJsonValue:" + value);
 						}
 						httpGet.addHeader(jsonKey, value);
 
