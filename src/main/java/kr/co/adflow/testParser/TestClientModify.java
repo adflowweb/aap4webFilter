@@ -26,7 +26,7 @@ public class TestClientModify {
 
 	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
 
-	public String jsoupModify(String html) {
+	public String jsoupModify(String html,String uri_policy) {
 		Document doc = null;
 		FileInputStream fileInputStream = null;
 		BufferedInputStream bufferedInputStream = null;
@@ -48,7 +48,7 @@ public class TestClientModify {
 			String txid = uuid.toString();
 			txid = pid + "-" + txid;
 			// policy
-			String policy = "N";
+	
 
 			// 대칭키 생성
 		
@@ -56,9 +56,9 @@ public class TestClientModify {
 			byte[] symmeTricKey = null;
 			//임시코드
 			String orgMsg= "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\" }";
+					+ uri_policy + "\" }";
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\" }";
+					+ uri_policy + "\" }";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			generator.init(128, random);

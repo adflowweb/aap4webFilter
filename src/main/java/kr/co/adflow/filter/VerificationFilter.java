@@ -255,24 +255,33 @@ public class VerificationFilter implements Filter {
 		logger.debug("contentType : " + req.getContentType());
 		logger.debug("req.getRemoteAddr():" + req.getRemoteAddr());
 		// parameter
-		for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
-			String param = (String) e.nextElement();
-			logger.debug(param + ":" + req.getParameter(param));
-		}
 
-		// verification uri check
-		// hiddenField(hash) 추가해야함
-		// (verificationUriList.containsKey(req.getRequestURI()
+		URI uri;
+		HttpGet httpGet = null;
+		PrintWriter printWriter = null;
+		BufferedReader br = null;
+		HttpResponse getHttpResponse = null;
+		FileInputStream is = null;
+		try {
+			
+			for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
+				String param = (String) e.nextElement();
+				logger.debug(param + ":" + req.getParameter(param));
+			}
 
-		// unknow Url
-		if (!verificationUriList.containsKey(req.getRequestURI())) {
-			logger.debug("unKnown URI!!");
-			logger.debug("req.unKnown URI:" + req.getRequestURI());
-			verificationUriList.put(req.getRequestURI(), "U");
+			// verification uri check
+			// hiddenField(hash) 추가해야함
+			// (verificationUriList.containsKey(req.getRequestURI()
 
-			// verifyUrl
-		} else {
-			try {
+			// unknow Url
+			if (!verificationUriList.containsKey(req.getRequestURI())) {
+				logger.debug("unKnown URI!!");
+				logger.debug("req.unKnown URI:" + req.getRequestURI());
+				verificationUriList.put(req.getRequestURI(), "U");
+
+				// verifyUrl
+			} else {
+
 				logger.debug("Verify Uri req.getRequestURI():"
 						+ req.getRequestURI());
 
@@ -286,32 +295,23 @@ public class VerificationFilter implements Filter {
 				HashMap policyMap = mapper.readValue(policy, HashMap.class);
 				String uri_Policy = (String) policyMap.get("uri_policy");
 				logger.debug("uri_policy:" + uri_Policy);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+				req.setAttribute("uri_policy", uri_Policy);
+				
+				// 검증 대상 V 일경우
+				// if (obj.toString().contains(policyIsV)) {
+				// EngMsgBlock ,EncKeyBlock
+				//
+				/*
+				 * if(req.getHeader("EngMsgBlock")!=null&&req.getHeader(
+				 * "EncKeyBlock" )!=null){
+				 * 
+				 * }
+				 */
+				// Header Debug
 
-			// 검증 대상 V 일경우
-			// if (obj.toString().contains(policyIsV)) {
-			// EngMsgBlock ,EncKeyBlock
-			//
-			/*
-			 * if(req.getHeader("EngMsgBlock")!=null&&req.getHeader("EncKeyBlock"
-			 * )!=null){
-			 * 
-			 * }
-			 */
-			// Header Debug
+				if (req.getHeader("encmsgblock") != null
+						&& req.getHeader("enckeyblock") != null) {
 
-			if (req.getHeader("encmsgblock") != null
-					&& req.getHeader("enckeyblock") != null) {
-
-				URI uri;
-				HttpGet httpGet = null;
-				PrintWriter printWriter = null;
-				BufferedReader br = null;
-				HttpResponse getHttpResponse = null;
-				FileInputStream is = null;
-				try {
 					// create connection
 
 					uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
@@ -452,8 +452,7 @@ public class VerificationFilter implements Filter {
 						printWriter.print(bfResponseData);
 						printWriter.flush();
 
-						// todo
-						// 검증로그전송
+					
 						return;
 					default:
 						logger.debug("undefined responseCode");
@@ -461,36 +460,39 @@ public class VerificationFilter implements Filter {
 						break;
 					}
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					EntityUtils.consume(getHttpResponse.getEntity());
-					if (printWriter != null) {
-						try {
-							printWriter.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-
-					if (br != null) {
-						try {
-							br.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-
-					if (is != null) {
-						try {
-							is.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
 				}
 			}
 		}
+
+		catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			EntityUtils.consume(getHttpResponse.getEntity());
+			if (printWriter != null) {
+				try {
+					printWriter.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (is != null) {
+				try {
+					is.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 		chain.doFilter(req, res);
 	}
 
