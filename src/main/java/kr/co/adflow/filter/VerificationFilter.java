@@ -255,236 +255,242 @@ public class VerificationFilter implements Filter {
 		logger.debug("contentType : " + req.getContentType());
 		logger.debug("req.getRemoteAddr():" + req.getRemoteAddr());
 		// parameter
-		for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
-			String param = (String) e.nextElement();
-			logger.debug(param + ":" + req.getParameter(param));
-		}
 
-		// verification uri check
-		// hiddenField(hash) 추가해야함
-		// (verificationUriList.containsKey(req.getRequestURI()
+		try {
 
-		// unknow Url
-		if (!verificationUriList.containsKey(req.getRequestURI())) {
-			logger.debug("unKnown URI!!");
-			logger.debug("req.unKnown URI:" + req.getRequestURI());
-			verificationUriList.put(req.getRequestURI(), "U");
+			for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
+				String param = (String) e.nextElement();
+				logger.debug(param + ":" + req.getParameter(param));
+			}
 
-			// verifyUrl
-		} else {
+			// verification uri check
+			// hiddenField(hash) 추가해야함
+			// (verificationUriList.containsKey(req.getRequestURI()
 
-			logger.debug("Verify Uri req.getRequestURI():"
-					+ req.getRequestURI());
+			// unknow Url
+			if (!verificationUriList.containsKey(req.getRequestURI())) {
+				logger.debug("unKnown URI!!");
+				logger.debug("req.unKnown URI:" + req.getRequestURI());
+				verificationUriList.put(req.getRequestURI(), "U");
 
-			Object obj = null;
-			String policyIsV = null;
-			obj = (Object) verificationUriList.get(req.getRequestURI());
-			logger.debug("obj:" + obj.toString());
-			policyIsV = "\"uri_policy\":\"V\"";
-			// 검증 대상 V 일경우
-			// if (obj.toString().contains(policyIsV)) {
-			// EngMsgBlock ,EncKeyBlock
-			//
-			/*
-			 * if(req.getHeader("EngMsgBlock")!=null&&req.getHeader("EncKeyBlock"
-			 * )!=null){
-			 * 
-			 * }
-			 */
-			// Header Debug
+				// verifyUrl
+			} else {
 
-			if (req.getHeader("encmsgblock") != null
-					&& req.getHeader("enckeyblock") != null) {
+				logger.debug("Verify Uri req.getRequestURI():"
+						+ req.getRequestURI());
 
-				URI uri;
-				HttpGet httpGet = null;
-				PrintWriter printWriter = null;
-				BufferedReader br = null;
-				HttpResponse getHttpResponse = null;
-				FileInputStream is = null;
-				try {
-					// create connection
+				Object obj = null;
+				String policy = null;
 
-					uri = new URI(VERIFICATION_SERVER_ADDRESS + "/v1/verify/"
-							+ req.getSession().getId());
-					httpGet = new HttpGet(uri);
+				obj = (Object) verificationUriList.get(req.getRequestURI());
+				logger.debug("obj:" + obj.toString());
+				policy = obj.toString();
+				ObjectMapper mapper = new ObjectMapper();
+				HashMap policyMap = mapper.readValue(policy, HashMap.class);
+				String policy_Result = (String) policyMap.get("uri_policy");
+				logger.debug("policy_Result:" + policy_Result);
+				req.setAttribute("uri_policy", policy_Result);
 
-					// PID ADD
-					RuntimeMXBean rmxb = ManagementFactory.getRuntimeMXBean();
-					logger.debug("pid: " + rmxb.getName());
+				// 검증 요청
+				if (req.getHeader("encmsgblock") != null
+						&& req.getHeader("enckeyblock") != null) {
 
-					// set header hash
-					// req header
+					URI uri;
+					HttpGet httpGet = null;
+					PrintWriter printWriter = null;
+					BufferedReader br = null;
+					HttpResponse getHttpResponse = null;
+					FileInputStream is = null;
+					try {
+						// create connection
 
-					for (Enumeration e = req.getHeaderNames(); e
-							.hasMoreElements();) {
-						String headerNames = (String) e.nextElement();
-						logger.debug(headerNames + ":"
-								+ req.getHeader(headerNames));
+						uri = new URI(VERIFICATION_SERVER_ADDRESS
+								+ "/v1/verify/" + req.getSession().getId());
+						httpGet = new HttpGet(uri);
 
-					}
-					logger.debug("DECPrivateKeyPass:" + decPrivateKeyPass);
-					// 개인키 pass AES 적용
+						// PID ADD
+						RuntimeMXBean rmxb = ManagementFactory
+								.getRuntimeMXBean();
+						logger.debug("pid: " + rmxb.getName());
 
-					String alias = "adf";
-					is = new FileInputStream("/home/adf.keystore");
-					KeyStore keystore = KeyStore.getInstance(KeyStore
-							.getDefaultType());
-					keystore.load(is, decPrivateKeyPass.toCharArray());
-					Key key = keystore.getKey(alias,
-							decPrivateKeyPass.toCharArray());
-					if (key instanceof PrivateKey) {
-						logger.debug("Private key read!!!!");
-					}
-					// EncKeyBlock 을 개인키로 decryption!
-					String encKeyBlock = req.getHeader("enckeyblock");
+						// set header hash
+						// req header
 
-					byte[] ciperData = this.hexStringToByteArray(encKeyBlock);
+						for (Enumeration e = req.getHeaderNames(); e
+								.hasMoreElements();) {
+							String headerNames = (String) e.nextElement();
+							logger.debug(headerNames + ":"
+									+ req.getHeader(headerNames));
 
-					Cipher clsCipher = Cipher.getInstance("RSA");
-					clsCipher.init(Cipher.DECRYPT_MODE, key);
-					byte[] arrData = clsCipher.doFinal(ciperData);
-					String decryptionKey = Hex.encodeHexString(arrData);
-					logger.debug("DecryptionKey:" + decryptionKey);
-
-					// EngMsgBlock 대칭키로 decryption!
-
-					String engMsgBlock = req.getHeader("encmsgblock");
-					byte[] decKey = this.hexStringToByteArray(decryptionKey);
-					engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decKey,
-							null);
-					logger.debug("DecMessage:" + engMsgBlock);
-
-					// client ip 임시코드
-					httpGet.addHeader("clientip", req.getRemoteAddr());
-
-					// txid
-					// user-agent
-
-					// DecMessage Parsing
-
-					ObjectMapper mapper = new ObjectMapper();
-
-					JsonNode actualObj = mapper.readTree(engMsgBlock);
-
-					Iterator it = actualObj.getFieldNames();
-
-					// addHeader
-					while (it.hasNext()) {
-
-						String jsonKey = (String) it.next();
-						logger.debug("jsonKey:" + jsonKey);
-						JsonNode jsonNode = actualObj.get(jsonKey);
-						logger.debug("jsonValue:" + jsonNode.toString());
-						String value = jsonNode.toString();
-						logger.debug("value:" + value);
-						if(!jsonKey.equals("hash")){
-							logger.debug("ifJsonKey:"+jsonKey);
-							value=value.replace("\"","");
-							logger.debug("ifJsonValue:"+value);
 						}
-						httpGet.addHeader(jsonKey, value);
+						logger.debug("DECPrivateKeyPass:" + decPrivateKeyPass);
+						// 개인키 pass AES 적용
 
-					}
+						String alias = "adf";
+						is = new FileInputStream("/home/adf.keystore");
+						KeyStore keystore = KeyStore.getInstance(KeyStore
+								.getDefaultType());
+						keystore.load(is, decPrivateKeyPass.toCharArray());
+						Key key = keystore.getKey(alias,
+								decPrivateKeyPass.toCharArray());
+						if (key instanceof PrivateKey) {
+							logger.debug("Private key read!!!!");
+						}
+						// EncKeyBlock 을 개인키로 decryption!
+						String encKeyBlock = req.getHeader("enckeyblock");
 
-					httpGet.addHeader("filterId", rmxb.getName());
+						byte[] ciperData = this
+								.hexStringToByteArray(encKeyBlock);
 
-					httpGet.addHeader("user-agent", req.getHeader("user-agent"));
-					httpGet.addHeader("virtual_page_uri", req.getRequestURI());
+						Cipher clsCipher = Cipher.getInstance("RSA");
+						clsCipher.init(Cipher.DECRYPT_MODE, key);
+						byte[] arrData = clsCipher.doFinal(ciperData);
+						String decryptionKey = Hex.encodeHexString(arrData);
+						logger.debug("DecryptionKey:" + decryptionKey);
 
-					if (req.getHeader("X-Requested-With") != null) {
-						httpGet.addHeader("event", req.getHeader("event"));
-					}
+						// EngMsgBlock 대칭키로 decryption!
 
-					httpGet.setHeader("Connection", "keep-alive");
-					logger.debug("request verification");
-					logger.debug("req.getHeader(hash):" + req.getHeader("hash"));
+						String engMsgBlock = req.getHeader("encmsgblock");
+						byte[] decKey = this
+								.hexStringToByteArray(decryptionKey);
+						engMsgBlock = Seed128Cipher.decrypt(engMsgBlock,
+								decKey, null);
+						logger.debug("DecMessage:" + engMsgBlock);
 
-					logger.debug("HttpGet : " + httpGet.toString());
+						// client ip 임시코드
+						httpGet.addHeader("clientip", req.getRemoteAddr());
 
-					// get Response
-					getHttpResponse = client.execute(httpGet);
-					int resCode = getHttpResponse.getStatusLine()
-							.getStatusCode();
+						// txid
+						// user-agent
 
-					switch (resCode) {
-					case 200: // 검증성공
-						logger.debug("verified Success!!!!");
+						// DecMessage Parsing
 
-						// todo
-						// 검증로그전송
-						break;
-					case 404:
-						logger.debug("404 not found");
+						JsonNode actualObj = mapper.readTree(engMsgBlock);
 
-						res.sendError(404);// 임시코드
-						// break;
-						return;
-					case 500:
-						logger.debug("500 internal server error");
+						Iterator it = actualObj.getFieldNames();
 
-						res.sendError(500);// 임시코드
-						// break;
-						return;
-					case 505: // 검증실패
-						logger.debug("Server Error 505");
+						// addHeader
+						while (it.hasNext()) {
 
-						br = new BufferedReader(new InputStreamReader(
-								getHttpResponse.getEntity().getContent()));
-						String line;
-						StringBuffer bfResponseData = new StringBuffer();
-						while ((line = br.readLine()) != null) {
-							bfResponseData.append(line);
-							bfResponseData.append('\r');
+							String jsonKey = (String) it.next();
+							logger.debug("jsonKey:" + jsonKey);
+							JsonNode jsonNode = actualObj.get(jsonKey);
+							logger.debug("jsonValue:" + jsonNode.toString());
+							String value = jsonNode.toString();
+							logger.debug("value:" + value);
+							if (!jsonKey.equals("hash")) {
+								logger.debug("ifJsonKey:" + jsonKey);
+								value = value.replace("\"", "");
+								logger.debug("ifJsonValue:" + value);
+							}
+							httpGet.addHeader(jsonKey, value);
+
 						}
 
-						logger.debug("bfResponseData:"
-								+ bfResponseData.toString());
-						res.setStatus(505);
-						printWriter = new PrintWriter(res.getOutputStream());
-						printWriter.print(bfResponseData);
-						printWriter.flush();
+						httpGet.addHeader("filterId", rmxb.getName());
 
-						// todo
-						// 검증로그전송
-						return;
-					default:
-						logger.debug("undefined responseCode");
+						httpGet.addHeader("user-agent",
+								req.getHeader("user-agent"));
+						httpGet.addHeader("virtual_page_uri",
+								req.getRequestURI());
 
-						break;
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					EntityUtils.consume(getHttpResponse.getEntity());
-					if (printWriter != null) {
-						try {
-							printWriter.close();
-						} catch (Exception e) {
-							e.printStackTrace();
+						if (req.getHeader("X-Requested-With") != null) {
+							httpGet.addHeader("event", req.getHeader("event"));
 						}
-					}
 
-					if (br != null) {
-						try {
-							br.close();
-						} catch (Exception e) {
-							e.printStackTrace();
+						httpGet.setHeader("Connection", "keep-alive");
+						logger.debug("request verification");
+						logger.debug("req.getHeader(hash):"
+								+ req.getHeader("hash"));
+
+						logger.debug("HttpGet : " + httpGet.toString());
+
+						// get Response
+						getHttpResponse = client.execute(httpGet);
+						int resCode = getHttpResponse.getStatusLine()
+								.getStatusCode();
+
+						switch (resCode) {
+						case 200: // 검증성공
+							logger.debug("verified Success!!!!");
+
+							// todo
+							// 검증로그전송
+							break;
+						case 404:
+							logger.debug("404 not found");
+
+							res.sendError(404);// 임시코드
+							// break;
+							return;
+						case 500:
+							logger.debug("500 internal server error");
+
+							res.sendError(500);// 임시코드
+							// break;
+							return;
+						case 505: // 검증실패
+							logger.debug("Server Error 505");
+
+							br = new BufferedReader(new InputStreamReader(
+									getHttpResponse.getEntity().getContent()));
+							String line;
+							StringBuffer bfResponseData = new StringBuffer();
+							while ((line = br.readLine()) != null) {
+								bfResponseData.append(line);
+								bfResponseData.append('\r');
+							}
+
+							logger.debug("bfResponseData:"
+									+ bfResponseData.toString());
+							res.setStatus(505);
+							printWriter = new PrintWriter(res.getOutputStream());
+							printWriter.print(bfResponseData);
+							printWriter.flush();
+
+							// todo
+							// 검증로그전송
+							return;
+						default:
+							logger.debug("undefined responseCode");
+
+							break;
 						}
-					}
 
-					if (is != null) {
-						try {
-							is.close();
-						} catch (Exception e) {
-							e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						EntityUtils.consume(getHttpResponse.getEntity());
+						if (printWriter != null) {
+							try {
+								printWriter.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+
+						if (br != null) {
+							try {
+								br.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+
+						if (is != null) {
+							try {
+								is.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
 			}
+			chain.doFilter(req, res);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		chain.doFilter(req, res);
 	}
 
 	public static HashMap getVerificationUriList() {

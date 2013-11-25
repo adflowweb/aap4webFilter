@@ -116,9 +116,11 @@ public class VirtualBrowserFilter implements Filter {
 			 * if (VerificationFilter.getVerificationUriList().containsKey(
 			 * req.getRequestURI())) {
 			 */
-
+			
+			if(VerificationFilter.getVerificationUriList().containsKey(req.getRequestURI())){
+			String policy=(String)req.getAttribute("uri_policy");
 			TestClientModify modify = new TestClientModify();
-			String resultModify = modify.jsoupModify(result);
+			String resultModify = modify.jsoupModify(result,policy);
 			// logger.debug("JSOUP Modify Data...");
 			// logger.debug("resultModify:" + resultModify);
 
@@ -155,7 +157,8 @@ public class VirtualBrowserFilter implements Filter {
 			 * uuid.toString()); //get urlPolicy //set urlPolicy
 			 * res.setHeader("uPolicy", "N");
 			 */
-
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

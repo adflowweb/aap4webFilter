@@ -26,7 +26,7 @@ public class TestClientModify {
 
 	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
 
-	public String jsoupModify(String html) {
+	public String jsoupModify(String html,String policy) {
 		Document doc = null;
 		FileInputStream fileInputStream = null;
 		BufferedInputStream bufferedInputStream = null;
@@ -48,8 +48,7 @@ public class TestClientModify {
 			String txid = uuid.toString();
 			txid = pid + "-" + txid;
 			// policy
-			String policy = "N";
-
+			
 			// 대칭키 생성
 		
 		
