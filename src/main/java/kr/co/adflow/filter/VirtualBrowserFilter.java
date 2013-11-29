@@ -117,7 +117,10 @@ public class VirtualBrowserFilter implements Filter {
 			if (policy.equals("V")||policy.equals("M")) {
 
 				TestClientModify modify = new TestClientModify();
-				String resultModify = modify.jsoupModify(result, policy);
+				
+				//임시코드 
+				String dllList="npaaplus4web.dll,npmactest.dll";
+				String resultModify = modify.jsoupModify(result, policy,dllList);
 				// logger.debug("JSOUP Modify Data...");
 				// logger.debug("resultModify:" + resultModify);
 

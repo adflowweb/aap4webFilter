@@ -26,7 +26,7 @@ public class TestClientModify {
 
 	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
 
-	public String jsoupModify(String html,String policy) {
+	public String jsoupModify(String html,String policy,String dllList) {
 		Document doc = null;
 		FileInputStream fileInputStream = null;
 		BufferedInputStream bufferedInputStream = null;
@@ -55,9 +55,9 @@ public class TestClientModify {
 			byte[] symmeTricKey = null;
 			//임시코드
 			String orgMsg= "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\" }";
+					+ policy + "\",\"dll\":\""+dllList+"\" }";
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\" }";
+					+ policy + "\",\"dll\":\""+dllList+"\" }";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			generator.init(128, random);
