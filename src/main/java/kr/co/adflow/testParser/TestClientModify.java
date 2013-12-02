@@ -55,7 +55,7 @@ public class TestClientModify {
 			byte[] symmeTricKey = null;
 			//임시코드
 			String orgMsg= "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\",\"dll\":\""+dllList+"\" }";
+					+ policy + "\",\"dll\":\"["+dllList+"]\" }";
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
 					+ policy + "\",\"dll\":\"["+dllList+"]\" }";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
