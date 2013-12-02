@@ -57,7 +57,7 @@ public class TestClientModify {
 		//	npaaplus4web.dll,npmactest.dll
 			
 			String orgMsg= "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\",\"dll\":[\"npaaplus4web.dll\",\"npmactest.dll\"] }";
+					+ policy + "\",\"dll\":[\"npaaplus4web.dll\",\"npmactest.dll\"]}";
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
 					+ policy + "\",\"dll\":[\"npaaplus4web.dll\",\"npmactest.dll\"]}";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
