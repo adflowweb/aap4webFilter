@@ -114,12 +114,12 @@ public class VirtualBrowserFilter implements Filter {
 			// 검증페이지일 경우
 			// 임시 코드
 			String policy = (String) req.getAttribute("uri_policy");
-			if (policy.equals("V")||policy.equals("M")) {
+			if (policy.equals("V") || policy.equals("M")) {
 
 				TestClientModify modify = new TestClientModify();
-				
-				//임시코드 
-				//String dllList="npaaplus4web.dll,npmactest.dll";
+
+				// 임시코드
+				// String dllList="npaaplus4web.dll,npmactest.dll";
 				String resultModify = modify.jsoupModify(result, policy);
 				// logger.debug("JSOUP Modify Data...");
 				// logger.debug("resultModify:" + resultModify);
@@ -160,6 +160,8 @@ public class VirtualBrowserFilter implements Filter {
 				 * urlPolicy res.setHeader("uPolicy", "N");
 				 */
 
+			} else {
+				out.write(result.getBytes());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
