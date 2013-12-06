@@ -439,7 +439,7 @@ public class VerificationFilter implements Filter {
 							
 							while ((line = br.readLine()) != null) {
 								bfResponseData.append(line);
-								
+								bfResponseData.append('\r');
 							}
 
 							logger.debug("bfResponseData:"
