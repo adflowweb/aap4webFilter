@@ -436,9 +436,10 @@ public class VerificationFilter implements Filter {
 									getHttpResponse.getEntity().getContent()));
 							String line;
 							StringBuffer bfResponseData = new StringBuffer();
+							
 							while ((line = br.readLine()) != null) {
 								bfResponseData.append(line);
-								bfResponseData.append('\r');
+								
 							}
 
 							logger.debug("bfResponseData:"
