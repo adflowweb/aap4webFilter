@@ -54,9 +54,9 @@ public class VerificationFilter implements Filter {
 	private static HashMap verificationUriList = new HashMap();
 
 	private ExecutorService executorVerifyListGet = Executors
-			.newFixedThreadPool(10);
+			.newFixedThreadPool(1);
 	private ExecutorService executorUnknownListFlush = Executors
-			.newFixedThreadPool(10);
+			.newFixedThreadPool(1);
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client = null;
@@ -234,7 +234,7 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(80000); //
+						Thread.sleep(60000); //
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
