@@ -155,7 +155,7 @@ public class VerificationFilter implements Filter {
 
 					// sleep 1분
 					try {
-						Thread.sleep(60000);
+						Thread.sleep(100000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -234,7 +234,7 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(80000); //
+						Thread.sleep(100000); //
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
