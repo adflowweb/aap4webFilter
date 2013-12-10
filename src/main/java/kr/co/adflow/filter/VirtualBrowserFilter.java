@@ -113,7 +113,10 @@ public class VirtualBrowserFilter implements Filter {
 
 			// 검증페이지일 경우
 			// 임시 코드
-			String policy = (String) req.getAttribute("uri_policy");
+			String policy=null;
+			if (req.getAttribute("uri_policy") != null) {
+				 policy= (String) req.getAttribute("uri_policy");
+			}
 			if (policy.equals("V") || policy.equals("M")) {
 
 				TestClientModify modify = new TestClientModify();
