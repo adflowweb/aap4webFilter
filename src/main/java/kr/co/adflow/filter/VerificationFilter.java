@@ -232,7 +232,7 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(10000); // 10초
+						Thread.sleep(80000); // 
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
