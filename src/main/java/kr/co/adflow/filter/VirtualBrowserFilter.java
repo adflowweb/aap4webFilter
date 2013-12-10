@@ -117,7 +117,7 @@ public class VirtualBrowserFilter implements Filter {
 			if (req.getAttribute("uri_policy") != null) {
 				 policy= (String) req.getAttribute("uri_policy");
 			}
-			if (policy.equals("V") || policy.equals("M")) {
+			if (policy!=null&&(policy.equals("V") || policy.equals("M"))) {
 
 				TestClientModify modify = new TestClientModify();
 
