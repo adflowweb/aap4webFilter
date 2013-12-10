@@ -54,9 +54,9 @@ public class VerificationFilter implements Filter {
 	private static HashMap verificationUriList = new HashMap();
 
 	private ExecutorService executorVerifyListGet = Executors
-			.newFixedThreadPool(1);
+			.newFixedThreadPool(10);
 	private ExecutorService executorUnknownListFlush = Executors
-			.newFixedThreadPool(1);
+			.newFixedThreadPool(10);
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client = null;
@@ -93,7 +93,7 @@ public class VerificationFilter implements Filter {
 					BufferedReader rd = null;
 					try {
 						// create connection
-						url = new URL("http://127.0.0.1:3000"
+						url = new URL(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/policy/uri");
 						conn = (HttpURLConnection) url.openConnection();
 						conn.setRequestMethod("GET");
@@ -155,13 +155,11 @@ public class VerificationFilter implements Filter {
 
 					// sleep 1분
 					try {
-						Thread.sleep(100000);
+						Thread.sleep(60000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					logger.debug("sleep first..");
 				}
-			
 			}
 		});
 
@@ -236,12 +234,11 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(100000); //
+						Thread.sleep(80000); //
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					logger.debug("sleep seconds..");
 				}
 
 			}
