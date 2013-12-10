@@ -192,10 +192,10 @@ public class VerificationFilter implements Filter {
 							Object value = verificationUriList.get(key);
 							logger.debug("verificationUriList key:" + key);
 							logger.debug("verificationUriList value:" + value);
-							if (value.toString().equals("U")) {
+							if (value.toString().equals("{\"uri_policy\":\"U\"}")) {
 								logger.debug("flush...value");
 								flushMap.put(key, value);
-								verificationUriList.put(key, "F");
+								verificationUriList.put(key, "{\"uri_policy\":\"F\"}");
 
 							}
 						}
@@ -271,7 +271,7 @@ public class VerificationFilter implements Filter {
 			if (!verificationUriList.containsKey(req.getRequestURI())) {
 				logger.debug("unKnown URI!!");
 				logger.debug("req.unKnown URI:" + req.getRequestURI());
-				verificationUriList.put(req.getRequestURI(), "U");
+				verificationUriList.put(req.getRequestURI(), "{\"uri_policy\":\"U\"}");
 				req.setAttribute("uri_policy", "U");
 				// verifyUrl
 			} else {
@@ -491,7 +491,7 @@ public class VerificationFilter implements Filter {
 			chain.doFilter(req, res);
 		} catch (Exception e) {
 			e.printStackTrace();
-			chain.doFilter(req, res);
+		
 		}
 	}
 
