@@ -491,6 +491,7 @@ public class VerificationFilter implements Filter {
 			chain.doFilter(req, res);
 		} catch (Exception e) {
 			e.printStackTrace();
+			chain.doFilter(req, res);
 		}
 	}
 
