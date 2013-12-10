@@ -93,7 +93,7 @@ public class VerificationFilter implements Filter {
 					BufferedReader rd = null;
 					try {
 						// create connection
-						url = new URL(VERIFICATION_SERVER_ADDRESS
+						url = new URL("http://127.0.0.1:3000"
 								+ "/v1/policy/uri");
 						conn = (HttpURLConnection) url.openConnection();
 						conn.setRequestMethod("GET");
