@@ -192,10 +192,12 @@ public class VerificationFilter implements Filter {
 							Object value = verificationUriList.get(key);
 							logger.debug("verificationUriList key:" + key);
 							logger.debug("verificationUriList value:" + value);
-							if (value.toString().equals("{\"uri_policy\":\"U\"}")) {
+							if (value.toString().equals(
+									"{\"uri_policy\":\"U\"}")) {
 								logger.debug("flush...value");
 								flushMap.put(key, value);
-								verificationUriList.put(key, "{\"uri_policy\":\"F\"}");
+								verificationUriList.put(key,
+										"{\"uri_policy\":\"F\"}");
 
 							}
 						}
@@ -232,7 +234,7 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(80000); // 
+						Thread.sleep(80000); //
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -271,7 +273,8 @@ public class VerificationFilter implements Filter {
 			if (!verificationUriList.containsKey(req.getRequestURI())) {
 				logger.debug("unKnown URI!!");
 				logger.debug("req.unKnown URI:" + req.getRequestURI());
-				verificationUriList.put(req.getRequestURI(), "{\"uri_policy\":\"U\"}");
+				verificationUriList.put(req.getRequestURI(),
+						"{\"uri_policy\":\"U\"}");
 				req.setAttribute("uri_policy", "U");
 				// verifyUrl
 			} else {
@@ -436,7 +439,7 @@ public class VerificationFilter implements Filter {
 									getHttpResponse.getEntity().getContent()));
 							String line;
 							StringBuffer bfResponseData = new StringBuffer();
-							
+
 							while ((line = br.readLine()) != null) {
 								bfResponseData.append(line);
 								bfResponseData.append('\r');
@@ -488,11 +491,12 @@ public class VerificationFilter implements Filter {
 					}
 				}
 			}
-			chain.doFilter(req, res);
+
 		} catch (Exception e) {
 			e.printStackTrace();
-		
+
 		}
+		chain.doFilter(req, res);
 	}
 
 	public static HashMap getVerificationUriList() {
