@@ -159,7 +159,9 @@ public class VerificationFilter implements Filter {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					logger.debug("sleep first..");
 				}
+			
 			}
 		});
 
@@ -239,6 +241,7 @@ public class VerificationFilter implements Filter {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					logger.debug("sleep seconds..");
 				}
 
 			}
