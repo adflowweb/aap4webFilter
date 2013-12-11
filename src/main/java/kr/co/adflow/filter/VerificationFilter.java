@@ -195,6 +195,9 @@ public class VerificationFilter implements Filter {
 							if (value.toString().equals(
 									"{\"uri_policy\":\"U\"}")) {
 								logger.debug("flush...value");
+								// 임시코드
+								value = value.toString().substring(15, 16);
+								logger.debug("substringValue:"+value);
 								flushMap.put(key, value);
 								verificationUriList.put(key,
 										"{\"uri_policy\":\"F\"}");
