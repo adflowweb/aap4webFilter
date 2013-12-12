@@ -92,6 +92,7 @@ public class VerificationFilter implements Filter {
 					HttpURLConnection conn = null;
 					BufferedReader rd = null;
 					try {
+						logger.debug("Demo Test");
 						// create connection
 						url = new URL(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/policy/uri");
