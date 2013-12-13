@@ -154,9 +154,9 @@ public class VerificationFilter implements Filter {
 					logger.debug("elapsedTime : "
 							+ (System.currentTimeMillis() - start) + " ms ");
 
-					// sleep 1분
+					// sleep 메모용
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -238,7 +238,7 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(10000); //
+						Thread.sleep(5000); //
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
