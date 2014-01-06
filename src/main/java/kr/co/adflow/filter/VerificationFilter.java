@@ -469,31 +469,31 @@ public class VerificationFilter implements Filter {
 							}
 						}
 					}
-					//검증실패시 로그 받아주는 부분 임시코드
+					// 검증실패시 로그 받아주는 부분 임시코드
 				} else if (req.getHeader("errkeyblock") != null) {
 					logger.debug("errkeyblock IS Not Null");
-					
-					//Dec
-					String decKey=this.keyBlockDec(req.getHeader("errkeyblock"));
-					
-					logger.debug("DECKEY:"+decKey);	
-					
-					String headerMsgBlock=req.getHeader("errmsgblock");
-					String parmaMsgBlock=req.getParameter("Data");
-			
-					
-					
-				//	msgBlock=URLDecoder.decode(msgBlock);
-					
-					logger.debug("Header MSG Block:"+headerMsgBlock);
-					logger.debug("Parm MSG BLOCK:"+parmaMsgBlock);
-					String headerMsgBlockre=this.msgBlockDec(headerMsgBlock, decKey);
-					logger.debug("headerMsgBlockre DEC:"+headerMsgBlockre);
-					String parmaDecMsg=this.msgBlockDec(parmaMsgBlock, decKey);
-					logger.debug("parmaDecMsg DEC:"+parmaDecMsg);
-					
-					
-				
+
+					// Dec
+					String decKey = this.keyBlockDec(req
+							.getHeader("errkeyblock"));
+
+					logger.debug("DECKEY:" + decKey);
+
+					// String headerMsgBlock=req.getHeader("errmsgblock");
+					String parmaMsgBlock = req.getParameter("Data");
+
+					// msgBlock=URLDecoder.decode(msgBlock);
+
+					// logger.debug("Header MSG Block:"+headerMsgBlock);
+					logger.debug("Parm MSG BLOCK:" + parmaMsgBlock);
+					// String headerMsgBlockre=this.msgBlockDec(headerMsgBlock,
+					// decKey);
+					// logger.debug("headerMsgBlockre DEC:"+headerMsgBlockre);
+					String parmaDecMsg = this
+							.msgBlockDec(parmaMsgBlock, decKey);
+					logger.debug("parmaDecMsg DEC:" + parmaDecMsg);
+					//msg send verification server 
+
 				}
 			}
 
@@ -541,15 +541,6 @@ public class VerificationFilter implements Filter {
 		}
 		return engMsgBlock;
 	}
-	
-	
-
-	
-	
-	
-	
-	
-	
 
 	// EncKeyBlock 을 개인키로 decryption!
 	public String keyBlockDec(String encKeyBlock) {
