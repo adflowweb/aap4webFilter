@@ -12,6 +12,7 @@ import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -32,6 +33,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kr.cipher.seed.SEED128;
 import kr.cipher.seed.Seed128Cipher;
 import kr.co.adflow.util.AESUtil;
 
@@ -156,7 +158,7 @@ public class VerificationFilter implements Filter {
 
 					// sleep 메모용
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(30000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -198,7 +200,7 @@ public class VerificationFilter implements Filter {
 								logger.debug("flush...value");
 								// 임시코드
 								value = value.toString().substring(15, 16);
-								logger.debug("substringValue:"+value);
+								logger.debug("substringValue:" + value);
 								flushMap.put(key, value);
 								verificationUriList.put(key,
 										"{\"uri_policy\":\"F\"}");
@@ -238,7 +240,7 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(5000); //
+						Thread.sleep(30000); //
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -331,48 +333,20 @@ public class VerificationFilter implements Filter {
 
 						}
 						logger.debug("DECPrivateKeyPass:" + decPrivateKeyPass);
-						// 개인키 pass AES 적용
 
-						String alias = "adf";
-						is = new FileInputStream("/home/adf.keystore");
-						KeyStore keystore = KeyStore.getInstance(KeyStore
-								.getDefaultType());
-						keystore.load(is, decPrivateKeyPass.toCharArray());
-						Key key = keystore.getKey(alias,
-								decPrivateKeyPass.toCharArray());
-						if (key instanceof PrivateKey) {
-							logger.debug("Private key read!!!!");
-						}
 						// EncKeyBlock 을 개인키로 decryption!
 						String encKeyBlock = req.getHeader("enckeyblock");
-
-						byte[] ciperData = this
-								.hexStringToByteArray(encKeyBlock);
-
-						Cipher clsCipher = Cipher.getInstance("RSA");
-						clsCipher.init(Cipher.DECRYPT_MODE, key);
-						byte[] arrData = clsCipher.doFinal(ciperData);
-						String decryptionKey = Hex.encodeHexString(arrData);
-						logger.debug("DecryptionKey:" + decryptionKey);
-
-						// EngMsgBlock 대칭키로 decryption!
-
-						String engMsgBlock = req.getHeader("encmsgblock");
-						byte[] decKey = this
-								.hexStringToByteArray(decryptionKey);
-						engMsgBlock = Seed128Cipher.decrypt(engMsgBlock,
-								decKey, null);
-						logger.debug("DecMessage:" + engMsgBlock);
-
-						// client ip 임시코드
-						httpGet.addHeader("clientip", req.getRemoteAddr());
-
-						// txid
-						// user-agent
+						String decryptionKey = this.keyBlockDec(encKeyBlock);
+						logger.debug("decryptionKey:" + decryptionKey);
+						// encMsgBlock 대칭키로 decryption!
+						String encMsgBlock = req.getHeader("encmsgblock");
+						String decMsgBlock = this.msgBlockDec(encMsgBlock,
+								decryptionKey);
+						logger.debug("decMsgBlock:" + decMsgBlock);
 
 						// DecMessage Parsing
 
-						JsonNode actualObj = mapper.readTree(engMsgBlock);
+						JsonNode actualObj = mapper.readTree(decMsgBlock);
 
 						Iterator it = actualObj.getFieldNames();
 
@@ -395,7 +369,8 @@ public class VerificationFilter implements Filter {
 						}
 
 						httpGet.addHeader("filterId", rmxb.getName());
-
+						// client ip 임시코드
+						httpGet.addHeader("clientip", req.getRemoteAddr());
 						httpGet.addHeader("user-agent",
 								req.getHeader("user-agent"));
 						httpGet.addHeader("virtual_page_uri",
@@ -455,7 +430,8 @@ public class VerificationFilter implements Filter {
 							printWriter = new PrintWriter(res.getOutputStream());
 							printWriter.print(bfResponseData);
 							printWriter.flush();
-
+							// res.setHeader("testErr",
+							// bfResponseData.toString());
 							// todo
 							// 검증로그전송
 							return;
@@ -493,6 +469,25 @@ public class VerificationFilter implements Filter {
 							}
 						}
 					}
+					//검증실패시 로그 받아주는 부분 임시코드
+				} else if (req.getHeader("errkeyblock") != null) {
+					logger.debug("errkeyblock IS Not Null");
+					
+					//Dec
+					String decKey=this.keyBlockDec(req.getHeader("errkeyblock"));
+					
+					logger.debug("DECKEY:"+decKey);	
+					
+					
+					String msgBlock=req.getParameter("Data");
+			
+				//	msgBlock=URLDecoder.decode(msgBlock);
+					
+					logger.debug("MSG BLOCK:"+msgBlock);
+					
+					String decMsg=this.msgBlockDec(msgBlock, decKey);
+					
+					logger.debug("Test Dec:"+decMsg);
 				}
 			}
 
@@ -518,6 +513,7 @@ public class VerificationFilter implements Filter {
 
 	}
 
+	// hexString To ByteArray
 	public byte[] hexStringToByteArray(String s) {
 		int len = s.length();
 		byte[] data = new byte[len / 2];
@@ -528,4 +524,61 @@ public class VerificationFilter implements Filter {
 		return data;
 	}
 
+	// EngMsgBlock 대칭키로 decryption!
+	public String msgBlockDec(String engMsgBlock, String decryptionKey) {
+		try {
+			byte[] decKey = this.hexStringToByteArray(decryptionKey);
+			engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decKey, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return engMsgBlock;
+	}
+	
+	
+
+	
+	
+	
+	
+	
+	
+
+	// EncKeyBlock 을 개인키로 decryption!
+	public String keyBlockDec(String encKeyBlock) {
+		FileInputStream is = null;
+		String decryptionKey = null;
+		try {
+			String alias = "adf";
+			is = new FileInputStream("/home/adf.keystore");
+			KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+			keystore.load(is, decPrivateKeyPass.toCharArray());
+			Key key = keystore.getKey(alias, decPrivateKeyPass.toCharArray());
+			if (key instanceof PrivateKey) {
+				logger.debug("Private key read!!!!");
+			}
+
+			byte[] ciperData = this.hexStringToByteArray(encKeyBlock);
+
+			Cipher clsCipher = Cipher.getInstance("RSA");
+			clsCipher.init(Cipher.DECRYPT_MODE, key);
+			byte[] arrData = clsCipher.doFinal(ciperData);
+			decryptionKey = Hex.encodeHexString(arrData);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return decryptionKey;
+	}
 }
