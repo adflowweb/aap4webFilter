@@ -1,5 +1,7 @@
 package kr.cipher.seed;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.SecureRandom;
@@ -131,13 +133,36 @@ public class Seed128Cipher {
 			Key secureKey = generator.generateKey();
 			
 			secureKey.getEncoded();
-			String data = "한글AASDFASG";
+			
+			File file = new File("C:/DEV/test.js");
+			FileInputStream fis = null;
+	 
+			
+				fis = new FileInputStream(file);
+	 
+				System.out.println("Total file size to read (in bytes) : "
+						+ fis.available());
+	 
+				int content;
+				StringBuilder builder = new StringBuilder();
+				while ((content = fis.read()) != -1) {
+					// convert to char and display it
+					builder.append((char) content);
+				}
+	 
+				
+	
+			
+			String data =builder.toString();
+			System.out.println("data:"+data);
+			// aaplus4web
+
 
 			data = Seed128Cipher.encrypt(data, secureKey.getEncoded(), null);
-			System.out.println(data);
+			System.out.println("enc:"+data);
 
 			data = Seed128Cipher.decrypt(data, secureKey.getEncoded(), null);
-			System.out.println(data);
+			System.out.println("dec:"+data);
 
 		} catch (Exception e) {
 			System.out.println("E:" + e.getMessage());

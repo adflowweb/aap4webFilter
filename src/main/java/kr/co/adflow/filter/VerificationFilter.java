@@ -478,16 +478,22 @@ public class VerificationFilter implements Filter {
 					
 					logger.debug("DECKEY:"+decKey);	
 					
-					
-					String msgBlock=req.getParameter("Data");
+					String headerMsgBlock=req.getHeader("errmsgblock");
+					String parmaMsgBlock=req.getParameter("Data");
 			
+					
+					
 				//	msgBlock=URLDecoder.decode(msgBlock);
 					
-					logger.debug("MSG BLOCK:"+msgBlock);
+					logger.debug("Header MSG Block:"+headerMsgBlock);
+					logger.debug("Parm MSG BLOCK:"+parmaMsgBlock);
+					String headerMsgBlockre=this.msgBlockDec(headerMsgBlock, decKey);
+					logger.debug("headerMsgBlockre DEC:"+headerMsgBlockre);
+					String parmaDecMsg=this.msgBlockDec(parmaMsgBlock, decKey);
+					logger.debug("parmaDecMsg DEC:"+parmaDecMsg);
 					
-					String decMsg=this.msgBlockDec(msgBlock, decKey);
 					
-					logger.debug("Test Dec:"+decMsg);
+				
 				}
 			}
 
