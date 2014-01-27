@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.Test;
 
 public class Hash {
-
+/*
 	@Test
 	public void hashTest() {
 
@@ -58,5 +58,5 @@ public class Hash {
 		}
 
 		return hashBuf.toString();
-	}
+	}*/
 }

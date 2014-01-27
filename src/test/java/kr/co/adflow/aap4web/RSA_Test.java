@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class RSA_Test {
 
-	@Test
+/*	@Test
 	public void test() {
 
 		System.out.println("test....");
@@ -65,6 +65,6 @@ public class RSA_Test {
 
 		}
 
-	}
+	}*/
 
 }

@@ -15,7 +15,7 @@ public class AES_Test {
   @Test
   public void testAESEncode() throws Exception {
  
-    // 1. 128 비트 비밀키 생성
+    /*// 1. 128 비트 비밀키 생성
     KeyGenerator kgen = KeyGenerator.getInstance("AES");
     kgen.init(128);
     SecretKey skey = kgen.generateKey();
@@ -36,6 +36,6 @@ public class AES_Test {
     byte[] original = cipher.doFinal(encrypted);
     String originalString = new String(original);
     System.out.println("Original string: " + originalString + " " + Hex.encodeHexString(original));
- 
+ */
   }
 }

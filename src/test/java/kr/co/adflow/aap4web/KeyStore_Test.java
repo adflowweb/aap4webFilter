@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class KeyStore_Test {
 
-	@Test
+/*	@Test
 	public void keyStoreTest() {
 		FileInputStream is = null;
 		try {
@@ -57,7 +57,7 @@ public class KeyStore_Test {
 				}
 			}
 		}
-	}
+	}*/
 	
 
 	

@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class PKI_Test {
 
-	private static byte[] privateKey;
+/*	private static byte[] privateKey;
 	private static String encMsgBlock = "policy is M";
 
 
@@ -125,6 +125,6 @@ public class PKI_Test {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 }

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
@@ -55,10 +56,14 @@ public class VerificationFilter implements Filter {
 			.getLogger(VerificationFilter.class);
 	private static HashMap verificationUriList = new HashMap();
 
+	private static String dllList=null;
 	private ExecutorService executorVerifyListGet = Executors
 			.newFixedThreadPool(1);
 	private ExecutorService executorUnknownListFlush = Executors
 			.newFixedThreadPool(1);
+	private ExecutorService executorContentListFlush = Executors
+			.newFixedThreadPool(1);
+
 	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client = null;
@@ -137,6 +142,94 @@ public class VerificationFilter implements Filter {
 
 							logger.debug("verificationUriList : "
 									+ verificationUriList);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						if (conn != null) {
+							conn.disconnect();
+						}
+						if (rd != null) {
+							try {
+								rd.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+
+					logger.debug("elapsedTime : "
+							+ (System.currentTimeMillis() - start) + " ms ");
+
+					// sleep 메모용
+					try {
+						Thread.sleep(30000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+
+		executorContentListFlush.execute(new Runnable() {
+			public void run() {
+				while (true) {
+					long start = System.currentTimeMillis();
+					URL url;
+					HttpURLConnection conn = null;
+					BufferedReader rd = null;
+					try {
+						logger.debug("Demo Test");
+						// create connection
+						url = new URL(VERIFICATION_SERVER_ADDRESS
+								+ "/v1/policy/content");
+						conn = (HttpURLConnection) url.openConnection();
+						conn.setRequestMethod("GET");
+						conn.setUseCaches(false);
+						conn.setDoInput(true);
+						conn.setDoOutput(false);
+
+						logger.debug("request get verification uri list");
+						logger.debug("request url : " + conn.getURL());
+						int resCode = conn.getResponseCode();
+						logger.debug("responseCode : " + resCode);
+						if (resCode == 200) {
+							// Get Response
+							InputStream is = conn.getInputStream();
+							rd = new BufferedReader(new InputStreamReader(is));
+							String line;
+							StringBuffer responseData = new StringBuffer();
+							while ((line = rd.readLine()) != null) {
+								responseData.append(line);
+								responseData.append('\r');
+							}
+							logger.debug("response : "
+									+ responseData.toString());
+
+							// insert verification uri data
+
+							Set set = mapper.readValue(responseData.toString(),
+									HashMap.class).keySet();
+							Iterator it = set.iterator();
+							StringBuffer buffer = new StringBuffer();
+							while (it.hasNext()) {
+								String key = (String) it.next();
+								Object value = mapper.readValue(
+										responseData.toString(), HashMap.class)
+										.get(key);
+								if (key.contains(".dll")) {
+								
+									buffer.append("\""+key+"\""+",");
+								}
+
+							}
+							dllList=buffer.deleteCharAt(buffer.toString().length()-1).toString();
+				
+							logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							logger.debug("dllList:"+dllList);
+							logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							
+
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -257,6 +350,7 @@ public class VerificationFilter implements Filter {
 
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
+		
 		logger.debug("VerificationFilter doFilter....");
 		logger.debug("requestURI : " + req.getRequestURI());
 		logger.debug("requestMethod : " + req.getMethod());
@@ -287,7 +381,7 @@ public class VerificationFilter implements Filter {
 
 				logger.debug("Verify Uri req.getRequestURI():"
 						+ req.getRequestURI());
-
+			
 				Object obj = null;
 				String policy = null;
 
@@ -299,7 +393,7 @@ public class VerificationFilter implements Filter {
 				String policy_Result = (String) policyMap.get("uri_policy");
 				logger.debug("policy_Result:" + policy_Result);
 				req.setAttribute("uri_policy", policy_Result);
-
+				req.setAttribute("dllList", dllList);
 				// 검증 요청
 				if (req.getHeader("encmsgblock") != null
 						&& req.getHeader("enckeyblock") != null) {
@@ -469,32 +563,47 @@ public class VerificationFilter implements Filter {
 							}
 						}
 					}
-					//검증실패시 로그 받아주는 부분 임시코드
+					// 검증실패시 로그 받아주는 부분 임시코드
 				} else if (req.getHeader("errkeyblock") != null) {
 					logger.debug("errkeyblock IS Not Null");
-					
-					//Dec
-					String decKey=this.keyBlockDec(req.getHeader("errkeyblock"));
-					
-					logger.debug("DECKEY:"+decKey);	
-					
-					String headerMsgBlock=req.getHeader("errmsgblock");
-					String parmaMsgBlock=req.getParameter("Data");
-			
-					
-					
-				//	msgBlock=URLDecoder.decode(msgBlock);
-					
-					logger.debug("Header MSG Block:"+headerMsgBlock);
-					logger.debug("Parm MSG BLOCK:"+parmaMsgBlock);
-					String headerMsgBlockre=this.msgBlockDec(headerMsgBlock, decKey);
-					logger.debug("headerMsgBlockre DEC:"+headerMsgBlockre);
-					String parmaDecMsg=this.msgBlockDec(parmaMsgBlock, decKey);
-					logger.debug("parmaDecMsg DEC:"+parmaDecMsg);
-					
-					
-				
+					BufferedReader bufferedReader = null;
+					String decKey = null;
+					try {
+						decKey = this.keyBlockDec(req.getHeader("errkeyblock"));
+
+						logger.debug("DECKEY:" + decKey);
+
+						bufferedReader = new BufferedReader(
+								new InputStreamReader(req.getInputStream()));
+
+						StringBuilder builder = new StringBuilder();
+						String aux = "";
+
+						while ((aux = bufferedReader.readLine()) != null) {
+							builder.append(aux);
+						}
+
+						String encMsgBlock = builder.toString();
+						logger.debug("request InputStream encMsgBlock Block:"
+								+ encMsgBlock);
+
+						String resultMsgBlock = this.msgBlockDec(encMsgBlock,
+								decKey);
+						logger.debug("resultMsgBlock DEC:" + resultMsgBlock);
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						if (bufferedReader != null) {
+							try {
+								bufferedReader.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+
 				}
+
 			}
 
 		} catch (Exception e) {
@@ -503,6 +612,8 @@ public class VerificationFilter implements Filter {
 		}
 		chain.doFilter(req, res);
 	}
+
+
 
 	public static HashMap getVerificationUriList() {
 		return verificationUriList;
@@ -541,15 +652,6 @@ public class VerificationFilter implements Filter {
 		}
 		return engMsgBlock;
 	}
-	
-	
-
-	
-	
-	
-	
-	
-	
 
 	// EncKeyBlock 을 개인키로 decryption!
 	public String keyBlockDec(String encKeyBlock) {

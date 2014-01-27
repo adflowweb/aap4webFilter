@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class CerFileRead_Test {
 
-	@Test
+/*	@Test
 	public void test() throws CertificateException, IOException {
 		FileInputStream fis = new FileInputStream("/home/adf.cer");
 		BufferedInputStream bis = new BufferedInputStream(fis);
@@ -29,5 +29,5 @@ public class CerFileRead_Test {
 		String publicKeyStr = Hex.encodeHexString(publicKeyByte);
 		System.out.println("publicKeyStr:" + publicKeyStr);
 
-	}
+	}*/
 }

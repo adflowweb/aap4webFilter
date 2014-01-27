@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.servlet.http.HttpServletRequest;
 
 import kr.cipher.seed.Seed128Cipher;
 
@@ -26,7 +27,7 @@ public class TestClientModify {
 
 	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
 
-	public String jsoupModify(String html,String policy) {
+	public String jsoupModify(String html,String policy,HttpServletRequest req) {
 		Document doc = null;
 		FileInputStream fileInputStream = null;
 		BufferedInputStream bufferedInputStream = null;
@@ -55,11 +56,15 @@ public class TestClientModify {
 			byte[] symmeTricKey = null;
 			//임시코드
 		//	npaaplus4web.dll,npmactest.dll
+			String dllList=null;
+			if(req.getAttribute("dllList")!=null){
+				dllList=(String)req.getAttribute("dllList");
+			}
 			
 			String orgMsg= "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\",\"dll\":[\"npaaplus4web.dll\",\"npmactest.dll\"]}";
+					+ policy + "\",\"dll\":["+dllList+"]}";
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\",\"dll\":[\"npaaplus4web.dll\",\"npmactest.dll\"]}";
+					+ policy + "\",\"dll\":["+dllList+"]}";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			generator.init(128, random);
