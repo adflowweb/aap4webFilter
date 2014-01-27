@@ -7,7 +7,13 @@
 	<properties>
 		<!-- <deploy.target.dir>/Users/nadir93/Doc/Digital/Dev/workspaces/kepler/aap4web/aap4webFilter/target</deploy.target.dir> -->
 		<deploy.target.dir>/var/lib/tomcat7/webapps/ROOT/WEB-INF/lib</deploy.target.dir>
-	<!-- 	<deploy.target.dir>/home/master/tomcat6/webapps/hello/WEB-INF/lib</deploy.target.dir> -->
+		<!-- <deploy.target.dir>/home/master/tomcat6/webapps/hello/WEB-INF/lib</deploy.target.dir> -->
+
+		<!-- 임시코드 -->
+		<!-- <spring.version>3.0.5.RELEASE</spring.version> -->
+
+
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
@@ -99,6 +105,18 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.2.5</version>
 		</dependency>
+
+<!-- 스트럿츠 임시코드 -->
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+			<version>2.3.16</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-core</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-context</artifactId> <version>${spring.version}</version> 
+			</dependency> -->
 
 	</dependencies>
 </project>
