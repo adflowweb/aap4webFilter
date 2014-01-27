@@ -217,7 +217,7 @@ public class VerificationFilter implements Filter {
 								Object value = mapper.readValue(
 										responseData.toString(), HashMap.class)
 										.get(key);
-								if (key.contains(".dll")) {
+								if (key.contains(".dll")&&value.toString().contains("\"content_policy\":\"V\"")) {
 								
 									buffer.append("\""+key+"\""+",");
 								}
