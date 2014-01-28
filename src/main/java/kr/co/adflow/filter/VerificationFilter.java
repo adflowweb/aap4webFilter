@@ -81,10 +81,7 @@ public class VerificationFilter implements Filter {
 		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
 		// connection Manager Setting..
 		// add Setting
-		connectionManager = new PoolingClientConnectionManager();
-		connectionManager.setMaxTotal(400);
-		connectionManager.setDefaultMaxPerRoute(20);
-		client = new DefaultHttpClient(connectionManager);
+	
 		AESUtil aesUtil = new AESUtil();
 		encPrivateKeyPass = aesUtil.getEncryptPassWord();
 		decPrivateKeyPass = aesUtil.keyPassDecryption(encPrivateKeyPass);
@@ -397,6 +394,11 @@ public class VerificationFilter implements Filter {
 				// 검증 요청
 				if (req.getHeader("encmsgblock") != null
 						&& req.getHeader("enckeyblock") != null) {
+					
+					connectionManager = new PoolingClientConnectionManager();
+					connectionManager.setMaxTotal(400);
+					connectionManager.setDefaultMaxPerRoute(20);
+					client = new DefaultHttpClient(connectionManager);
 
 					URI uri;
 					HttpGet httpGet = null;
