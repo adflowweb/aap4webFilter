@@ -1,7 +1,10 @@
 package kr.co.adflow.filter;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -21,6 +25,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,8 +44,14 @@ import kr.cipher.seed.Seed128Cipher;
 import kr.co.adflow.util.AESUtil;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.util.EntityUtils;
@@ -55,8 +66,8 @@ public class VerificationFilter implements Filter {
 	private static Logger logger = LoggerFactory
 			.getLogger(VerificationFilter.class);
 	private static HashMap verificationUriList = new HashMap();
-
-	private static String dllList=null;
+	public static String policy_Url = null;
+	private static String dllList = null;
 	private ExecutorService executorVerifyListGet = Executors
 			.newFixedThreadPool(1);
 	private ExecutorService executorUnknownListFlush = Executors
@@ -64,8 +75,8 @@ public class VerificationFilter implements Filter {
 	private ExecutorService executorContentListFlush = Executors
 			.newFixedThreadPool(1);
 
-	private ObjectMapper mapper = new ObjectMapper();
 	private PoolingClientConnectionManager connectionManager = null;
+
 	private DefaultHttpClient client = null;
 	private static byte[] encPrivateKeyPass = null;
 	private static String decPrivateKeyPass = null;
@@ -81,7 +92,7 @@ public class VerificationFilter implements Filter {
 		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
 		// connection Manager Setting..
 		// add Setting
-	
+
 		AESUtil aesUtil = new AESUtil();
 		encPrivateKeyPass = aesUtil.getEncryptPassWord();
 		decPrivateKeyPass = aesUtil.keyPassDecryption(encPrivateKeyPass);
@@ -115,25 +126,26 @@ public class VerificationFilter implements Filter {
 							InputStream is = conn.getInputStream();
 							rd = new BufferedReader(new InputStreamReader(is));
 							String line;
-							StringBuffer responseData = new StringBuffer();
+							StringBuilder resDataBuiler = new StringBuilder();
 							while ((line = rd.readLine()) != null) {
-								responseData.append(line);
-								responseData.append('\r');
+								resDataBuiler.append(line);
+								resDataBuiler.append('\r');
 							}
 							logger.debug("response : "
-									+ responseData.toString());
+									+ resDataBuiler.toString());
 
 							// insert verification uri data
-
-							Set set = mapper.readValue(responseData.toString(),
-									HashMap.class).keySet();
+							ObjectMapper mapper = new ObjectMapper();
+							Set set = mapper.readValue(
+									resDataBuiler.toString(), HashMap.class)
+									.keySet();
 							Iterator it = set.iterator();
 
 							while (it.hasNext()) {
 								String key = (String) it.next();
-								Object value = mapper.readValue(
-										responseData.toString(), HashMap.class)
-										.get(key);
+								Object value = mapper
+										.readValue(resDataBuiler.toString(),
+												HashMap.class).get(key);
 								verificationUriList.put(key, value.toString());
 							}
 
@@ -160,7 +172,7 @@ public class VerificationFilter implements Filter {
 
 					// sleep 메모용
 					try {
-						Thread.sleep(30000);
+						Thread.sleep(60000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -195,37 +207,39 @@ public class VerificationFilter implements Filter {
 							InputStream is = conn.getInputStream();
 							rd = new BufferedReader(new InputStreamReader(is));
 							String line;
-							StringBuffer responseData = new StringBuffer();
+							StringBuilder builderStr = new StringBuilder();
 							while ((line = rd.readLine()) != null) {
-								responseData.append(line);
-								responseData.append('\r');
+								builderStr.append(line);
+								builderStr.append('\r');
 							}
-							logger.debug("response : "
-									+ responseData.toString());
+							logger.debug("response : " + builderStr.toString());
 
 							// insert verification uri data
-
-							Set set = mapper.readValue(responseData.toString(),
+							ObjectMapper mapper = new ObjectMapper();
+							Set set = mapper.readValue(builderStr.toString(),
 									HashMap.class).keySet();
 							Iterator it = set.iterator();
-							StringBuffer buffer = new StringBuffer();
+							StringBuilder builder = new StringBuilder();
+
 							while (it.hasNext()) {
 								String key = (String) it.next();
 								Object value = mapper.readValue(
-										responseData.toString(), HashMap.class)
+										builderStr.toString(), HashMap.class)
 										.get(key);
-								if (key.contains(".dll")&&value.toString().contains("\"content_policy\":\"V\"")) {
-								
-									buffer.append("\""+key+"\""+",");
+								if (key.contains(".dll")
+										&& value.toString().contains(
+												"\"content_policy\":\"V\"")) {
+
+									builder.append("\"" + key + "\"" + ",");
 								}
 
 							}
-							dllList=buffer.deleteCharAt(buffer.toString().length()-1).toString();
-				
+							dllList = builder.deleteCharAt(
+									builder.toString().length() - 1).toString();
+
 							logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-							logger.debug("dllList:"+dllList);
+							logger.debug("dllList:" + dllList);
 							logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-							
 
 						}
 					} catch (Exception e) {
@@ -248,7 +262,7 @@ public class VerificationFilter implements Filter {
 
 					// sleep 메모용
 					try {
-						Thread.sleep(30000);
+						Thread.sleep(60000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -330,7 +344,7 @@ public class VerificationFilter implements Filter {
 					}
 
 					try {
-						Thread.sleep(30000); //
+						Thread.sleep(60000); //
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -347,7 +361,7 @@ public class VerificationFilter implements Filter {
 
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-		
+
 		logger.debug("VerificationFilter doFilter....");
 		logger.debug("requestURI : " + req.getRequestURI());
 		logger.debug("requestMethod : " + req.getMethod());
@@ -378,7 +392,7 @@ public class VerificationFilter implements Filter {
 
 				logger.debug("Verify Uri req.getRequestURI():"
 						+ req.getRequestURI());
-			
+
 				Object obj = null;
 				String policy = null;
 
@@ -389,16 +403,19 @@ public class VerificationFilter implements Filter {
 				HashMap policyMap = mapper.readValue(policy, HashMap.class);
 				String policy_Result = (String) policyMap.get("uri_policy");
 				logger.debug("policy_Result:" + policy_Result);
+
 				req.setAttribute("uri_policy", policy_Result);
 				req.setAttribute("dllList", dllList);
 				// 검증 요청
 				if (req.getHeader("encmsgblock") != null
-						&& req.getHeader("enckeyblock") != null) {
-					
-					connectionManager = new PoolingClientConnectionManager();
-					connectionManager.setMaxTotal(400);
-					connectionManager.setDefaultMaxPerRoute(20);
-					client = new DefaultHttpClient(connectionManager);
+						&& req.getHeader("enckeyblock") != null
+						&& req.getMethod().equals("POST")
+						&& req.getAttribute("uri_policy").equals("M")
+						|| req.getAttribute("uri_policy").equals("V")) {
+					logger.debug("verify Call !!!!!!!!!!");
+					logger.debug("verify Call URL:"
+							+ req.getRequestURL().toString());
+					logger.debug("req.getMethod:" + req.getMethod());
 
 					URI uri;
 					HttpGet httpGet = null;
@@ -407,6 +424,10 @@ public class VerificationFilter implements Filter {
 					HttpResponse getHttpResponse = null;
 					FileInputStream is = null;
 					try {
+						connectionManager = new PoolingClientConnectionManager();
+						connectionManager.setMaxTotal(400);
+						connectionManager.setDefaultMaxPerRoute(20);
+						client = new DefaultHttpClient(connectionManager);
 						// create connection
 
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
@@ -478,8 +499,6 @@ public class VerificationFilter implements Filter {
 
 						httpGet.setHeader("Connection", "keep-alive");
 						logger.debug("request verification");
-						logger.debug("req.getHeader(hash):"
-								+ req.getHeader("hash"));
 
 						logger.debug("HttpGet : " + httpGet.toString());
 
@@ -513,23 +532,20 @@ public class VerificationFilter implements Filter {
 							br = new BufferedReader(new InputStreamReader(
 									getHttpResponse.getEntity().getContent()));
 							String line;
-							StringBuffer bfResponseData = new StringBuffer();
+							StringBuilder builder = new StringBuilder();
 
 							while ((line = br.readLine()) != null) {
-								bfResponseData.append(line);
-								bfResponseData.append('\r');
-							}
+								logger.debug("line:" + line);
+								builder.append(line);
 
-							logger.debug("bfResponseData:"
-									+ bfResponseData.toString());
+							}
+							logger.debug("builder DATA:" + builder.toString());
 							res.setStatus(505);
 							printWriter = new PrintWriter(res.getOutputStream());
-							printWriter.print(bfResponseData);
+							printWriter.print(builder.toString());
 							printWriter.flush();
-							// res.setHeader("testErr",
-							// bfResponseData.toString());
-							// todo
-							// 검증로그전송
+							logger.debug("Server Error 505 end..");
+
 							return;
 						default:
 							logger.debug("undefined responseCode");
@@ -570,11 +586,18 @@ public class VerificationFilter implements Filter {
 					logger.debug("errkeyblock IS Not Null");
 					BufferedReader bufferedReader = null;
 					String decKey = null;
+					URI uri;
+					HttpPost httpPost = null;
+					HttpResponse getHttpResponse = null;
+
+					String ip = null;
+					Charset chars = null;
+					BufferedWriter out = null;
 					try {
+						// Key Decrytion
 						decKey = this.keyBlockDec(req.getHeader("errkeyblock"));
-
 						logger.debug("DECKEY:" + decKey);
-
+						// Msg Decrytion
 						bufferedReader = new BufferedReader(
 								new InputStreamReader(req.getInputStream()));
 
@@ -589,19 +612,94 @@ public class VerificationFilter implements Filter {
 						logger.debug("request InputStream encMsgBlock Block:"
 								+ encMsgBlock);
 
-						String resultMsgBlock = this.msgBlockDec(encMsgBlock,
-								decKey);
-						logger.debug("resultMsgBlock DEC:" + resultMsgBlock);
+						String msgBlock = this.msgBlockDec(encMsgBlock, decKey);
+
+						logger.debug("DEC!!!!!!!!!msg start!!!!!!!!!!!!!");
+						logger.debug("DECMSGBLOCK:" + msgBlock);
+
+						// err Map create
+						ObjectMapper objectMapper = new ObjectMapper();
+
+						HashMap errMap = objectMapper.readValue(msgBlock,
+								HashMap.class);
+						Set getKey = errMap.keySet();
+						Iterator getKeyIt = getKey.iterator();
+
+						String decValue = null;
+						// errValue Dec
+						while (getKeyIt.hasNext()) {
+							String key = (String) getKeyIt.next();
+							decValue = (String) errMap.get(key);
+							decValue = this.msgBlockDec(decValue, decKey);
+							errMap.put(key, decValue);
+						}
+
+						// send Multipart to VerifyServer
+						connectionManager = new PoolingClientConnectionManager();
+						connectionManager.setMaxTotal(400);
+						connectionManager.setDefaultMaxPerRoute(20);
+						client = new DefaultHttpClient(connectionManager);
+						ip = "http://127.0.0.1:8999/TestProject/TestServlet";
+						uri = new URI(ip);
+						httpPost = new HttpPost(uri);
+
+						chars = Charset.forName("UTF-8");
+
+						MultipartEntity reqEntity = new MultipartEntity();
+						logger.debug("reqEntity:" + reqEntity);
+						Set getErrMapKey = errMap.keySet();
+						String errMsgOrg = null;
+						Iterator it = getErrMapKey.iterator();
+						String txidValue = null;
+						File errFile = null;
+						if (errMap.get("txid") != null) {
+							txidValue = (String) errMap.get("txid");
+							logger.debug("txidValue:" + txidValue);
+						}
+						while (it.hasNext()) {
+							String key = (String) it.next();
+							if (!key.equals("txid")) {
+								logger.debug("debugKey:" + key);
+								errMsgOrg = (String) errMap.get(key);
+								key = key.replace("/", "_");
+								logger.debug("repalce Key:" + key);
+								errFile = new File(key);
+								out = new BufferedWriter(
+										new FileWriter(errFile));
+								out.write(errMsgOrg);
+							}
+
+							reqEntity.addPart(txidValue, new FileBody(errFile));
+						}
+
+						httpPost.setEntity(reqEntity);
+						getHttpResponse = client.execute(httpPost);
+						int resCode = getHttpResponse.getStatusLine()
+								.getStatusCode();
+						logger.debug("Multipart Response Code!!!!!Start");
+						logger.debug("MultiPart getHttpResponseCode:" + resCode);
+						logger.debug("Multipart Response Code!!!!!End");
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
+						EntityUtils.consume(getHttpResponse.getEntity());
 						if (bufferedReader != null) {
 							try {
 								bufferedReader.close();
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
+
 						}
+						if (out != null) {
+							try {
+								out.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+						}
+
 					}
 
 				}
@@ -609,13 +707,14 @@ public class VerificationFilter implements Filter {
 			}
 
 		} catch (Exception e) {
+			
 			e.printStackTrace();
-
+			req.setAttribute("uri_policy", "Verification DoFilter Exception!!!");
 		}
+
 		chain.doFilter(req, res);
+		logger.debug("!!!!!!!!!Verification Filter End!!!!!!!");
 	}
-
-
 
 	public static HashMap getVerificationUriList() {
 		return verificationUriList;
@@ -643,16 +742,16 @@ public class VerificationFilter implements Filter {
 		return data;
 	}
 
-	// EngMsgBlock 대칭키로 decryption!
-	public String msgBlockDec(String engMsgBlock, String decryptionKey) {
+	// EncMsgBlock 대칭키로 decryption!
+	public String msgBlockDec(String encMsgBlock, String decryptionKey) {
 		try {
 			byte[] decKey = this.hexStringToByteArray(decryptionKey);
-			engMsgBlock = Seed128Cipher.decrypt(engMsgBlock, decKey, null);
+			encMsgBlock = Seed128Cipher.decrypt(encMsgBlock, decKey, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return engMsgBlock;
+		return encMsgBlock;
 	}
 
 	// EncKeyBlock 을 개인키로 decryption!

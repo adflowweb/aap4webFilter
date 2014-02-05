@@ -106,13 +106,24 @@
 			<version>4.2.5</version>
 		</dependency>
 
-<!-- 스트럿츠 임시코드 -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.2.5</version>
+		</dependency>
+
+		<!-- 스트럿츠 임시코드 -->
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-core</artifactId>
 			<version>2.3.16</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- 멀티파티 -->
+
+
+
+
 		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-core</artifactId> 
 			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
 			<artifactId>spring-context</artifactId> <version>${spring.version}</version> 
