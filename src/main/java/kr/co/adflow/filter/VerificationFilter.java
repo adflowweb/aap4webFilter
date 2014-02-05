@@ -733,7 +733,7 @@ public class VerificationFilter implements Filter {
 	}
 
 	// hexString To ByteArray
-	public byte[] hexStringToByteArray(String s) {
+	public byte[] hexStringToByteArray(String s) throws Exception {
 		int len = s.length();
 		byte[] data = new byte[len / 2];
 		for (int i = 0; i < len; i += 2) {
@@ -744,19 +744,17 @@ public class VerificationFilter implements Filter {
 	}
 
 	// EncMsgBlock 대칭키로 decryption!
-	public String msgBlockDec(String encMsgBlock, String decryptionKey) {
-		try {
-			byte[] decKey = this.hexStringToByteArray(decryptionKey);
-			encMsgBlock = Seed128Cipher.decrypt(encMsgBlock, decKey, null);
+	public String msgBlockDec(String encMsgBlock, String decryptionKey)
+			throws Exception {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		byte[] decKey = this.hexStringToByteArray(decryptionKey);
+		encMsgBlock = Seed128Cipher.decrypt(encMsgBlock, decKey, null);
+
 		return encMsgBlock;
 	}
 
 	// EncKeyBlock 을 개인키로 decryption!
-	public String keyBlockDec(String encKeyBlock) {
+	public String keyBlockDec(String encKeyBlock) throws Exception {
 		FileInputStream is = null;
 		String decryptionKey = null;
 		try {
@@ -775,9 +773,6 @@ public class VerificationFilter implements Filter {
 			clsCipher.init(Cipher.DECRYPT_MODE, key);
 			byte[] arrData = clsCipher.doFinal(ciperData);
 			decryptionKey = Hex.encodeHexString(arrData);
-
-		} catch (Exception e) {
-			e.printStackTrace();
 
 		} finally {
 			if (is != null) {

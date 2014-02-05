@@ -110,7 +110,7 @@ public class VirtualBrowserFilter implements Filter {
 			outResult = charResponseWrapper.toString();
 
 			// logger.debug("ORG Result:" + result);
-			logger.debug("responseResult:" + outResult);
+			logger.debug("outResult:" + outResult);
 
 			if (outResult != null) {
 				// 검증페이지일 경우
@@ -181,8 +181,11 @@ public class VirtualBrowserFilter implements Filter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			//out.write(outResult.getBytes());
-
+			if (outResult != null) {
+				logger.debug("Exception out Write!!");
+				logger.debug("outResult:" + outResult);
+				out.write(outResult.getBytes());
+			}
 		}
 	}
 

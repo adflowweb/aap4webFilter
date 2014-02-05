@@ -27,14 +27,15 @@ public class TestClientModify {
 
 	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
 
-	public String jsoupModify(String html,String policy,HttpServletRequest req) {
+	public String jsoupModify(String html, String policy, HttpServletRequest req)
+			throws Exception {
 		Document doc = null;
 		FileInputStream fileInputStream = null;
 		BufferedInputStream bufferedInputStream = null;
 		String encMsgBlock = null;
 		String encKeyBlock = null;
-
 		try {
+
 			doc = Jsoup.parse(html);
 
 			// uuid create
@@ -49,43 +50,44 @@ public class TestClientModify {
 			String txid = uuid.toString();
 			txid = pid + "-" + txid;
 			// policy
-			
+
 			// 대칭키 생성
-		
-		
+
 			byte[] symmeTricKey = null;
-			//임시코드
-		//	npaaplus4web.dll,npmactest.dll
-			String dllList=null;
-			if(req.getAttribute("dllList")!=null){
-				dllList=(String)req.getAttribute("dllList");
+			// 임시코드
+			// npaaplus4web.dll,npmactest.dll
+			String dllList = null;
+			if (req.getAttribute("dllList") != null) {
+				dllList = (String) req.getAttribute("dllList");
 			}
-			
-			String orgMsg= "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\",\"dll\":["+dllList+"]}";
+
+			String orgMsg = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
+					+ policy + "\",\"dll\":[" + dllList + "]}";
 			encMsgBlock = "{\"TXID\": \"" + txid + "\", \"uPolicy\": \""
-					+ policy + "\",\"dll\":["+dllList+"]}";
+					+ policy + "\",\"dll\":[" + dllList + "]}";
 			KeyGenerator generator = KeyGenerator.getInstance("AES");
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			generator.init(128, random);
 			Key secureKey = generator.generateKey();
 
 			symmeTricKey = secureKey.getEncoded();
-			//임시코드
-			//strSymmeTricKey
-			String strSymmeTricKey1=Hex.encodeHexString(symmeTricKey);
-			String strSymmeTricKey =Hex.encodeHexString(symmeTricKey);
+			// 임시코드
+			// strSymmeTricKey
+			String strSymmeTricKey1 = Hex.encodeHexString(symmeTricKey);
+			String strSymmeTricKey = Hex.encodeHexString(symmeTricKey);
 			logger.debug("encMsgBlock Message:" + encMsgBlock);
 			logger.debug("strSymmeTricKey:" + strSymmeTricKey);
 
 			// 대칭키를 이용해서 msg 를 암호화(Seed)
-			//임시코드
-			String seedEncMsg=Seed128Cipher.encrypt(encMsgBlock, symmeTricKey, null);
-			encMsgBlock = Seed128Cipher.encrypt(encMsgBlock, symmeTricKey, null);
+			// 임시코드
+			String seedEncMsg = Seed128Cipher.encrypt(encMsgBlock,
+					symmeTricKey, null);
+			encMsgBlock = Seed128Cipher
+					.encrypt(encMsgBlock, symmeTricKey, null);
 			logger.debug("SEEDEncMessage:" + encMsgBlock);
 
 			// 공개키 얻어오기(client)
-			
+
 			fileInputStream = new FileInputStream("/home/AgentPubKey.der");
 			bufferedInputStream = new BufferedInputStream(fileInputStream);
 
@@ -107,27 +109,29 @@ public class TestClientModify {
 			encKeyBlock = Hex.encodeHexString(arrCipherData);
 			logger.debug("encKeyBlock:" + encKeyBlock);
 			logger.debug("encMsgBlock:" + encMsgBlock);
-			//임시코드
-			logger.debug("orgMsg:"+orgMsg);
-			logger.debug("strSymmeTricKey1:"+strSymmeTricKey1);
-			logger.debug("seedEncMsg:"+seedEncMsg);
-			doc.head().append("<script> var orgMsg = " + orgMsg +";"+ "</script>");//원본메세지
-			
-		
-			
-			
-			doc.head().append("<script> var strSymmeTricKey1 = \"" + strSymmeTricKey1 +"\";"+ "</script>");//대칭키
-			doc.head().append("<script> var seedEncMsg = \"" + seedEncMsg +"\";"+ "</script>");//인크립트 메세지
-		
+			// 임시코드
+			logger.debug("orgMsg:" + orgMsg);
+			logger.debug("strSymmeTricKey1:" + strSymmeTricKey1);
+			logger.debug("seedEncMsg:" + seedEncMsg);
 			doc.head().append(
-					"<script> var EncKeyBlock = \"" + encKeyBlock +"\";"+ "</script>");
-			doc.head().append(
-					"<script> var EncMsgBlock = \"" + encMsgBlock +"\";"+ "</script>");
+					"<script> var orgMsg = " + orgMsg + ";" + "</script>");// 원본메세지
 
-		} catch (Exception e) {
-			e.printStackTrace();
+			doc.head().append(
+					"<script> var strSymmeTricKey1 = \"" + strSymmeTricKey1
+							+ "\";" + "</script>");// 대칭키
+			doc.head().append(
+					"<script> var seedEncMsg = \"" + seedEncMsg + "\";"
+							+ "</script>");// 인크립트 메세지
+
+			doc.head().append(
+					"<script> var EncKeyBlock = \"" + encKeyBlock + "\";"
+							+ "</script>");
+			doc.head().append(
+					"<script> var EncMsgBlock = \"" + encMsgBlock + "\";"
+							+ "</script>");
 
 		} finally {
+
 			if (fileInputStream != null) {
 				try {
 					fileInputStream.close();
@@ -143,12 +147,9 @@ public class TestClientModify {
 
 				}
 			}
-
 		}
+
 		return doc.html();
 	}
-	
-	
-
 
 }
