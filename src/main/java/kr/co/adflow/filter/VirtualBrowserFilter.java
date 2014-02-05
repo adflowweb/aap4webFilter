@@ -181,7 +181,7 @@ public class VirtualBrowserFilter implements Filter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			out.write(outResult.getBytes());
+			//out.write(outResult.getBytes());
 
 		}
 	}

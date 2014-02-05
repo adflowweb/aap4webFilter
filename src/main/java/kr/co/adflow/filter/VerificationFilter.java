@@ -410,8 +410,8 @@ public class VerificationFilter implements Filter {
 				if (req.getHeader("encmsgblock") != null
 						&& req.getHeader("enckeyblock") != null
 						&& req.getMethod().equals("POST")
-						&& req.getAttribute("uri_policy").equals("M")
-						|| req.getAttribute("uri_policy").equals("V")) {
+						&& (req.getAttribute("uri_policy").equals("M") || req
+								.getAttribute("uri_policy").equals("V"))) {
 					logger.debug("verify Call !!!!!!!!!!");
 					logger.debug("verify Call URL:"
 							+ req.getRequestURL().toString());
@@ -453,6 +453,7 @@ public class VerificationFilter implements Filter {
 
 						// EncKeyBlock 을 개인키로 decryption!
 						String encKeyBlock = req.getHeader("enckeyblock");
+						logger.debug("encKeyBlock:" + encKeyBlock);
 						String decryptionKey = this.keyBlockDec(encKeyBlock);
 						logger.debug("decryptionKey:" + decryptionKey);
 						// encMsgBlock 대칭키로 decryption!
@@ -707,7 +708,7 @@ public class VerificationFilter implements Filter {
 			}
 
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 			req.setAttribute("uri_policy", "Verification DoFilter Exception!!!");
 		}
