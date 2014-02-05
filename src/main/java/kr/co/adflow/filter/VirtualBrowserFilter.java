@@ -82,7 +82,7 @@ public class VirtualBrowserFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		// ServletResponse newResponse = response;
 		OutputStream out = null;
-
+		String outResult = null;
 		try {
 			final HttpServletRequest req = (HttpServletRequest) request;
 			HttpServletResponse res = (HttpServletResponse) response;
@@ -107,12 +107,12 @@ public class VirtualBrowserFilter implements Filter {
 					(HttpServletResponse) response);
 			chain.doFilter(request, charResponseWrapper);
 
-			String result = charResponseWrapper.toString();
+			outResult = charResponseWrapper.toString();
 
 			// logger.debug("ORG Result:" + result);
-			logger.debug("responseResult:" + result);
+			logger.debug("responseResult:" + outResult);
 
-			if (result != null) {
+			if (outResult != null) {
 				// 검증페이지일 경우
 				// 임시 코드
 				String policy = (String) req.getAttribute("uri_policy");
@@ -125,7 +125,7 @@ public class VirtualBrowserFilter implements Filter {
 					// 임시코드
 					// String dllList="npaaplus4web.dll,npmactest.dll";
 
-					String resultModify = modify.jsoupModify(result, policy,
+					String resultModify = modify.jsoupModify(outResult, policy,
 							req);
 					// logger.debug("JSOUP Modify Data...");
 					// logger.debug("resultModify:" + resultModify);
@@ -149,10 +149,11 @@ public class VirtualBrowserFilter implements Filter {
 						logger.debug("result");
 
 						requestVirtualPage(req, req.getSession().getId(),
-								req.getRequestURI(), method, result.getBytes());
+								req.getRequestURI(), method,
+								outResult.getBytes());
 						// logger.debug("VitualpageCreateData resul:" + result);
 
-						out.write(result.getBytes());
+						out.write(outResult.getBytes());
 					}
 
 					// executorService.execute(new
@@ -174,12 +175,14 @@ public class VirtualBrowserFilter implements Filter {
 								.getAttribute("uri_policy");
 						logger.debug("Virtual Filter Uri Policy:" + uriPolicy);
 					}
-					logger.debug("Pass Page:" + result);
-					out.write(result.getBytes());
+					logger.debug("Pass Page:" + outResult);
+					out.write(outResult.getBytes());
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			out.write(outResult.getBytes());
+
 		}
 	}
 
