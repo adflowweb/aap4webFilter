@@ -428,6 +428,7 @@ public class VerificationFilter implements Filter {
 						connectionManager.setMaxTotal(400);
 						connectionManager.setDefaultMaxPerRoute(20);
 						client = new DefaultHttpClient(connectionManager);
+
 						// create connection
 
 						uri = new URI(VERIFICATION_SERVER_ADDRESS
@@ -640,7 +641,7 @@ public class VerificationFilter implements Filter {
 						connectionManager.setMaxTotal(400);
 						connectionManager.setDefaultMaxPerRoute(20);
 						client = new DefaultHttpClient(connectionManager);
-						ip = "http://127.0.0.1:8999/TestProject/TestServlet";
+						ip = "http://127.0.0.1:3001/upload";
 						uri = new URI(ip);
 						httpPost = new HttpPost(uri);
 
@@ -655,13 +656,15 @@ public class VerificationFilter implements Filter {
 						File errFile = null;
 						if (errMap.get("txid") != null) {
 							txidValue = (String) errMap.get("txid");
-							logger.debug("txidValue:" + txidValue);
+							logger.debug("txid Value:" + txidValue);
+							txidValue = txidValue.trim();
 						}
 						while (it.hasNext()) {
 							String key = (String) it.next();
 							if (!key.equals("txid")) {
 								logger.debug("debugKey:" + key);
 								errMsgOrg = (String) errMap.get(key);
+								// logger.debug("errMsgOrg:"+errMsgOrg);
 								key = key.replace("/", "_");
 								logger.debug("repalce Key:" + key);
 								errFile = new File(key);
