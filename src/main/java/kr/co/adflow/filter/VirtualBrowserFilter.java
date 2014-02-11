@@ -61,10 +61,10 @@ public class VirtualBrowserFilter implements Filter {
 	private DefaultHttpClient client;
 
 	public void init(FilterConfig config) throws ServletException {
-		logger.debug("init virtualBrowserFilter");
+		logger.info("init virtualBrowserFilter");
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
 				"http://127.0.0.1:3000");
-		logger.debug("verification server : " + VERIFICATION_SERVER_ADDRESS);
+		logger.info("verification server : " + VERIFICATION_SERVER_ADDRESS);
 		// connection Manager Setting..
 		// add Setting
 		connectionManager = new PoolingClientConnectionManager();
@@ -86,20 +86,20 @@ public class VirtualBrowserFilter implements Filter {
 		try {
 			final HttpServletRequest req = (HttpServletRequest) request;
 			HttpServletResponse res = (HttpServletResponse) response;
-			logger.debug("requestURI : " + req.getRequestURI());
-			logger.debug("requestMethod : " + req.getMethod());
-			logger.debug("contentType : " + req.getContentType());
+			logger.info("requestURI : " + req.getRequestURI());
+			logger.info("requestMethod : " + req.getMethod());
+			logger.info("contentType : " + req.getContentType());
 
 			// req parameter
 			for (Enumeration e = req.getParameterNames(); e.hasMoreElements();) {
 				String param = (String) e.nextElement();
-				logger.debug(param + ":" + req.getParameter(param));
+				logger.info(param + ":" + req.getParameter(param));
 			}
 
 			// req header
 			for (Enumeration e = req.getHeaderNames(); e.hasMoreElements();) {
 				String headerNames = (String) e.nextElement();
-				logger.debug(headerNames + ":" + req.getHeader(headerNames));
+				logger.info(headerNames + ":" + req.getHeader(headerNames));
 			}
 
 			out = res.getOutputStream();
@@ -109,16 +109,13 @@ public class VirtualBrowserFilter implements Filter {
 
 			outResult = charResponseWrapper.toString();
 
-			// logger.debug("ORG Result:" + result);
-			logger.debug("outResult:" + outResult);
-
 			if (outResult != null) {
 				// 검증페이지일 경우
 				// 임시 코드
 				String policy = (String) req.getAttribute("uri_policy");
 				if (policy.equals("V") || policy.equals("M")) {
-					logger.debug("if.....................!!!policy:" + policy);
-					logger.debug("thread::" + Thread.currentThread());
+					logger.info("if.....................!!!policy:" + policy);
+					logger.info("thread::" + Thread.currentThread());
 
 					TestClientModify modify = new TestClientModify();
 
@@ -127,63 +124,51 @@ public class VirtualBrowserFilter implements Filter {
 
 					String resultModify = modify.jsoupModify(outResult, policy,
 							req);
-					// logger.debug("JSOUP Modify Data...");
-					// logger.debug("resultModify:" + resultModify);
+					// logger.info("JSOUP Modify Data...");
+					// logger.info("resultModify:" + resultModify);
 
 					// "X-Requested-With"
 					String method;
 					if (req.getHeader("X-Requested-With") == null) {
 						method = "POST";
 
-						logger.debug("resultModify");
+						logger.info("resultModify");
 						requestVirtualPage(req, req.getSession().getId(),
 								req.getRequestURI(), method,
 								resultModify.getBytes());
-						// logger.debug("VitualpageCreateData resultModify:" +
+						// logger.info("VitualpageCreateData resultModify:" +
 						// resultModify);
 
 						out.write(resultModify.getBytes());
+						logger.info("virtualPage Post result out:" + resultModify);
 
 					} else {
 						method = "PUT";
-						logger.debug("result");
+						logger.info("result");
 
 						requestVirtualPage(req, req.getSession().getId(),
 								req.getRequestURI(), method,
-								outResult.getBytes());
-						// logger.debug("VitualpageCreateData resul:" + result);
-
-						out.write(outResult.getBytes());
+								resultModify.getBytes());
+						out.write(resultModify.getBytes());
+						logger.info("virtualPage Put result out:" + resultModify);
 					}
-
-					// executorService.execute(new
-					// RequestVirtualPage(req.getSession()
-					// .getId(), req.getRequestURI(), method,
-					// result.getBytes()));
-					// }
-
-					/*
-					 * UUID uuid = UUID.randomUUID(); //set txid
-					 * res.setHeader("TXID", uuid.toString()); //get urlPolicy
-					 * //set urlPolicy res.setHeader("uPolicy", "N");
-					 */
 
 				} else {
 
 					if (req.getAttribute("uri_policy") != null) {
 						String uriPolicy = (String) req
 								.getAttribute("uri_policy");
-						logger.debug("Virtual Filter Uri Policy:" + uriPolicy);
+						logger.info("Virtual Filter Uri Policy:" + uriPolicy);
 					}
-					logger.debug("Pass Page:" + outResult);
+					logger.info("Pass Page:" + outResult);
 					out.write(outResult.getBytes());
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (outResult != null) {
-				logger.debug("Exception out Write!!");
-				logger.debug("outResult:" + outResult);
+				logger.info("Exception out Write!!");
+				logger.info("outResult:" + outResult);
 				out.write(outResult.getBytes());
 			}
 		}
@@ -226,8 +211,8 @@ public class VirtualBrowserFilter implements Filter {
 
 			// client = new DefaultHttpClient(connectionManager);
 
-			logger.debug("virtual_page_uri : " + requestURI);
-			logger.debug("virtualPageAddress:" + VERIFICATION_SERVER_ADDRESS
+			logger.info("virtual_page_uri : " + requestURI);
+			logger.info("virtualPageAddress:" + VERIFICATION_SERVER_ADDRESS
 					+ "/v1/virtualpages/" + sessionID);
 
 			// POST
@@ -247,28 +232,28 @@ public class VirtualBrowserFilter implements Filter {
 
 			// ResponseCode
 			int resCode = httpResponse.getStatusLine().getStatusCode();
-			logger.debug("request " + method + " virtualpage");
-			logger.debug("responseCode : " + resCode);
+			logger.info("request " + method + " virtualpage");
+			logger.info("responseCode : " + resCode);
 			EntityUtils.consume(httpResponse.getEntity());
 			// getHttpResponse.getEntity()
 
 			switch (resCode) {
 			case 200:
 				if (method.equals("POST")) {
-					logger.debug("virtualpage created");
+					logger.info("virtualpage created");
 				} else {
-					logger.debug("virtualpage modified");
+					logger.info("virtualpage modified");
 				}
 
 				break;
 			case 404:
-				logger.debug("404 not found");
+				logger.info("404 not found");
 				break;
 			case 500:
-				logger.debug("500 internal server error");
+				logger.info("500 internal server error");
 				break;
 			default:
-				logger.debug("undefined responseCode");
+				logger.info("undefined responseCode");
 				break;
 			}
 		} catch (Exception e) {
@@ -288,7 +273,7 @@ public class VirtualBrowserFilter implements Filter {
 			 */
 
 		}
-		logger.debug("elapsedTime : " + (System.currentTimeMillis() - start)
+		logger.info("elapsedTime : " + (System.currentTimeMillis() - start)
 				+ " ms ");
 	}
 }
