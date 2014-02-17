@@ -8,19 +8,9 @@
 		<!-- <deploy.target.dir>/Users/nadir93/Doc/Digital/Dev/workspaces/kepler/aap4web/aap4webFilter/target</deploy.target.dir> -->
 		<deploy.target.dir>/var/lib/tomcat7/webapps/ROOT/WEB-INF/lib</deploy.target.dir>
 		<!-- <deploy.target.dir>/home/master/tomcat6/webapps/hello/WEB-INF/lib</deploy.target.dir> -->
-
-		<!-- 임시코드 -->
-		<!-- <spring.version>3.0.5.RELEASE</spring.version> -->
-
-
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
 		<plugins>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
-				<version>2.3.2</version> <configuration> <outputDirectory>${deploy.target.dir}</outputDirectory> 
-				</configuration> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -86,14 +76,7 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.12</version>
 		</dependency>
-		<!-- async-http-client -->
-		<!-- logslf4j-api -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		<!-- jsoup -->
+
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
@@ -119,17 +102,5 @@
 			<version>2.3.16</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- 멀티파티 -->
-
-	
-
-
-
-
-		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-core</artifactId> 
-			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
-			<artifactId>spring-context</artifactId> <version>${spring.version}</version> 
-			</dependency> -->
-
 	</dependencies>
 </project>

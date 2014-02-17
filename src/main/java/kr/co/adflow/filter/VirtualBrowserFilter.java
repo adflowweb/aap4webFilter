@@ -8,6 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -30,8 +31,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class VirtualBrowserFilter implements Filter {
 
@@ -40,7 +40,7 @@ public class VirtualBrowserFilter implements Filter {
 	// Executors.newCachedThreadPool();
 	// private ExecutorService executorService =
 	// Executors.newFixedThreadPool(50);
-
+	private final static Logger logger = Logger.getLogger(VirtualBrowserFilter.class.getName());
 	int poolSize = 20;
 	int maxPoolSize = 100;
 	long keepAliveTime = 10;
@@ -55,8 +55,7 @@ public class VirtualBrowserFilter implements Filter {
 														 * >()
 														 */queue);
 
-	private final Logger logger = LoggerFactory
-			.getLogger(VirtualBrowserFilter.class);
+
 	private PoolingClientConnectionManager connectionManager = null;
 	private DefaultHttpClient client;
 
@@ -71,6 +70,7 @@ public class VirtualBrowserFilter implements Filter {
 		connectionManager.setMaxTotal(400);
 		connectionManager.setDefaultMaxPerRoute(100);
 		client = new DefaultHttpClient(connectionManager);
+	
 	}
 
 	public void destroy() {

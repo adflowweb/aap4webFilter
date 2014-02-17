@@ -10,13 +10,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.KeyStore;
@@ -25,9 +23,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.servlet.Filter;
@@ -39,52 +37,43 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kr.cipher.seed.SEED128;
 import kr.cipher.seed.Seed128Cipher;
 import kr.co.adflow.util.AESUtil;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class VerificationFilter implements Filter {
 
 	private static String VERIFICATION_SERVER_ADDRESS;
-	private static Logger logger = LoggerFactory
-			.getLogger(VerificationFilter.class);
+
 	private static HashMap verificationUriList = new HashMap();
 	public static String policy_Url = null;
 	private static String dllList = null;
-	private ExecutorService executorVerifyListGet = Executors
-			.newFixedThreadPool(1);
-	private ExecutorService executorUnknownListFlush = Executors
-			.newFixedThreadPool(1);
-	private ExecutorService executorContentListFlush = Executors
-			.newFixedThreadPool(1);
+	private static ExecutorService executorVerifyListGet = Executors
+			.newSingleThreadExecutor();
+	private static ExecutorService executorUnknownListFlush = Executors
+			.newSingleThreadExecutor();
+	private static ExecutorService executorContentListFlush = Executors
+			.newSingleThreadExecutor();
+	
+	private final static Logger logger = Logger.getLogger(VerificationFilter.class.getName());
 
-	private PoolingClientConnectionManager connectionManager = null;
-	private DefaultHttpClient client = null;
+	private static PoolingClientConnectionManager connectionManager = null;
+	private static DefaultHttpClient client = null;
 	private static byte[] encPrivateKeyPass = null;
 	private static String decPrivateKeyPass = null;
 
-	// test git
-	/**
-	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
-	 */
-	public void init(FilterConfig filterConfig) throws ServletException {
+	static{
 		logger.info("init verificationFilter");
 		VERIFICATION_SERVER_ADDRESS = System.getProperty("verificationServer",
 				"http://127.0.0.1:3000");
@@ -110,7 +99,12 @@ public class VerificationFilter implements Filter {
 					BufferedReader rd = null;
 					try {
 
-						logger.info("Demo Test");
+						logger.info("Demo Test URI LIST");
+						Thread.dumpStack();
+						logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						logger.info("thread:"+Thread.currentThread());
+						logger.info("thread ID...:"+Thread.currentThread().getId());
 						// create connection
 						url = new URL(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/policy/uri");
@@ -118,7 +112,11 @@ public class VerificationFilter implements Filter {
 						conn.setRequestMethod("GET");
 						conn.setUseCaches(false);
 						conn.setDoInput(true);
+						conn.setConnectTimeout(30000);
 						conn.setDoOutput(false);
+						conn.connect();
+						
+						
 
 						logger.info("request get verification uri list");
 						logger.info("request url : " + conn.getURL());
@@ -182,7 +180,7 @@ public class VerificationFilter implements Filter {
 				}
 			}
 		});
-
+		
 		executorContentListFlush.execute(new Runnable() {
 			public void run() {
 				while (true) {
@@ -191,7 +189,7 @@ public class VerificationFilter implements Filter {
 					HttpURLConnection conn = null;
 					BufferedReader rd = null;
 					try {
-						logger.info("Demo Test");
+						logger.info("Demo Test Content List");
 						// create connection
 						url = new URL(VERIFICATION_SERVER_ADDRESS
 								+ "/v1/policy/content");
@@ -199,9 +197,10 @@ public class VerificationFilter implements Filter {
 						conn.setRequestMethod("GET");
 						conn.setUseCaches(false);
 						conn.setDoInput(true);
+						conn.setConnectTimeout(30000);
 						conn.setDoOutput(false);
-
-						logger.info("request get verification uri list");
+						conn.connect();
+						logger.info("request get verification Content list");
 						logger.info("request url : " + conn.getURL());
 						int resCode = conn.getResponseCode();
 						logger.info("responseCode : " + resCode);
@@ -243,6 +242,7 @@ public class VerificationFilter implements Filter {
 							logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 							logger.info("dllList:" + dllList);
 							logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							logger.info("content List....End....");
 
 						}
 					} catch (Exception e) {
@@ -285,6 +285,8 @@ public class VerificationFilter implements Filter {
 					ObjectMapper objectMapper = null;
 
 					try {
+						
+						logger.info("Demo Test UnKnown..Flush List");
 
 						url = new URL(
 								"http://127.0.0.1:3000/v1/policy/uri/unknown");
@@ -292,8 +294,11 @@ public class VerificationFilter implements Filter {
 								.openConnection();
 						urlConnection.setDoOutput(true);
 						urlConnection.setRequestMethod("POST");
+						urlConnection.setConnectTimeout(30000);
+						urlConnection.connect();
+						
 						out = urlConnection.getOutputStream();
-
+						
 						Set set = verificationUriList.keySet();
 						Iterator it = set.iterator();
 
@@ -356,7 +361,15 @@ public class VerificationFilter implements Filter {
 
 			}
 		});
-
+	}
+	
+	
+	// test git
+	/**
+	 * 검증대상 uri list를 검증서버에서 가져와 초기화 한다.
+	 */
+	public void init(FilterConfig filterConfig) throws ServletException {
+	
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -745,7 +758,8 @@ public class VerificationFilter implements Filter {
 	public void destroy() {
 		executorVerifyListGet.shutdown();
 		executorUnknownListFlush.shutdown();
-		// client.getConnectionManager().shutdown();
+		executorContentListFlush.shutdown();
+		client.getConnectionManager().shutdown();
 
 	}
 

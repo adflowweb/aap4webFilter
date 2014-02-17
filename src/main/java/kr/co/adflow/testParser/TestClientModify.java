@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -20,13 +21,10 @@ import kr.cipher.seed.Seed128Cipher;
 import org.apache.commons.codec.binary.Hex;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TestClientModify {
 
-	Logger logger = LoggerFactory.getLogger(TestClientModify.class);
-
+	private final static Logger logger = Logger.getLogger(TestClientModify.class.getName());
 	public String jsoupModify(String html, String policy, HttpServletRequest req)
 			throws Exception {
 		Document doc = null;
@@ -45,7 +43,7 @@ public class TestClientModify {
 			String temp = rmxb.getName();
 			String[] arrTemp = temp.split("@");
 			String pid = arrTemp[0];
-			logger.debug("PID:" + pid);
+			logger.info("PID:" + pid);
 			// txid+uuid
 			String txid = uuid.toString();
 			txid = pid + "-" + txid;
@@ -75,8 +73,8 @@ public class TestClientModify {
 			// strSymmeTricKey
 			String strSymmeTricKey1 = Hex.encodeHexString(symmeTricKey);
 			String strSymmeTricKey = Hex.encodeHexString(symmeTricKey);
-			logger.debug("encMsgBlock Message:" + encMsgBlock);
-			logger.debug("strSymmeTricKey:" + strSymmeTricKey);
+			logger.info("encMsgBlock Message:" + encMsgBlock);
+			logger.info("strSymmeTricKey:" + strSymmeTricKey);
 
 			// 대칭키를 이용해서 msg 를 암호화(Seed)
 			// 임시코드
@@ -84,7 +82,7 @@ public class TestClientModify {
 					symmeTricKey, null);
 			encMsgBlock = Seed128Cipher
 					.encrypt(encMsgBlock, symmeTricKey, null);
-			logger.debug("SEEDEncMessage:" + encMsgBlock);
+			logger.info("SEEDEncMessage:" + encMsgBlock);
 
 			// 공개키 얻어오기(client)
 
@@ -100,19 +98,19 @@ public class TestClientModify {
 			byte[] publicKeyByte = publicKey.getEncoded();
 
 			String publicKeyStr = Hex.encodeHexString(publicKeyByte);
-			logger.debug("publicKeyStr:" + publicKeyStr);
+			logger.info("publicKeyStr:" + publicKeyStr);
 
 			// 공개키로 대칭키를 암호화
 			Cipher clsCipher = Cipher.getInstance("RSA");
 			clsCipher.init(Cipher.ENCRYPT_MODE, publicKey);// 공개키
 			byte[] arrCipherData = clsCipher.doFinal(symmeTricKey);// 대칭키
 			encKeyBlock = Hex.encodeHexString(arrCipherData);
-			logger.debug("encKeyBlock:" + encKeyBlock);
-			logger.debug("encMsgBlock:" + encMsgBlock);
+			logger.info("encKeyBlock:" + encKeyBlock);
+			logger.info("encMsgBlock:" + encMsgBlock);
 			// 임시코드
-			logger.debug("orgMsg:" + orgMsg);
-			logger.debug("strSymmeTricKey1:" + strSymmeTricKey1);
-			logger.debug("seedEncMsg:" + seedEncMsg);
+			logger.info("orgMsg:" + orgMsg);
+			logger.info("strSymmeTricKey1:" + strSymmeTricKey1);
+			logger.info("seedEncMsg:" + seedEncMsg);
 			doc.head().append(
 					"<script> var orgMsg = " + orgMsg + ";" + "</script>");// 원본메세지
 

@@ -1,17 +1,20 @@
 package kr.co.adflow.util;
 
+import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class AESUtil {
 
-	private static Logger logger = LoggerFactory.getLogger(AESUtil.class);
+	
+	
+	private final static Logger logger = Logger.getLogger(AESUtil.class.getName());
 
 	private static String privateKeyPass = "123456";
 	Cipher cipher = null;
@@ -46,8 +49,8 @@ public class AESUtil {
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
 			original = cipher.doFinal(encrypted);
 			decPrivatePass = new String(original);;
-			logger.debug("decPrivatePass:" + decPrivatePass);
-			logger.debug("Original string: " + decPrivatePass + " "
+			logger.info("decPrivatePass:" + decPrivatePass);
+			logger.info("Original string: " + decPrivatePass + " "
 					+ Hex.encodeHexString(original));
 			
 		   
